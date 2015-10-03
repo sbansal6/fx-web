@@ -1,12 +1,33 @@
 var fs = require('fs');
 var csv = require('csv');
+var response  = require('fx-response');
 
-var main = function (req, res) {
-  res.render('application2', { 
+/*
+* main controller for /application route
+*/
+var main = function (req, res, next) {
+  var userProfile = req.user ;
+  getFlows(userProfile,function(err,flows){
+  	if (err) {
+  		return next(new error.InternalServerError(500, err));
+  	} else {
+  		res.render('application', { 
         title: 'FeedStage',
-        user:req.user
+        user:req.user,
+        flows: flows    
       })
+  	}
+
+  })  
 };
+
+/**
+*  Get all flows associated to this user 
+*/
+var getFlows = function(userProfile,getFlowsCb){
+    var flows = [1,2]
+    getFlowsCb(null,flows) ;
+}
 
 module.exports.main = main; 
 
