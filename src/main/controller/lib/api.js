@@ -7,10 +7,13 @@ var components = require('../../components');
 
 */
 var getComponents = function(req,res){
-	var FileSource = new components.FileSource();
+	var FileSourceConnector = new components.FileSourceConnector();
 	var GoogleConnector = new components.GoogleConnector();
 	var AmazonConnector = new components.AmazonConnector();
-    res.send([FileSource,GoogleConnector.AmazonConnector]); 
+	var FacebookConnector = new components.FacebookConnector();
+	var EbayConnector = new components.EbayConnector();
+	var Function = new components.Function();
+    res.send([FileSourceConnector,GoogleConnector,AmazonConnector,FacebookConnector,EbayConnector,Function]); 
 } 
 
 module.exports.getComponents = getComponents;

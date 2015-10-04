@@ -71,10 +71,10 @@
                         "undoManager.isEnabled": true  // enable undo & redo
                     });
   
-  function getComponents(){
+  function getComponents(cb){
     $.get('/api/components',function(result,status){
-            alert(JSON.stringify(result))
-            //cb(null,result);        
+            //alert(JSON.stringify(result))
+            cb(null,result);        
     })
   } 
 
@@ -99,30 +99,19 @@
         
   });
 
-
-
-  
-// when the document is modified, add a "*" to the title and enable the "Save" button
+  // when the document is modified, add a "*" to the title and enable the "Save" button
   myDiagram.click = function(e) {
         console.log("i am contextClick")
        
   };
-  myDiagram.contextClick = function(e) {
-        console.log("i am contextClick")
-        
-  };
-
   myDiagram.mouseDrop = function(e) {
     console.log("i am mouseDrop")
   };
 
-
-  var PackageModel = {}
-      
+  var PackageModel = {}      
   
   // define the Node templates for regular nodes
   var lightText = 'whitesmoke';
-  // define several shared Brushes
   var bluegrad = GO(go.Brush, "Linear", { 0: "rgb(150, 150, 250)", 0.5: "rgb(86, 6, 186)", 1: "rgb(86, 86, 186)" });
   var greengrad = GO(go.Brush, "Linear", { 0: "rgb(158, 209, 159)", 1: "rgb(67, 101, 56)" });
   var redgrad = GO(go.Brush, "Linear", { 0: "rgb(206, 106, 100)", 1: "rgb(180, 56, 50)" });
@@ -200,8 +189,7 @@
   );
   
   /**
-  * Any node that doesnt have category falls into this category
-  * *** Ideally all nodes should fall into some category
+  * Function node template
   */
   myDiagram.nodeTemplateMap.add("Function",  GO(go.Node,
                     "Spot",  // panel type
@@ -228,8 +216,6 @@
                     makePort("L", go.Spot.Left, true, true),
                     makePort("R", go.Spot.Right, true, true)
   ));
-
-  
 
   // Define a function for creating a "port" that is normally transparent.
   // The "name" is used as the GraphObject.portId, the "spot" is used to control how links connect
@@ -329,8 +315,7 @@
           // You should set the desiredSize (or width and height)
           // whenever you know what size the Picture should be.
           { desiredSize: new go.Size(60, 60) },
-          new go.Binding("source", "image"))
-      ) );
+          new go.Binding("source", "image"))));
 
   function convertKeyImage(key) {
     if (!key) key = "NE";
@@ -342,7 +327,7 @@
 
     ]
 
-  // create the Palette
+    // create the Palette
   var myPalette =
     GO(go.Palette, "myPalette");
 
@@ -356,19 +341,28 @@
           { desiredSize: new go.Size(60, 60) },
           new go.Binding("source", "image"))
       ) 
+    
+   getComponents(function(err,result){
+       alert(JSON.stringify(result))
+       myPalette.model.nodeDataArray = result
+  })  
+
+ 
+
+ 
 
 
 // the list of data to show in the Palette
-  myPalette.model.nodeDataArray = [
-     { category: "Palate", key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
-     { category: "Palate", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
-     { category: "Palate", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
-     { category: "Palate", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
-     { category: "Palate", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
-     {category:"Palate","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"},
-     { category: "Function", text: "Start",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png" },
+  // myPalette.model.nodeDataArray =
+  //  [
+  //    { category: "Function", text:"fx" ,key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
+  //    { category: "Connector", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
+  //    { category: "Connector", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
+  //    { category: "Connector", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
+  //    { category: "Connector", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
+  //    { category:"Connector","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
  
-  ];
+  // ];
 
   // // initialize the Palette that is on the left side of the page
   // myPalette =

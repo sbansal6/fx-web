@@ -1,8 +1,8 @@
-var AmazonConnector = function(){
+var FacebookConnector = function(){
       var self = this;
       this.category = "Connector",
-      this.key = "Amazon",
-      this.image = "/images/amazon.png"
+      this.key = "Facebook",
+      this.image = "/images/fb.png"
       this.fields = [
          { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
          { name: "ProductName", color: "#F25022", figure: "Rectangle" },
@@ -13,4 +13,4 @@ var AmazonConnector = function(){
      this.loc = "485 160"
 }
 
-module.exports = AmazonConnector ;
+module.exports = FacebookConnector ;

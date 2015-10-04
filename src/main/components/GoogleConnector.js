@@ -1,7 +1,8 @@
 var GoogleConnector = function(){
       var self = this;
-      this.category = "File",
+      this.category = "Connector",
       this.key = "Google",
+      this.image = "/images/google.jpeg"
       this.fields = [
          { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
          { name: "ProductName", color: "#F25022", figure: "Rectangle" },

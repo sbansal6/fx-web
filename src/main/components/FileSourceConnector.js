@@ -7,13 +7,14 @@
    *    FileProperties: Define file properties like file type (Phase 2), update html
    * 
 */
-   var FileSource = function(){
+   var FileSourceConnector = function(){
     var self = this ;
-    this.category = "File"
-    this.key = "Source"
+    this.category = "Connector"
+    this.key = "FileSource"
     this.fileName = ""
     this.fields = []
     this.loc = "85 160"
+    this.image = "/images/textfile.gif"
     this.html = '<div title="Select File"> <form> FileName:<br> <select id="fileList" name="files"> </select> </form> </div>'
     this.editNode = function(e,obj){
       var html =  $(self.html)
@@ -56,4 +57,4 @@
   }
 
 
-module.exports = FileSource;  
+module.exports = FileSourceConnector;  
