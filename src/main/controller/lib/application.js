@@ -25,7 +25,7 @@ var main = function (req, res, next) {
 *  Get all flows associated to this user 
 */
 var getFlows = function(userProfile,getFlowsCb){
-    var flows = [1,2]
+    var flows = [1]
     getFlowsCb(null,flows) ;
 }
 

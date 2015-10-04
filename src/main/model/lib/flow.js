@@ -1,13 +1,10 @@
 // app/models/user.js
 // load the things we need
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
 var environment = require('../../core/lib/environment'); // fix this long path
-var path = require('path')
-var ObjectId = require('mongodb').ObjectId
 
-// define the schema for our user model
-var userSchema = mongoose.Schema({
+// define the schema for our flow model
+var flowSchema = mongoose.Schema({
     email: String,
     password: String,
     company: { type: String, default: "" },

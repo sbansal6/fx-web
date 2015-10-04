@@ -49,6 +49,7 @@ app.all('/*', function (req, res, next) {
 // region Configure Logger
 expressWinston.requestWhitelist.push('body');
 expressWinston.responseWhitelist.push('body');
+
 /**
  * Use Winston Logger
  */
@@ -71,7 +72,7 @@ app.use(expressWinston.logger({
     //   colorize: true
     // })
   ],
-  meta: true,
+  meta: false, // causing issue with /api/getcomponents api call
   msg: 'HTTP {{req.method}} {{req.url}} {{res}}',
   expressFormat: true,
   colorStatus: true
@@ -93,9 +94,9 @@ app.get('/', function(req, res){
 require('./src/main/route/index')(app,passport);
 // End Routes =========================================================================
 
-/**
- * Use Winston Error Logger
- */
+// /**
+//  * Use Winston Error Logger
+//  */
 app.use(expressWinston.errorLogger({
   transports: [
     new winston.transports.Console({
@@ -126,7 +127,7 @@ app.use(expressWinston.errorLogger({
  * Error handler for all the applications
  */
 app.use(function (err, req, res, next) {
-  //console.log(err.stack)
+  console.log(err.stack)
   var body = {
     error: {
       message: err.message || '',

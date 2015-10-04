@@ -58,7 +58,15 @@
                                     <img alt="Add new feed flow" src="images/rsz_1addnew.jpg" title="Create new flow"/>
                             
                                     <div style="text-align:center;">
-                                    <a class="btn btn-success" style="vertical-align: middle" onclick="addNewFlow()">Create</a> 
+                                    <a class="btn btn-success" style="vertical-align: middle" onclick="addNewFlow()"><%  
+                                    if (flows.length > 0) {  %>
+                                        Add New Flow
+                                    <%  }
+                                  else { %>
+                                        Create First Flow
+                                  <% }
+                                    %>                                    
+                                    </a> 
                                     </div>
                             
                                 </div>
