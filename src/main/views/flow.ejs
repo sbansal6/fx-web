@@ -341,24 +341,52 @@
   var components = [
 
     ]
-  // initialize the Palette that is on the left side of the page
-  myPalette =
-            GO(go.Palette, "myPalette",  // must name or refer to the DIV HTML element
-                    {
-                        "animationManager.duration": 600
-                        , // slightly longer than default (600ms) animation
-                        nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
-                        model: new go.GraphLinksModel([  // specify the contents of the Palette
-                            { category: "Palate", key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
-                            { category: "Palate", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
-                            { category: "Palate", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
-                            { category: "Palate", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
-                            { category: "Palate", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
-                            {category:"Palate","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
+
+  // create the Palette
+  var myPalette =
+    GO(go.Palette, "myPalette");
+
+  // the Palette's node template is different from the main Diagram's
+  myPalette.nodeTemplate =
+    GO(go.Node,
+        "Vertical",  // the whole node panel
+        GO(go.Picture,  // the icon showing the logo
+          // You should set the desiredSize (or width and height)
+          // whenever you know what size the Picture should be.
+          { desiredSize: new go.Size(60, 60) },
+          new go.Binding("source", "image"))
+      ) 
+
+
+// the list of data to show in the Palette
+  myPalette.model.nodeDataArray = [
+     { category: "Palate", key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
+     { category: "Palate", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
+     { category: "Palate", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
+     { category: "Palate", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
+     { category: "Palate", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
+     {category:"Palate","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
+ 
+  ];
+
+  // // initialize the Palette that is on the left side of the page
+  // myPalette =
+  //           GO(go.Palette, "myPalette",  // must name or refer to the DIV HTML element
+  //                   {
+  //                       "animationManager.duration": 600
+  //                       , // slightly longer than default (600ms) animation
+  //                       nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
+  //                       model: new go.GraphLinksModel([  // specify the contents of the Palette
+  //                           { category: "Palate", key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
+  //                           { category: "Palate", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
+  //                           { category: "Palate", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
+  //                           { category: "Palate", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
+  //                           { category: "Palate", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
+  //                           {category:"Palate","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
  
                             
-                        ])
-                    });
+  //                       ])
+  //                   });
  
   // Make all ports on a node visible when the mouse is over the node
   function showPorts(node, show) {
