@@ -37,27 +37,40 @@
                <% for(var i=0; i < flows.length; i++) { %>
                <div class="col-md-3">
                                 <div class="thumbnail">
-                                    <img alt="Bootstrap Thumbnail First" src="http://b2seomarketing.co.uk/wp-content/uploads/2012/11/Google-index-time.png" />
+                                    <img alt="Bootstrap Thumbnail First" src="/images/google.jpeg" />
                                     <div class="caption">
                                         <h3>
-                                            Google Flow
+                                            First google flow
                                         </h3>
-                                        <p>
-                                            Cras justo odio
-                                        </p>
-                                        <p>
-                                            <a class="btn btn-primary" href="#">Action</a> 
-                                            <a class="btn" href="#">Action</a>
-                                        </p>
+                                    
+                                        <div style="text-align:center; margin: 15px 0;">
+                                            <a class="btn btn-info" href="#">Edit</a> 
+                                            <a class="btn btn-danger" href="#">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                </div>
+                <div class="col-md-3">
+                                <div class="thumbnail">
+                                    <img alt="Bootstrap Thumbnail First" src="/images/amazon.png" />
+                                    <div class="caption" style="text-align:center;">
+                                        <h3>
+                                            amazon flow
+                                        </h3>
+                                    
+                                        <div style="text-align:center; margin: 15px 0;">
+                                            <a class="btn btn-info" href="#">Edit</a> 
+                                            <a class="btn btn-danger" href="#">Delete</a>
+                                        </div>
                                     </div>
                                 </div>
                 </div>
                  <% } %>
                 <div class="col-md-3">
                                 <div class="thumbnail">
-                                    <img alt="Add new feed flow" src="images/rsz_1addnew.jpg" title="Create new flow"/>
-                            
-                                    <div style="text-align:center;">
+                                    <img alt="Add new feed flow" src="https://cdn4.iconfinder.com/data/icons/simplicio/128x128/file_add.png" title="Create new flow"/>
+                                     
+                                    <div style="text-align:center; margin: 10px 0;">
                                     <a class="btn btn-success" style="vertical-align: middle" onclick="addNewFlow()"><%  
                                     if (flows.length > 0) {  %>
                                         Add New Flow
