@@ -60,17 +60,189 @@
 </html>
 <script>
 
+  // Start GO.JS
   var GO = go.GraphObject.make;  // for conciseness in defining templates
-  myDiagram =  GO(go.Diagram, "myDiagram",  // must name or refer to the DIV HTML element
-                    {
-                        initialContentAlignment: go.Spot.Center,
-                        allowDrop: true,  // must be true to accept drops from the Palette
-                        "LinkDrawn": showLinkLabel,  // this DiagramEvent listener is defined below
-                        "LinkRelinked": showLinkLabel,
-                        "animationManager.duration": 600, // slightly longer than default (600ms) animation
-                        "undoManager.isEnabled": true  // enable undo & redo
-                    });
+  var PackageModel = {}  // see if we need this anymore
+  var lightText = 'whitesmoke'; // some colors
   
+    // Start Main Diagram
+      myDiagram =  GO(go.Diagram, "myDiagram",  // must name or refer to the DIV HTML element
+                        {
+                            initialContentAlignment: go.Spot.Center,
+                            allowDrop: true,  // must be true to accept drops from the Palette
+                            "LinkDrawn": showLinkLabel,  // this DiagramEvent listener is defined below
+                            "LinkRelinked": showLinkLabel,
+                            "animationManager.duration": 600, // slightly longer than default (600ms) animation
+                            "undoManager.isEnabled": true  // enable undo & redo
+                        });
+
+      // Start diagram Events Listener
+        // when the document is modified, add a "*" to the title and enable the "Save" button
+        myDiagram.addDiagramListener("Modified", function(e) {
+              console.log("i am modified")
+              var button = document.getElementById("SaveButton");
+              if (button) button.disabled = !myDiagram.isModified;
+              var idx = document.title.indexOf("*");
+              if (myDiagram.isModified) {
+                  if (idx < 0) document.title += "*";
+              } else {
+                  if (idx >= 0) document.title = document.title.substr(0, idx);
+              }
+        });
+
+        // event fired when a new object is dropped to diagram (from pallate)
+        // may need it in future
+        myDiagram.addDiagramListener("ExternalObjectsDropped", function(e) {
+              e.subject.each(function(node) {
+                //console.log((node.findObject("Google")))
+              })
+        });
+
+        // handles click on diagram background
+        // this might/will be used for showing diagram properties, like scheduling
+        myDiagram.click = function(e) {
+            //console.log("i am contextClick")
+        };      
+      // End diagram Events Listener
+
+      // Start Diagram Node Templates
+
+        // Start Function Node Template
+        myDiagram.nodeTemplateMap.add("Function",  GO(go.Node,
+                      "Spot",  // panel type
+                      nodeStyle(), // location
+                      // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+                      GO(go.Panel, "Auto",
+                              GO(go.Shape, "Rectangle",
+                                      { fill: "#00A9C9", stroke: null },
+                                      new go.Binding("figure", "figure")),
+                                      // overside shape from node object
+                              GO(go.TextBlock,
+                                      {
+                                          font: "bold 11pt Helvetica, Arial, sans-serif",
+                                          stroke: lightText,
+                                          margin: 8,
+                                          maxSize: new go.Size(100, NaN),
+                                          wrap: go.TextBlock.WrapFit,
+                                          editable: true
+                                      },
+                                      new go.Binding("text").makeTwoWay()) // can edit node text
+                      ),
+                      // four named ports, one on each side:                    
+                      makePort("L", go.Spot.Left, true, true),
+                      makePort("R", go.Spot.Right, true, true)));
+        // End Function Node Template
+
+        // Start Connector Node Template
+        /**
+        *  Connector nodes are special nodes that have fields defined under them
+        *  all connectors including text file soucre falls under this 
+        **/
+        
+        // Define each field in connector
+        // This template is a Panel that is used to represent each item in a Panel.itemArray.
+        var fieldTemplate = GO(go.Panel, "TableRow",  // this Panel is a row in the containing Table
+                new go.Binding("portId", "name"),  // this Panel is a "port"
+                {
+                  background: "transparent",  // so this port's background can be picked by the mouse
+                  fromSpot: go.Spot.Right,  // links only go from the right side to the left side
+                  toSpot: go.Spot.Left,
+                  // allow drawing links from or to this port:
+                  fromLinkable: true, toLinkable: true
+                },
+                GO(go.Shape,
+                  { width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,
+                    // but disallow drawing links from or to this shape:
+                    fromLinkable: false, toLinkable: false },
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("fill", "color")),
+                GO(go.TextBlock,
+                  { margin: new go.Margin(0, 2), column: 1, font: "bold 13px sans-serif",
+                    // and disallow drawing links from or to this text:
+                    fromLinkable: false, toLinkable: false },
+                  new go.Binding("text", "name")),
+                GO(go.TextBlock,
+                  { margin: new go.Margin(0, 2), column: 2, font: "13px sans-serif" },
+                  new go.Binding("text", "info"))
+        );
+
+        myDiagram.nodeTemplateMap.add("Connector",
+                 GO(go.Node, "Auto",
+                  { movable: true,
+                    copyable: false,
+                    deletable: true },
+                  new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                  // this rectangular shape surrounds the content of the node
+                  GO(go.Shape,
+                    { fill: "#EEEEEE" }),
+                  // the content consists of a header and a list of items
+                  GO(go.Panel, "Vertical",
+                    // this is the header for the whole node
+                    GO(go.Panel, "Auto",
+                      { stretch: go.GraphObject.Horizontal },  // as wide as the whole node
+                      GO(go.Shape,
+                        { fill: "#1570A6", stroke: null }),
+                      GO(go.TextBlock,
+                        {
+                          alignment: go.Spot.Center,
+                          margin: 3,
+                          stroke: "white",
+                          textAlign: "center",
+                          font: "bold 12pt sans-serif"
+                        },
+                        new go.Binding("text", "key"))),
+                    // this Panel holds a Panel for each item object in the itemArray;
+                    // each item Panel is defined by the itemTemplate to be a TableRow in this Table
+                    GO(go.Panel, "Table",
+                      {
+                        padding: 2,
+                        minSize: new go.Size(100, 10),
+                        defaultStretch: go.GraphObject.Horizontal,
+                        itemTemplate: fieldTemplate
+                      },
+                      new go.Binding("itemArray", "fields")
+                    )  // end Table Panel of items
+                  )  // end Vertical Panel
+                  ,new go.Binding("doubleClick", "editNode")
+                  //,{doubleClick: editNode}
+        ));
+
+        // End Connector node template
+
+        // Define Link template
+
+        // End Link template
+
+      // End Diagram Node Templates
+
+    // End Main Diagram
+  
+    // Start Define Pallate
+      var myPalette = GO(go.Palette, "myPalette");
+      // the Palette's node template is different from the main Diagram's
+      myPalette.nodeTemplate = GO(
+            go.Node,
+            "Vertical",  // the whole node panel
+            GO(go.Picture,  // the icon showing the logo
+              // You should set the desiredSize (or width and height)
+              // whenever you know what size the Picture should be.
+              { desiredSize: new go.Size(60, 60) },
+              new go.Binding("source", "image"),
+              {
+              toolTip:  // define a tooltip for each node that displays the color as text
+                GO(go.Adornment, "Auto",
+                  GO(go.Shape, { fill: "#FFFFCC" }),
+                  GO(go.TextBlock, { margin: 4 },
+                    new go.Binding("text", "tipText"))
+                )  // end of Adornment
+              }
+              ))
+    // End Define Pallate
+
+   // End GO.JS 
+
+
+
   function getComponents(cb){
     $.get('/api/components',function(result,status){
             //alert(JSON.stringify(result))
@@ -78,149 +250,6 @@
     })
   } 
 
-  // when the document is modified, add a "*" to the title and enable the "Save" button
-  myDiagram.addDiagramListener("Modified", function(e) {
-        console.log("i am modified")
-        var button = document.getElementById("SaveButton");
-        if (button) button.disabled = !myDiagram.isModified;
-        var idx = document.title.indexOf("*");
-        if (myDiagram.isModified) {
-            if (idx < 0) document.title += "*";
-        } else {
-            if (idx >= 0) document.title = document.title.substr(0, idx);
-        }
-  });
-
-  myDiagram.addDiagramListener("ExternalObjectsDropped", function(e) {
-        console.log("i am added",e.subject)
-        e.subject.each(function(node) {
-          console.log((node.findObject("Google")))
-        })
-        
-  });
-
-  // when the document is modified, add a "*" to the title and enable the "Save" button
-  myDiagram.click = function(e) {
-        console.log("i am contextClick")
-       
-  };
-  myDiagram.mouseDrop = function(e) {
-    console.log("i am mouseDrop")
-  };
-
-  var PackageModel = {}      
-  
-  // define the Node templates for regular nodes
-  var lightText = 'whitesmoke';
-  var bluegrad = GO(go.Brush, "Linear", { 0: "rgb(150, 150, 250)", 0.5: "rgb(86, 6, 186)", 1: "rgb(86, 86, 186)" });
-  var greengrad = GO(go.Brush, "Linear", { 0: "rgb(158, 209, 159)", 1: "rgb(67, 101, 56)" });
-  var redgrad = GO(go.Brush, "Linear", { 0: "rgb(206, 106, 100)", 1: "rgb(180, 56, 50)" });
-  var yellowgrad = GO(go.Brush, "Linear", { 0: "rgb(254, 221, 50)", 1: "rgb(254, 182, 50)" });
-  var lightgrad = GO(go.Brush, "Linear", { 1: "#E6E6FA", 0: "#FFFAF0" });
-
-  // This template is a Panel that is used to represent each item in a Panel.itemArray.
-  // The Panel is data bound to the item object.
-  var fieldTemplate =
-        GO(go.Panel, "TableRow",  // this Panel is a row in the containing Table
-          new go.Binding("portId", "name"),  // this Panel is a "port"
-          {
-            background: "transparent",  // so this port's background can be picked by the mouse
-            fromSpot: go.Spot.Right,  // links only go from the right side to the left side
-            toSpot: go.Spot.Left,
-            // allow drawing links from or to this port:
-            fromLinkable: true, toLinkable: true
-          },
-          GO(go.Shape,
-            { width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,
-              // but disallow drawing links from or to this shape:
-              fromLinkable: false, toLinkable: false },
-            new go.Binding("figure", "figure"),
-            new go.Binding("fill", "color")),
-          GO(go.TextBlock,
-            { margin: new go.Margin(0, 2), column: 1, font: "bold 13px sans-serif",
-              // and disallow drawing links from or to this text:
-              fromLinkable: false, toLinkable: false },
-            new go.Binding("text", "name")),
-          GO(go.TextBlock,
-            { margin: new go.Margin(0, 2), column: 2, font: "13px sans-serif" },
-            new go.Binding("text", "info"))
-        );
-    
-  myDiagram.nodeTemplateMap.add("Connector",
-         GO(go.Node, "Auto",
-          { movable: true,
-            copyable: false,
-            deletable: true },
-          new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-          // this rectangular shape surrounds the content of the node
-          GO(go.Shape,
-            { fill: "#EEEEEE" }),
-          // the content consists of a header and a list of items
-          GO(go.Panel, "Vertical",
-            // this is the header for the whole node
-            GO(go.Panel, "Auto",
-              { stretch: go.GraphObject.Horizontal },  // as wide as the whole node
-              GO(go.Shape,
-                { fill: "#1570A6", stroke: null }),
-              GO(go.TextBlock,
-                {
-                  alignment: go.Spot.Center,
-                  margin: 3,
-                  stroke: "white",
-                  textAlign: "center",
-                  font: "bold 12pt sans-serif"
-                },
-                new go.Binding("text", "key"))),
-            // this Panel holds a Panel for each item object in the itemArray;
-            // each item Panel is defined by the itemTemplate to be a TableRow in this Table
-            GO(go.Panel, "Table",
-              {
-                padding: 2,
-                minSize: new go.Size(100, 10),
-                defaultStretch: go.GraphObject.Horizontal,
-                itemTemplate: fieldTemplate
-              },
-              new go.Binding("itemArray", "fields")
-            )  // end Table Panel of items
-          )  // end Vertical Panel
-          ,new go.Binding("doubleClick", "editNode")
-          //,{doubleClick: editNode}
-        ) 
-  );
-  
-  /**
-  * Function node template
-  */
-  myDiagram.nodeTemplateMap.add("Function",  GO(go.Node,
-                    "Spot",  // panel type
-                    nodeStyle(), // location
-                    // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
-                    GO(go.Panel, "Auto",
-                            GO(go.Shape, "Rectangle",
-                                    { fill: "#00A9C9", stroke: null },
-                                    new go.Binding("figure", "figure")),
-
-                                    // overside shape from node object
-                            GO(go.TextBlock,
-                                    {
-                                        font: "bold 11pt Helvetica, Arial, sans-serif",
-                                        stroke: lightText,
-                                        margin: 8,
-                                        maxSize: new go.Size(100, NaN),
-                                        wrap: go.TextBlock.WrapFit,
-                                        editable: true
-                                    },
-                                    new go.Binding("text").makeTwoWay()) // can edit node text
-                    ),
-                    // four named ports, one on each side:                    
-                    makePort("L", go.Spot.Left, true, true),
-                    makePort("R", go.Spot.Right, true, true)
-  ));
-
-  // Define a function for creating a "port" that is normally transparent.
-  // The "name" is used as the GraphObject.portId, the "spot" is used to control how links connect
-  // and where the port is positioned on the node, and the boolean "output" and "input" arguments
-  // control whether the user can draw links from or to the port.
   function makePort(name, spot, output, input) {
         // the port is basically just a small circle that has a white stroke when it is made visible
         return GO(go.Shape, "Circle",
@@ -235,7 +264,6 @@
                     cursor: "pointer"  // show a different cursor to indicate potential link point
                 });
   }
-
 
   // helper definitions for node templates
   function nodeStyle() {
@@ -309,80 +337,12 @@
 
   load();  // load an initial diagram from some JSON text
 
-  myDiagram.nodeTemplateMap.add("Palate", GO(go.Node,
-        "Vertical",  // the whole node panel
-        GO(go.Picture,  // the icon showing the logo
-          // You should set the desiredSize (or width and height)
-          // whenever you know what size the Picture should be.
-          { desiredSize: new go.Size(60, 60) },
-          new go.Binding("source", "image"))));
-
-  function convertKeyImage(key) {
-    if (!key) key = "NE";
-    return "http://opi.wiki/pic?w=6&f=108893&e=2&o=9";
-  }    
-
-  // components that needs to be added to palate
-  var components = [
-
-    ]
-
-    // create the Palette
-  var myPalette =
-    GO(go.Palette, "myPalette");
-
-  // the Palette's node template is different from the main Diagram's
-  myPalette.nodeTemplate =
-    GO(go.Node,
-        "Vertical",  // the whole node panel
-        GO(go.Picture,  // the icon showing the logo
-          // You should set the desiredSize (or width and height)
-          // whenever you know what size the Picture should be.
-          { desiredSize: new go.Size(60, 60) },
-          new go.Binding("source", "image"))
-      ) 
-    
-   getComponents(function(err,result){
-       alert(JSON.stringify(result))
+  
+  getComponents(function(err,result){
        myPalette.model.nodeDataArray = result
   })  
 
- 
 
- 
-
-
-// the list of data to show in the Palette
-  // myPalette.model.nodeDataArray =
-  //  [
-  //    { category: "Function", text:"fx" ,key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
-  //    { category: "Connector", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
-  //    { category: "Connector", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
-  //    { category: "Connector", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
-  //    { category: "Connector", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
-  //    { category:"Connector","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
- 
-  // ];
-
-  // // initialize the Palette that is on the left side of the page
-  // myPalette =
-  //           GO(go.Palette, "myPalette",  // must name or refer to the DIV HTML element
-  //                   {
-  //                       "animationManager.duration": 600
-  //                       , // slightly longer than default (600ms) animation
-  //                       nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
-  //                       model: new go.GraphLinksModel([  // specify the contents of the Palette
-  //                           { category: "Palate", key: "Function",image: "http://help.autodesk.com/cloudhelp/2016/ENU/RSAPRO-Octopus/images/GUID-F2F0CDC9-884F-4A18-BAC1-C0AF4C9E32AA.png"},
-  //                           { category: "Palate", key: "Source",image: "http://www.uploadmini.com/images/thumb.gif"},
-  //                           { category: "Palate", key: "Google",name: "Google",text: "Google" ,image: "http://opi.wiki/pic?w=6&f=108893&e=2&o=9"},
-  //                           { category: "Palate", key: "Amazon" ,image: "http://fxtrade.oanda.com/images/books/amazon-logo-50.png"},
-  //                           { category: "Palate", key: "Ebay" ,image: "http://dailycrowdsource.com/daily-crowdsourcing-files/images-crowdsourcing/logos-company/50/ebay-logo-50x50.jpg"},
-  //                           {category:"Palate","key": "Facebook",image:"http://www.victoria.ac.nz/assets/images/fb_logo.png"}
- 
-                            
-  //                       ])
-  //                   });
- 
   // Make all ports on a node visible when the mouse is over the node
   function showPorts(node, show) {
     var diagram = node.diagram;
