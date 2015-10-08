@@ -60,6 +60,61 @@
 </html>
 <script>
 
+var listFilesInDirectory = function(cb){
+         $.get('/api/listdirectory',function(result,status){
+          cb(null,result);        
+          })}
+
+var FileSourceConnector = function(){
+    var self = this ;
+    this.category = "Connector"
+    this.key = "FileSource"
+    this.fileName = ""
+    this.fields = []
+    this.loc = "85 160"
+    this.image = "/images/textfile.gif"
+    this.html = '<div title="Select File"> <form> FileName:<br> <select id="fileList" name="files"> </select> </form> </div>'
+    this.editNode = function(e,obj){
+      var html =  $(self.html)
+      // add filenames to html
+
+      listFilesInDirectory(function(err,result){
+          result.forEach(function(file){
+            html.find('#fileList').append($('<option>' + file + '</option>'));
+          })
+       });
+      $(html)
+                .appendTo('body')
+                .dialog({
+                    modal: true,
+                    width: 425,
+                    height: 275,
+                    buttons: {
+                        OK: function(){
+                            // todo:- have to refresh whole diagram to change selected file. 
+                            var fileName = $('#fileList option:selected').text();
+                            self.fileName = fileName ;
+                            // get all headers for this file using server rest api call
+                            var data = myDiagram.model.findNodeDataForKey(self.key)
+                            var newFields = [] 
+                            getFileHeaders(fileName,function(err,result){
+                              result.headers.forEach(function(header){
+                                newFields.push({ name:header, color: "#F7B84B", figure: "Ellipse"})
+                              })
+                              myDiagram.model.setDataProperty(data,"fields",newFields)
+                              
+                            });
+                            $(this).dialog('close');
+                        },
+                        CANCEL : function(){
+                            $(this).dialog('close');
+                        }
+                    }
+                });
+     }
+  }
+
+
   // Start GO.JS
   var GO = go.GraphObject.make;  // for conciseness in defining templates
   var PackageModel = { 
@@ -171,6 +226,36 @@
                   { margin: new go.Margin(0, 2), column: 2, font: "13px sans-serif" },
                   new go.Binding("text", "info"))
         );
+
+// dont need this anymore, every node has its own edit node function that called directly from node template
+    /**
+     * Open Node specific dialog box , html comes from node itself
+     *
+     */
+    var editNode = function(e, obj) {
+        alert("I am going via here")
+        var html =  '<div> <form> FileName:<br> <input id="textInput" type="text" name="firstname"> </form> </div>'
+        //obj.part.data.editNode();
+         $(html)
+                .appendTo('body')
+                .dialog({
+                    modal: true,
+                    width: 425,
+                    height: 275,
+                    buttons: {
+                        OK: function(){
+                            var fileName = $('#textInput').val();
+                            $(this).dialog('close');
+                        },
+                        CANCEL : function(){
+                            $(this).dialog('close');
+                        }
+                    }
+                });
+     
+    
+    }
+
 
         myDiagram.nodeTemplateMap.add("Connector",
                  GO(go.Node, "Auto",
@@ -345,6 +430,7 @@
 
   
   getComponents(function(err,result){
+       result.push(new FileSourceConnector())
        myPalette.model.nodeDataArray = result
   })  
 
