@@ -62,7 +62,13 @@
 
   // Start GO.JS
   var GO = go.GraphObject.make;  // for conciseness in defining templates
-  var PackageModel = {}  // see if we need this anymore
+  var PackageModel = { 
+       "class": "go.GraphLinksModel",
+        "linkFromPortIdProperty": "fromPort",
+        "linkToPortIdProperty": "toPort",
+        "nodeDataArray": [],
+        "linkDataArray": []
+      }
   var lightText = 'whitesmoke'; // some colors
   
     // Start Main Diagram
@@ -375,6 +381,7 @@
   function load() {
     // initial model 
     // phase-2 get it server    
-    myDiagram.model = go.Model.fromJson(PackageModel);}
+    myDiagram.model = go.Model.fromJson(PackageModel)
+  }
     
 </script>
