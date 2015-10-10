@@ -5,23 +5,10 @@ var environment = require('../../core/lib/environment'); // fix this long path
 
 // define the schema for our flow model
 var flowSchema = mongoose.Schema({
-    email: String,
-    password: String,
-    company: { type: String, default: "" },
-    tier: { type: String, default: "" },
-    rootDir: { type: String, default: "" },
-    createDate: { type: Date, default: Date.now },
-    lastUpdated: { type: Date, default: Date.now },
+    userId: String,
+    name: String,
+    model: String
 });
-// methods ======================
-// generating a hash
-userSchema.methods.generateHash = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
-// checking if password is valid
-userSchema.methods.isValidPassword = function (password) {
-    return bcrypt.compareSync(password, this.password);
-};
 
 /**
  * todo
@@ -29,12 +16,6 @@ userSchema.methods.isValidPassword = function (password) {
  * can we done async, return call back
  * 
  */
-userSchema.post('save',function(doc){
-     this.rootDir = path.join(environment.filesystem.root,this._id.toString());
-     this.lastUpdated = new Date();
-     this.save() ;
-})
-
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Flow', flowSchema);

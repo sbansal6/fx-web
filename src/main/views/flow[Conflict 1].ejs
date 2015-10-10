@@ -194,54 +194,37 @@ function showPorts(node, show) {
 function save() {
     var savedModel = myDiagram.model.toJson();
     event.preventDefault(savedModel);
-    if (!PackageModel.name || PackageModel.name == ""){
-      var html = '<div class="form-group"> ' + 
-                   '<input type="text" class="form-control" id="name"> ' + 
-                  '</div>'
-      bootbox.dialog({
-        message: html,
-        title: "Give me a name",
-        buttons: {
-          main: {
-            label: "Save",
-            className: "btn-primary",
-            callback: function() {
-             var name  = $('#name').val()
-             if (!name || name == "") {
-              return false ;
-             } else {
-                PackageModel.name = name ;
-                $.ajax({
-                    type: "POST",
-                    url: "/api/savemodel",
-                    data: {
-                        model: PackageModel
-                    },
-                    success: function(data) {
-                        //drawTable(data)
-                        return true;
-                    },
-                    // vvv---- This is the new bit
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert("Error, status = " + textStatus + ", " +
-                            "error thrown: " + errorThrown
-                        );
-                    }
-                });
-                
-             }
-            }
+    if (!savedModel.flowName || savedModel.flowName == ""){
+          bootbox.prompt("What is my Name?", function(result) {                
+          if (result === null) {                                             
+            Example.show("Prompt dismissed");                              
+          } else {
+            savedModel["flowName"] = result;
+            alert(JSON.stringify(savedModel));
+            return;                         
           }
-        }
-      });
+          });
     }
-
-    
+    //alert(JSON.stringify(savedModel))
+    // $.ajax({
+    //     type: "POST",
+    //     url: "/api/savemodel",
+    //     data: {
+    //         model: savedModel
+    //     },
+    //     success: function(data) {
+    //         drawTable(data)
+    //     },
+    //     // vvv---- This is the new bit
+    //     error: function(jqXHR, textStatus, errorThrown) {
+    //         alert("Error, status = " + textStatus + ", " +
+    //             "error thrown: " + errorThrown
+    //         );
+    //     }
+    // });
 
     myDiagram.isModified = false;
   }
-
-
 
 function load() {
     // initial model 
