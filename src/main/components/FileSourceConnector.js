@@ -13,7 +13,6 @@
     this.key = "FileSource"
     this.fileName = ""
     this.fields = []
-    this.loc = "85 160"
     this.image = "/images/textfile.gif"
   }
 

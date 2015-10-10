@@ -73,16 +73,15 @@ function getFileHeaders(fileName,cb){
 // Phase 2 :- Get Connector properties using api calls
 function FileSourceConnectorDoubleClick(e, obj) {
     var rawHtml = '<div class="row">  ' +
-                    '<div class="col-md-12"> ' +
-                      '<div title="Select File"> ' + 
-                        '<form class="form-horizontal> ' + 
-                          '<div class="form-group"> ' +
-                            '<select class="col-md-3" id="fileList" name="files"> </select> ' + 
-                          '</div> ' +  
-                        '</form> ' +
-                      '</div> ' + 
-                    '</div>' + 
-                  '</div>'            
+                    '<div title="Select File"> ' + 
+                      '<form> ' + 
+                        '<label class="col-md-1 control-label" for="name">File</label> ' +
+                        '<div class="col-md-2"> ' +
+                          '<select id="fileList" name="files"> </select> ' + 
+                        '</div>'
+                      '</form> ' +
+                    '</div> ' + 
+                  '</div>'
     var html = $(rawHtml)    
     // add filenames to html
     listFilesInDirectory(function(err, result) {
@@ -94,9 +93,10 @@ function FileSourceConnectorDoubleClick(e, obj) {
                 message: html,
                 buttons: {
                     success: {
-                        label: "Ok",
+                        label: "save",
                         className: "btn-success",
                         callback: function () {
+                            //todo:- have to refresh whole diagram to change selected file. 
                             var fileName = $('#fileList option:selected').text();
                             self.fileName = fileName;
                             // get all headers for this file using server rest api call
@@ -116,7 +116,7 @@ function FileSourceConnectorDoubleClick(e, obj) {
                         }
                     },
                     cancel : {
-                      label: "Cancel",
+                      label: "cancel",
                         className: "btn-danger",
                         callback: function () {
                             return;
