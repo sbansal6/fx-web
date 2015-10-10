@@ -5,5 +5,7 @@ module.exports = function (app,isLoggedIn) {
   // =====================================
   // APPLICATION PAGE (with logout links)
   // =====================================
-  app.get('/flow', isLoggedIn ,controller.flow.main);  
+  app.get('/flow'
+  	, isLoggedIn 
+  	,controller.flow.main);  
 };

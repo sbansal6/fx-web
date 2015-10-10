@@ -51,428 +51,431 @@
     <footer>
        <% include ../views/partials/footer %>
     </footer>
-  
-  
 </body>
 </html>
 <script>
 
-// var listFilesInDirectory = function(cb){
-//          $.get('/api/listdirectory',function(result,status){
-//           cb(null,result);        
-//           })}
+var colors = ["#F7B84B","#F25022","#00BCF2","#F25022","#00BCF2"];
+var shapes = ["Ellipse","Rectangle","Triangle","Circle"];
 
-var FileSourceConnector = function(){
-    var self = this ;
-    this.category = "Connector"
-    this.key = "FileSource"
-    this.fileName = ""
-    this.fields = []
-    this.loc = "85 160"
-    this.image = "/images/textfile.gif"
-    this.html = '<div title="Select File"> <form> FileName:<br> <select id="fileList" name="files"> </select> </form> </div>'
-    this.listFilesInDirectory = function(cb){
-        cb(null,['file1.text'])
-         // $.get('/api/listdirectory',function(result,status){
-         //  cb(null,result);    
-         //  })
-       }
+function listFilesInDirectory(cb) {
+        $.get('/api/files',function(result,status){
+         cb(null,result);    
+         })
+}
 
-    this.editNode = function(e,obj){
-      alert("I am gere")
-      var html =  $(self.html)
-      // add filenames to html
+function getFileHeaders(fileName,cb){
+       $.get('/api/fileheaders',{fileName:fileName},function(result,status){
+         cb(null,result)
+        }
+)} 
 
-      self.listFilesInDirectory(function(err,result){
-          result.forEach(function(file){
+// Phase 2 :- Get Connector properties using api calls
+function FileSourceConnectorDoubleClick(e, obj) {
+    var rawHtml = '<div title="Select File"> <form> FileName:<br> <select id="fileList" name="files"> </select> </form> </div>'
+    var html = $(rawHtml)    
+    // add filenames to html
+    listFilesInDirectory(function(err, result) {
+        result.forEach(function(file) {
             html.find('#fileList').append($('<option>' + file + '</option>'));
-          })
-       });
-      $(html)
-                .appendTo('body')
-                .dialog({
-                    modal: true,
-                    width: 425,
-                    height: 275,
-                    buttons: {
-                        OK: function(){
-                            // todo:- have to refresh whole diagram to change selected file. 
-                            var fileName = $('#fileList option:selected').text();
-                            self.fileName = fileName ;
-                            // get all headers for this file using server rest api call
-                            var data = myDiagram.model.findNodeDataForKey(self.key)
-                            var newFields = [] 
-                            getFileHeaders(fileName,function(err,result){
-                              result.headers.forEach(function(header){
-                                newFields.push({ name:header, color: "#F7B84B", figure: "Ellipse"})
-                              })
-                              myDiagram.model.setDataProperty(data,"fields",newFields)
-                              
-                            });
-                            $(this).dialog('close');
-                        },
-                        CANCEL : function(){
-                            $(this).dialog('close');
-                        }
-                    }
-                });
-     }
-  }
-
-
-  // Start GO.JS
-  var GO = go.GraphObject.make;  // for conciseness in defining templates
-  var PackageModel = { 
-       "class": "go.GraphLinksModel",
-        "linkFromPortIdProperty": "fromPort",
-        "linkToPortIdProperty": "toPort",
-        "nodeDataArray": [],
-        "linkDataArray": []
-      }
-  var lightText = 'whitesmoke'; // some colors
-  
-    // Start Main Diagram
-      myDiagram =  GO(go.Diagram, "myDiagram",  // must name or refer to the DIV HTML element
-                        {
-                            initialContentAlignment: go.Spot.Center,
-                            allowDrop: true,  // must be true to accept drops from the Palette
-                            "LinkDrawn": showLinkLabel,  // this DiagramEvent listener is defined below
-                            "LinkRelinked": showLinkLabel,
-                            "animationManager.duration": 50, // slightly longer than default (600ms) animation
-                            "undoManager.isEnabled": true  // enable undo & redo
-                        });
-
-      // Start diagram Events Listener
-        // when the document is modified, add a "*" to the title and enable the "Save" button
-        myDiagram.addDiagramListener("Modified", function(e) {
-              console.log("i am modified")
-              var button = document.getElementById("SaveButton");
-              if (button) button.disabled = !myDiagram.isModified;
-              var idx = document.title.indexOf("*");
-              if (myDiagram.isModified) {
-                  if (idx < 0) document.title += "*";
-              } else {
-                  if (idx >= 0) document.title = document.title.substr(0, idx);
-              }
-        });
-
-        // event fired when a new object is dropped to diagram (from pallate)
-        // may need it in future
-        myDiagram.addDiagramListener("ExternalObjectsDropped", function(e) {
-              e.subject.each(function(node) {
-                //console.log((node.findObject("Google")))
-              })
-        });
-
-        // handles click on diagram background
-        // this might/will be used for showing diagram properties, like scheduling
-        myDiagram.click = function(e) {
-            //console.log("i am contextClick")
-        };      
-      // End diagram Events Listener
-
-      // Start Diagram Node Templates
-
-        // Start Function Node Template
-        myDiagram.nodeTemplateMap.add("Function",  GO(go.Node,
-                      "Spot",  // panel type
-                      nodeStyle(), // location
-                      // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
-                      GO(go.Panel, "Auto",
-                              GO(go.Shape, "Rectangle",
-                                      { fill: "#00A9C9", stroke: null },
-                                      new go.Binding("figure", "figure")),
-                                      // overside shape from node object
-                              GO(go.TextBlock,
-                                      {
-                                          font: "bold 11pt Helvetica, Arial, sans-serif",
-                                          stroke: lightText,
-                                          margin: 8,
-                                          maxSize: new go.Size(100, NaN),
-                                          wrap: go.TextBlock.WrapFit,
-                                          editable: true
-                                      },
-                                      new go.Binding("text").makeTwoWay()) // can edit node text
-                      ),
-                      // four named ports, one on each side:                    
-                      makePort("L", go.Spot.Left, true, true),
-                      makePort("R", go.Spot.Right, true, true)));
-        // End Function Node Template
-
-        // Start Connector Node Template
-        /**
-        *  Connector nodes are special nodes that have fields defined under them
-        *  all connectors including text file soucre falls under this 
-        **/
-        
-        // Define each field in connector
-        // This template is a Panel that is used to represent each item in a Panel.itemArray.
-        var fieldTemplate = GO(go.Panel, "TableRow",  // this Panel is a row in the containing Table
-                new go.Binding("portId", "name"),  // this Panel is a "port"
-                {
-                  background: "transparent",  // so this port's background can be picked by the mouse
-                  fromSpot: go.Spot.Right,  // links only go from the right side to the left side
-                  toSpot: go.Spot.Left,
-                  // allow drawing links from or to this port:
-                  fromLinkable: true, toLinkable: true
+        })});
+    $(html)
+        .appendTo('body')
+        .dialog({
+            modal: true,
+            width: 425,
+            height: 275,
+            buttons: {
+                OK: function() {
+                    // todo:- have to refresh whole diagram to change selected file. 
+                    var fileName = $('#fileList option:selected').text();
+                    self.fileName = fileName;
+                    // get all headers for this file using server rest api call
+                    var data = myDiagram.model.findNodeDataForKey(obj.part.data.key)
+                    var newFields = []
+                    getFileHeaders(fileName, function(err, result) {
+                        result.headers.forEach(function(header) {
+                            newFields.push({
+                                name: header,
+                                color: colors[Math.floor(Math.random() * colors.length)],
+                                figure: shapes[Math.floor(Math.random() * shapes.length)]
+                            })
+                        })
+                        myDiagram.model.setDataProperty(data, "fields", newFields)
+                    });
+                    $(this).dialog('close');
                 },
-                GO(go.Shape,
-                  { width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,
-                    // but disallow drawing links from or to this shape:
-                    fromLinkable: false, toLinkable: false },
-                  new go.Binding("figure", "figure"),
-                  new go.Binding("fill", "color")),
-                GO(go.TextBlock,
-                  { margin: new go.Margin(0, 2), column: 1, font: "bold 13px sans-serif",
-                    // and disallow drawing links from or to this text:
-                    fromLinkable: false, toLinkable: false },
-                  new go.Binding("text", "name")),
-                GO(go.TextBlock,
-                  { margin: new go.Margin(0, 2), column: 2, font: "13px sans-serif" },
-                  new go.Binding("text", "info"))
-        );
-
-// dont need this anymore, every node has its own edit node function that called directly from node template
-    /**
-     * Open Node specific dialog box , html comes from node itself
-     *
-     */
-    var editNode = function(e, obj) {
-        alert("I am going via here")
-        var html =  '<div> <form> FileName:<br> <input id="textInput" type="text" name="firstname"> </form> </div>'
-        //obj.part.data.editNode();
-         $(html)
-                .appendTo('body')
-                .dialog({
-                    modal: true,
-                    width: 425,
-                    height: 275,
-                    buttons: {
-                        OK: function(){
-                            var fileName = $('#textInput').val();
-                            $(this).dialog('close');
-                        },
-                        CANCEL : function(){
-                            $(this).dialog('close');
-                        }
-                    }
-                });
-     
-    
-    }
-
-
-        myDiagram.nodeTemplateMap.add("Connector",
-                 GO(go.Node, "Auto",
-                  { movable: true,
-                    copyable: false,
-                    deletable: true },
-                  new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-                  // this rectangular shape surrounds the content of the node
-                  GO(go.Shape,
-                    { fill: "#EEEEEE" }),
-                  // the content consists of a header and a list of items
-                  GO(go.Panel, "Vertical",
-                    // this is the header for the whole node
-                    GO(go.Panel, "Auto",
-                      { stretch: go.GraphObject.Horizontal },  // as wide as the whole node
-                      GO(go.Shape,
-                        { fill: "#1570A6", stroke: null }),
-                      GO(go.TextBlock,
-                        {
-                          alignment: go.Spot.Center,
-                          margin: 3,
-                          stroke: "white",
-                          textAlign: "center",
-                          font: "bold 12pt sans-serif"
-                        },
-                        new go.Binding("text", "key"))),
-                    // this Panel holds a Panel for each item object in the itemArray;
-                    // each item Panel is defined by the itemTemplate to be a TableRow in this Table
-                    GO(go.Panel, "Table",
-                      {
-                        padding: 2,
-                        minSize: new go.Size(100, 10),
-                        defaultStretch: go.GraphObject.Horizontal,
-                        itemTemplate: fieldTemplate
-                      },
-                      new go.Binding("itemArray", "fields")
-                    )  // end Table Panel of items
-                  )  // end Vertical Panel
-                  ,new go.Binding("doubleClick", "editNode")
-                  //,{doubleClick: editNode}
-        ));
-
-        // End Connector node template
-
-        // Define Link template
-
-        // End Link template
-
-      // End Diagram Node Templates
-
-    // End Main Diagram
-  
-    // Start Define Pallate
-      var myPalette = GO(go.Palette, "myPalette");
-      // the Palette's node template is different from the main Diagram's
-      myPalette.nodeTemplate = GO(
-            go.Node,
-            "Vertical",  // the whole node panel
-            GO(go.Picture,  // the icon showing the logo
-              // You should set the desiredSize (or width and height)
-              // whenever you know what size the Picture should be.
-              { desiredSize: new go.Size(60, 60) },
-              new go.Binding("source", "image"),
-              {
-              toolTip:  // define a tooltip for each node that displays the color as text
-                GO(go.Adornment, "Auto",
-                  GO(go.Shape, { fill: "#FFFFCC" }),
-                  GO(go.TextBlock, { margin: 4 },
-                    new go.Binding("text", "tipText"))
-                )  // end of Adornment
-              }
-              ))
-    // End Define Pallate
-
-   // End GO.JS 
-
-
-
-  function getComponents(cb){
-    $.get('/api/components',function(result,status){
-            //alert(JSON.stringify(result))
-            cb(null,result);        
-    })
-  } 
-
-  function makePort(name, spot, output, input) {
-        // the port is basically just a small circle that has a white stroke when it is made visible
-        return GO(go.Shape, "Circle",
-                {
-                    fill: "transparent",
-                    stroke: null,  // this is changed to "white" in the showPorts function
-                    desiredSize: new go.Size(10, 10),
-                    alignment: spot, alignmentFocus: spot,  // align the port on the main Shape
-                    portId: name,  // declare this object to be a "port"
-                    fromSpot: spot, toSpot: spot,  // declare where links may connect at this port
-                    fromLinkable: output, toLinkable: input,  // declare whether the user may draw links to/from here
-                    cursor: "pointer"  // show a different cursor to indicate potential link point
-                });
-  }
-
-  // helper definitions for node templates
-  function nodeStyle() {
-        return [
-            // The Node.location comes from the "loc" property of the node data,
-            // converted by the Point.parse static method.
-            // If the Node.location is changed, it updates the "loc" property of the node data,
-            // converting back using the Point.stringify static method.
-            new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-            {
-                // the Node.location is at the center of each node
-                locationSpot: go.Spot.Center,
-                //isShadowed: true,
-                //shadowColor: "#888",
-                // handle mouse enter/leave events to show/hide the ports
-                mouseEnter: function (e, obj) { showPorts(obj.part, true); },
-                mouseLeave: function (e, obj) { showPorts(obj.part, false); }
+                CANCEL: function() {
+                    $(this).dialog('close');
+                }
             }
-        ];
-  }
+        });
+}
 
-  // replace the default Link template in the linkTemplateMap
-  myDiagram.linkTemplate =
-            GO(go.Link,  // the whole link panel
-                    {
-                        routing: go.Link.AvoidsNodes,
-                        curve: go.Link.JumpOver,
-                        corner: 5, toShortLength: 4,
-                        relinkableFrom: true,
-                        relinkableTo: true,
-                        reshapable: true,
-                        resegmentable: true,
-                        // mouse-overs subtly highlight links:
-                        mouseEnter: function(e, link) { link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)"; },
-                        mouseLeave: function(e, link) { link.findObject("HIGHLIGHT").stroke = "transparent"; }
-                    },
-                    new go.Binding("points").makeTwoWay(),
-                    GO(go.Shape,  // the highlight shape, normally transparent
-                            { isPanelMain: true, strokeWidth: 8, stroke: "transparent", name: "HIGHLIGHT" }),
-                    GO(go.Shape,  // the link path shape
-                            { isPanelMain: true, stroke: "gray", strokeWidth: 2 }),
-                    GO(go.Shape,  // the arrowhead
-                            { toArrow: "standard", stroke: null, fill: "gray"}),
-                    GO(go.Panel, "Auto",  // the link label, normally not visible
-                            { visible: false, name: "LABEL", segmentIndex: 2, segmentFraction: 0.5},
-                            new go.Binding("visible", "visible").makeTwoWay(),
-                            GO(go.Shape, "RoundedRectangle",  // the label shape
-                                    { fill: "#F8F8F8", stroke: null }),
-                            GO(go.TextBlock, "Yes",  // the label
-                                    {
-                                        textAlign: "center",
-                                        font: "10pt helvetica, arial, sans-serif",
-                                        stroke: "#333333",
-                                        editable: true
-                                    },
-                                    new go.Binding("text", "text").makeTwoWay())
-                    )
-  );
+function getComponents(cb) {
+    $.get('/api/components', function(result, status) {
+        cb(null, result);
+    })}
 
+function makePort(name, spot, output, input) {
+    // the port is basically just a small circle that has a white stroke when it is made visible
+    return GO(go.Shape, "Circle", {
+        fill: "transparent",
+        stroke: null, // this is changed to "white" in the showPorts function
+        desiredSize: new go.Size(10, 10),
+        alignment: spot,
+        alignmentFocus: spot, // align the port on the main Shape
+        portId: name, // declare this object to be a "port"
+        fromSpot: spot,
+        toSpot: spot, // declare where links may connect at this port
+        fromLinkable: output,
+        toLinkable: input, // declare whether the user may draw links to/from here
+        cursor: "pointer" // show a different cursor to indicate potential link point
+    });}
 
-  // Make link labels visible if coming out of a "conditional" node.
-  // This listener is called by the "LinkDrawn" and "LinkRelinked" DiagramEvents.
-  function showLinkLabel(e) {
-        var label = e.subject.findObject("LABEL");
-        if (label !== null) label.visible = (e.subject.fromNode.data.figure === "Diamond");
-  }
+// helper definitions for node templates
+function nodeStyle() {
+    return [
+        // The Node.location comes from the "loc" property of the node data,
+        // converted by the Point.parse static method.
+        // If the Node.location is changed, it updates the "loc" property of the node data,
+        // converting back using the Point.stringify static method.
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify), {
+            // the Node.location is at the center of each node
+            locationSpot: go.Spot.Center,
+            //isShadowed: true,
+            //shadowColor: "#888",
+            // handle mouse enter/leave events to show/hide the ports
+            mouseEnter: function(e, obj) {
+                showPorts(obj.part, true);
+            },
+            mouseLeave: function(e, obj) {
+                showPorts(obj.part, false);
+            }
+        }
+    ];}
 
-    // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
-  myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
-  myDiagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
+// Make link labels visible if coming out of a "conditional" node.
+// This listener is called by the "LinkDrawn" and "LinkRelinked" DiagramEvents.
+function showLinkLabel(e) {
+    var label = e.subject.findObject("LABEL");
+    if (label !== null) label.visible = (e.subject.fromNode.data.figure === "Diamond");}
 
-  load();  // load an initial diagram from some JSON text
-
-  
-  getComponents(function(err,result){
-       result.push(new FileSourceConnector())
-       myPalette.model.nodeDataArray = result
-  })  
-
-
-  // Make all ports on a node visible when the mouse is over the node
-  function showPorts(node, show) {
+// Make all ports on a node visible when the mouse is over the node
+function showPorts(node, show) {
     var diagram = node.diagram;
     if (!diagram || diagram.isReadOnly || !diagram.allowLink) return;
     node.ports.each(function(port) {
         port.stroke = (show ? "white" : null);
     });}
-  // Show the diagram's model in JSON format that the user may edit
-  function save() {
-      var savedModel  = myDiagram.model.toJson();
-      event.preventDefault();
-      $.ajax({
-          type:    "POST",
-          url:     "/api/savemodel",
-          data:    {model:savedModel},
-          success: function(data) {
-                drawTable(data)
-          },
-          // vvv---- This is the new bit
-          error:   function(jqXHR, textStatus, errorThrown) {
-                alert("Error, status = " + textStatus + ", " +
-                      "error thrown: " + errorThrown
-                );
-          }
-        });
-
-     myDiagram.isModified = false;     
+// Show the diagram's model in JSON format that the user may edit
+function save() {
+    var savedModel = myDiagram.model.toJson();
+    event.preventDefault();
+    $.ajax({
+        type: "POST",
+        url: "/api/savemodel",
+        data: {
+            model: savedModel
+        },
+        success: function(data) {
+            drawTable(data)
+        },
+        // vvv---- This is the new bit
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("Error, status = " + textStatus + ", " +
+                "error thrown: " + errorThrown
+            );
         }
-  
-  function load() {
+    });
+
+    myDiagram.isModified = false;}
+
+function load() {
     // initial model 
     // phase-2 get it server    
-    myDiagram.model = go.Model.fromJson(PackageModel)
-  }
-    
+    myDiagram.model = go.Model.fromJson(PackageModel)}
+
+// Start GO.JS
+var GO = go.GraphObject.make; // for conciseness in defining templates
+var PackageModel = {
+    "class": "go.GraphLinksModel",
+    "linkFromPortIdProperty": "fromPort",
+    "linkToPortIdProperty": "toPort",
+    "nodeDataArray": [],
+    "linkDataArray": []}
+var lightText = 'whitesmoke'; // some colors
+
+// Start Main Diagram
+myDiagram = GO(go.Diagram, "myDiagram", // must name or refer to the DIV HTML element
+    {
+        initialContentAlignment: go.Spot.Center,
+        allowDrop: true, // must be true to accept drops from the Palette
+        "LinkDrawn": showLinkLabel, // this DiagramEvent listener is defined below
+        "LinkRelinked": showLinkLabel,
+        "animationManager.duration": 50, // slightly longer than default (600ms) animation
+        "undoManager.isEnabled": true // enable undo & redo
+    });
+
+// Start diagram Events Listener
+// when the document is modified, add a "*" to the title and enable the "Save" button
+myDiagram.addDiagramListener("Modified", function(e) {
+    console.log("i am modified")
+    var button = document.getElementById("SaveButton");
+    if (button) button.disabled = !myDiagram.isModified;
+    var idx = document.title.indexOf("*");
+    if (myDiagram.isModified) {
+        if (idx < 0) document.title += "*";
+    } else {
+        if (idx >= 0) document.title = document.title.substr(0, idx);
+    }
+});
+
+// event fired when a new object is dropped to diagram (from pallate)
+// may need it in future
+myDiagram.addDiagramListener("ExternalObjectsDropped", function(e) {
+    e.subject.each(function(node) {
+        //console.log((node.findObject("Google")))
+    })
+});
+
+// handles click on diagram background
+// this might/will be used for showing diagram properties, like scheduling
+myDiagram.click = function(e) {
+    //console.log("i am contextClick")
+};
+// End diagram Events Listener
+
+// Start Diagram Node Templates
+
+// Start Function Node Template
+myDiagram.nodeTemplateMap.add("Function", GO(go.Node,
+    "Spot", // panel type
+    nodeStyle(), // location
+    // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
+    GO(go.Panel, "Auto",
+        GO(go.Shape, "Rectangle", {
+                fill: "#00A9C9",
+                stroke: null
+            },
+            new go.Binding("figure", "figure")),
+        // overside shape from node object
+        GO(go.TextBlock, {
+                font: "bold 11pt Helvetica, Arial, sans-serif",
+                stroke: lightText,
+                margin: 8,
+                maxSize: new go.Size(100, NaN),
+                wrap: go.TextBlock.WrapFit,
+                editable: true
+            },
+            new go.Binding("text").makeTwoWay()) // can edit node text
+    ),
+    // four named ports, one on each side:                    
+    makePort("L", go.Spot.Left, true, true),
+    makePort("R", go.Spot.Right, true, true)));
+// End Function Node Template
+
+// Define each field in connector
+// This template is a Panel that is used to represent each item in a Panel.itemArray.
+var fieldTemplate = GO(go.Panel, "TableRow", // this Panel is a row in the containing Table
+    new go.Binding("portId", "name"), // this Panel is a "port"
+    {
+        background: "transparent", // so this port's background can be picked by the mouse
+        fromSpot: go.Spot.Right, // links only go from the right side to the left side
+        toSpot: go.Spot.Left,
+        // allow drawing links from or to this port:
+        fromLinkable: true,
+        toLinkable: true
+    },
+    GO(go.Shape, {
+            width: 12,
+            height: 12,
+            column: 0,
+            strokeWidth: 2,
+            margin: 4,
+            // but disallow drawing links from or to this shape:
+            fromLinkable: false,
+            toLinkable: false
+        },
+        new go.Binding("figure", "figure"),
+        new go.Binding("fill", "color")),
+    GO(go.TextBlock, {
+            margin: new go.Margin(0, 2),
+            column: 1,
+            font: "bold 13px sans-serif",
+            // and disallow drawing links from or to this text:
+            fromLinkable: false,
+            toLinkable: false
+        },
+        new go.Binding("text", "name")),
+    GO(go.TextBlock, {
+            margin: new go.Margin(0, 2),
+            column: 2,
+            font: "13px sans-serif"
+        },
+        new go.Binding("text", "info"))
+);
+
+myDiagram.nodeTemplateMap.add("Connector",
+    GO(go.Node, "Auto", {
+            movable: true,
+            copyable: false,
+            deletable: true
+        },
+        new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+        // this rectangular shape surrounds the content of the node
+        GO(go.Shape, {
+            fill: "#EEEEEE"
+        }),
+        // the content consists of a header and a list of items
+        GO(go.Panel, "Vertical",
+            // this is the header for the whole node
+            GO(go.Panel, "Auto", {
+                    stretch: go.GraphObject.Horizontal
+                }, // as wide as the whole node
+                GO(go.Shape, {
+                    fill: "#1570A6",
+                    stroke: null
+                }),
+                GO(go.TextBlock, {
+                        alignment: go.Spot.Center,
+                        margin: 3,
+                        stroke: "white",
+                        textAlign: "center",
+                        font: "bold 12pt sans-serif"
+                    },
+                    new go.Binding("text", "key"))),
+            // this Panel holds a Panel for each item object in the itemArray;
+            // each item Panel is defined by the itemTemplate to be a TableRow in this Table
+            GO(go.Panel, "Table", {
+                    padding: 2,
+                    minSize: new go.Size(100, 10),
+                    defaultStretch: go.GraphObject.Horizontal,
+                    itemTemplate: fieldTemplate
+                },
+                new go.Binding("itemArray", "fields")
+            ) // end Table Panel of items
+        ) // end Vertical Panel
+        //,new go.Binding("doubleClick", FileSourceConnectorDoubleClick())
+        , {
+            doubleClick: function(e, obj) {
+                FileSourceConnectorDoubleClick(e, obj)
+            }
+        }
+    ));
+
+// End Connector node template
+
+// Define Link template
+
+// End Link template
+
+// End Diagram Node Templates
+
+// End Main Diagram
+
+// Start Define Pallate
+var myPalette = GO(go.Palette, "myPalette");
+// the Palette's node template is different from the main Diagram's
+myPalette.nodeTemplate = GO(
+        go.Node,
+        "Vertical", // the whole node panel
+        GO(go.Picture, // the icon showing the logo
+            // You should set the desiredSize (or width and height)
+            // whenever you know what size the Picture should be.
+            {
+                desiredSize: new go.Size(60, 60)
+            },
+            new go.Binding("source", "image"), {
+                toolTip: // define a tooltip for each node that displays the color as text
+                    GO(go.Adornment, "Auto",
+                        GO(go.Shape, {
+                            fill: "#FFFFCC"
+                        }),
+                        GO(go.TextBlock, {
+                                margin: 4
+                            },
+                            new go.Binding("text", "tipText"))
+                    ) // end of Adornment
+            }
+        ))
+    // End Define Pallate
+
+// End GO.JS 
+
+// replace the default Link template in the linkTemplateMap
+myDiagram.linkTemplate =
+    GO(go.Link, // the whole link panel
+        {
+            routing: go.Link.AvoidsNodes,
+            curve: go.Link.JumpOver,
+            corner: 5,
+            toShortLength: 4,
+            relinkableFrom: true,
+            relinkableTo: true,
+            reshapable: true,
+            resegmentable: true,
+            // mouse-overs subtly highlight links:
+            mouseEnter: function(e, link) {
+                link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)";
+            },
+            mouseLeave: function(e, link) {
+                link.findObject("HIGHLIGHT").stroke = "transparent";
+            }
+        },
+        new go.Binding("points").makeTwoWay(),
+        GO(go.Shape, // the highlight shape, normally transparent
+            {
+                isPanelMain: true,
+                strokeWidth: 8,
+                stroke: "transparent",
+                name: "HIGHLIGHT"
+            }),
+        GO(go.Shape, // the link path shape
+            {
+                isPanelMain: true,
+                stroke: "gray",
+                strokeWidth: 2
+            }),
+        GO(go.Shape, // the arrowhead
+            {
+                toArrow: "standard",
+                stroke: null,
+                fill: "gray"
+            }),
+        GO(go.Panel, "Auto", // the link label, normally not visible
+            {
+                visible: false,
+                name: "LABEL",
+                segmentIndex: 2,
+                segmentFraction: 0.5
+            },
+            new go.Binding("visible", "visible").makeTwoWay(),
+            GO(go.Shape, "RoundedRectangle", // the label shape
+                {
+                    fill: "#F8F8F8",
+                    stroke: null
+                }),
+            GO(go.TextBlock, "Yes", // the label
+                {
+                    textAlign: "center",
+                    font: "10pt helvetica, arial, sans-serif",
+                    stroke: "#333333",
+                    editable: true
+                },
+                new go.Binding("text", "text").makeTwoWay())
+        )
+    );
+
+// temporary links used by LinkingTool and RelinkingTool are also orthogonal:
+myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+myDiagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
+
+getComponents(function(err, result) {
+    myPalette.model.nodeDataArray = result
+})
+
+load(); // load an initial diagram from some JSON text
+
+
 </script>

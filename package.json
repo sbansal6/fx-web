@@ -17,6 +17,8 @@
     "express-session": "^1.11.3",
     "express-winston": "^0.3.1",
     "flash": "^1.1.0",
+    "fx-config": "git+https://sbansal6:Mysignature2@github.com/sbansal6/fx-config.git",
+    "fx-response": "git+https://sbansal6:Mysignature2@github.com/sbansal6/fx-response.git",
     "mongodb": "^2.0.39",
     "mongoose": "^4.0.7",
     "muri": "^1.1.0",
@@ -24,8 +26,6 @@
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "path": "^0.11.14",
-    "fx-response": "git+https://sbansal6:Mysignature2@github.com/sbansal6/fx-response.git",
-    "fx-config": "git+https://sbansal6:Mysignature2@github.com/sbansal6/fx-config.git",
     "session": "^0.1.0",
     "winston": "^1.0.2",
     "winston-mongodb": "^1.1.2"
