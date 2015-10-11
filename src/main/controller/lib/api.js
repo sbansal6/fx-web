@@ -29,6 +29,7 @@ var getFlows  = function(req,res){
       if (err) {
         res.status(500)
       } else {
+        console.log("flows",flows)
         res.status(200).json(flows)
       }
 

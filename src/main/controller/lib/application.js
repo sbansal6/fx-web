@@ -1,5 +1,6 @@
 var fs = require('fs');
 var csv = require('csv');
+var Flow = require('../../model').flow;
 var response  = require('fx-response');
 
 /*
@@ -11,22 +12,28 @@ var main = function (req, res, next) {
   	if (err) {
   		return next(new error.InternalServerError(500, err));
   	} else {
+      console.log("flows",flows)
   		res.render('application', { 
         title: 'FeedStage',
         user:req.user,
         flows: flows    
       })
   	}
-
   })  
 };
 
-/**
-*  Get all flows associated to this user 
+/*
+*  Get all flows for the user
 */
-var getFlows = function(userProfile,getFlowsCb){
-    var flows = [1]
-    getFlowsCb(null,flows) ;
+var getFlows  = function(user,cb){
+    var userId  = user._id;
+    Flow.find({userId:userId},function(err,flows){
+      if (err) {
+        retrun cb(err)
+      } else {
+        return cb(null,flows)
+      }
+    })
 }
 
 module.exports.main = main; 
