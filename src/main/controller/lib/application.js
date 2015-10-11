@@ -12,7 +12,6 @@ var main = function (req, res, next) {
   	if (err) {
   		return next(new error.InternalServerError(500, err));
   	} else {
-      console.log("flows",flows)
   		res.render('application', { 
         title: 'FeedStage',
         user:req.user,

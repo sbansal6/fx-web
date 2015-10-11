@@ -4,5 +4,6 @@ module.exports = {
     AmazonConnector: require('./AmazonConnector'),
     FacebookConnector: require('./FacebookConnector'),
     EbayConnector: require('./EbayConnector'),
-    Function: require('./Function')
+    Function: require('./Function'),
+    BaseModel: require('./BaseModel')
 }

@@ -46,7 +46,7 @@
                   </div>
                 </div>
               </div>
-              <input type="hidden" id="flowModel" value=<%=title%>>
+               <textarea id="flowModel" style="display:none;width:100%;height:300px"><%=model%></textarea>
            </section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
     </main>
@@ -55,8 +55,10 @@
     </footer>
 </body>
 </html>
+
 <script>
 
+var GO = go.GraphObject.make;
 var colors = ["#F7B84B","#F25022","#00BCF2","#F25022","#00BCF2"];
 var shapes = ["Ellipse","Rectangle","Triangle","Circle"];
 
@@ -184,9 +186,26 @@ function showPorts(node, show) {
     });}
 // Show the diagram's model in JSON format that the user may edit
 function save() {
-    var savedModel = myDiagram.model.toJson();
+    var savedModel = JSON.parse(myDiagram.model.toJson());
     event.preventDefault(savedModel);
-    if (!PackageModel.name || PackageModel.name == ""){
+    var saveToDb = function(savedModel){
+          $.ajax({
+                    type: "POST",
+                    url: "/api/saveflow",
+                    data: {
+                        model: savedModel
+                    },
+                    success: function(data) {
+                        return true;
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert("Error, status = " + textStatus + ", " +
+                            "error thrown: " + errorThrown
+                        );
+                    }
+                });}
+
+    if (!savedModel.name || savedModel.name == ""){
       var html = '<div class="form-group"> ' + 
                    '<input type="text" class="form-control" id="name"> ' + 
                   '</div>'
@@ -202,50 +221,26 @@ function save() {
              if (!name || name == "") {
               return false ;
              } else {
-                PackageModel.name = name ;
-                $.ajax({
-                    type: "POST",
-                    url: "/api/saveflow",
-                    data: {
-                        model: PackageModel
-                    },
-                    success: function(data) {
-                        //drawTable(data)
-                        return true;
-                    },
-                    // vvv---- This is the new bit
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert("Error, status = " + textStatus + ", " +
-                            "error thrown: " + errorThrown
-                        );
-                    }
-                });
-                
-             }
+                savedModel.name = name ;
+                saveToDb(savedModel)
+               }
             }
           }
         }
       });
+    } else {
+        saveToDb(savedModel);
     }
-
-    
-
     myDiagram.isModified = false;
   }
 
 function load() {
-    // initial model 
-    // phase-2 get it server    
-    myDiagram.model = go.Model.fromJson(PackageModel)}
+    var flowModel = JSON.parse(document.getElementById("flowModel").value)
+    myDiagram.model = go.Model.fromJson(flowModel.model); 
+}
 
 // Start GO.JS
-var GO = go.GraphObject.make; // for conciseness in defining templates
-var PackageModel = {
-    "class": "go.GraphLinksModel",
-    "linkFromPortIdProperty": "fromPort",
-    "linkToPortIdProperty": "toPort",
-    "nodeDataArray": [],
-    "linkDataArray": []}
+
 var lightText = 'whitesmoke'; // some colors
 
 // Start Main Diagram
@@ -517,8 +512,8 @@ getComponents(function(err, result) {
     myPalette.model.nodeDataArray = result
 })
 
-load(); // load an initial diagram from some JSON text
-
-alert(document.getElementById("flowModel").value)
+$( document ).ready(function() {
+    load(); // load an initial diagram from some JSON text
+});
 
 </script>
