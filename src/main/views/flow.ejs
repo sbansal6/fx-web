@@ -77,6 +77,8 @@ function getFileHeaders(fileName,cb){
         }
 )} 
 
+      
+
 // Phase 2 :- Get Connector properties using api calls
 function FileSourceConnectorDoubleClick(e, obj) {
     var rawHtml = '<div class="row">  ' +
@@ -213,7 +215,7 @@ function save() {
                 PackageModel.name = name ;
                 $.ajax({
                     type: "POST",
-                    url: "/api/savemodel",
+                    url: "/api/saveflow",
                     data: {
                         model: PackageModel
                     },

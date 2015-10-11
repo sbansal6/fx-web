@@ -34,7 +34,6 @@ module.exports = function (passport) {
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, email, password, done) {
-            console.log("I am in local signup")
             // asynchronous
             // User.findOne wont fire unless data is sent back
             process.nextTick(function() {
@@ -43,27 +42,29 @@ module.exports = function (passport) {
                 // we are checking to see if the user trying to login already exists
                 User.findOne({ 'email' :  email }, function(err, user) {
                     // if there are any errors, return the error
-                    if (err)
+                    if (err) {
                         return done(err);
+                    }
 
                     // check to see if theres already a user with that email
                     if (user) {
                         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     } else {
-
                         // if there is no user with that email
                         // create the user
-                        var newUser            = new User();
+                        var newUser  = new User();
 
                         // set the user's local credentials
                         newUser.email    = email;
                         newUser.password = newUser.generateHash(password);
 
                         // save the user
-                        newUser.save(function(err) {
-                            if (err)
-                                throw err;
-                            return done(null, newUser);
+                        newUser.register(newUser,function(err) {
+                            if (err) {
+                                return done(err);
+                            } else {
+                                return done(null, newUser);
+                             }
                         });
                     }
 
@@ -91,8 +92,7 @@ module.exports = function (passport) {
         User.findOne({ 'email' :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err) {
-                return done(err);
-            
+                return done(err);            
             }
             // if no user is found, return the message
             if (!user) {

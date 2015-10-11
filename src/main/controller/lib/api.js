@@ -20,12 +20,28 @@ var getComponents = function(req,res){
     res.send([FileSourceConnector,GoogleConnector,AmazonConnector,FacebookConnector,EbayConnector,Function]); 
 } 
 
-var saveModel = function(req,res){
+/*
+*  Get all flows for the user
+*/
+var getFlows  = function(req,res){
+    var userId  = req.user._id;
+    Flow.find({userId:userId},function(err,flows){
+      if (err) {
+        res.status(500)
+      } else {
+        res.status(200).json(flows)
+      }
+
+    })
+}
+
+/*
+* Saving the flow to the database
+*/
+var saveFlow = function(req,res){
   var userId  = req.user._id ;
-  console.log(userId)
   var flowModel =  req.body['model'] ;
-  console.log("i am in savemodel",JSON.stringify(req.body['model']))
-  Flow.update({userId:userId,name:flowModel.name}, {$set: { model: JSON.stringify(flowModel) }}, {upsert: true}, function(err){
+  Flow.update({userId:userId,name:flowModel.name}, {$set: {model:flowModel}}, {upsert: true}, function(err){
      if (err){
       console.log("i am in error",err)
       res.status(500)
@@ -91,4 +107,5 @@ var headers = function(fileName,cb){
 module.exports.getComponents = getComponents;
 module.exports.listFilesInDirectory = listFilesInDirectory ;
 module.exports.getHeaders = getHeaders ;
-module.exports.saveModel = saveModel;
+module.exports.saveFlow = saveFlow;
+module.exports.getFlows = getFlows;
