@@ -11,6 +11,7 @@
     var self = this ;
     this.category = "Connector"
     this.key = "FileSource"
+    this.type = "Source"
     this.fileName = ""
     this.fields = []
     this.image = "/images/textfile.gif"

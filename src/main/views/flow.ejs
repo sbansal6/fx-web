@@ -4,11 +4,9 @@
      <% include ../views/partials/head %>
 </head>
 <body class="container">
-
     <header>
         <% include ../views/partials/header %>
     </header>
-    
     <main>
       <aside>
             <div id="sidebar"  class="nav-collapse ">
@@ -27,11 +25,9 @@
                 <!-- sidebar menu end-->
             </div>
       </aside>
-      
       <section id="main-content">
             <section class="wrapper site-min-height">
               <div class="row mt">
-              
               <div class="col-md-12">
                 <div id="myPalette" style="border: solid 1px gray; height: 80px">
                 </div>             
@@ -50,11 +46,10 @@
                   </div>
                 </div>
               </div>
+              <input type="hidden" id="flowModel" value=<%=title%>>
            </section><! --/wrapper -->
       </section><!-- /MAIN CONTENT -->
-
     </main>
-    
     <footer>
        <% include ../views/partials/footer %>
     </footer>
@@ -68,16 +63,12 @@ var shapes = ["Ellipse","Rectangle","Triangle","Circle"];
 function listFilesInDirectory(cb) {
         $.get('/api/files',function(result,status){
          cb(null,result);    
-         })
-}
+         })}
 
 function getFileHeaders(fileName,cb){
        $.get('/api/fileheaders',{fileName:fileName},function(result,status){
          cb(null,result)
-        }
-)} 
-
-      
+        })} 
 
 // Phase 2 :- Get Connector properties using api calls
 function FileSourceConnectorDoubleClick(e, obj) {
@@ -133,8 +124,7 @@ function FileSourceConnectorDoubleClick(e, obj) {
                     }
                 }
             }
-        );
-}
+        );}
 
 function getComponents(cb) {
     $.get('/api/components', function(result, status) {
@@ -242,8 +232,6 @@ function save() {
 
     myDiagram.isModified = false;
   }
-
-
 
 function load() {
     // initial model 
@@ -531,5 +519,6 @@ getComponents(function(err, result) {
 
 load(); // load an initial diagram from some JSON text
 
+alert(document.getElementById("flowModel").value)
 
 </script>

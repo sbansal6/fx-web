@@ -34,32 +34,32 @@
     <section id="main-content">
           <section class="wrapper site-min-height">
             <div class="row mt">
-               <% for(var i=0; i < flows.length; i++) { %>
-               <div class="col-md-3">
-                                <div class="thumbnail">
-                                    <img alt="Bootstrap Thumbnail First" src="/images/google.jpeg" />
-                                    <div class="caption">
-                                        <h3>
-                                            First google flow
-                                        </h3>
-                                    
-                                        <div style="text-align:center; margin: 15px 0;">
-                                            <a class="btn btn-info" href="#">Edit</a> 
-                                            <a class="btn btn-danger" href="#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                </div>
+               <% for(var i=0; i < flows.length; i++) {  %>                 
                 <div class="col-md-3">
+                 <%
+                var model = JSON.parse(flows[i].model)
+                var destinationConnector  = "";
+                var flowLink = "/flow?id=" + flows[i]._id
+                model.nodeDataArray.forEach(function(node){
+                        if (node.type == "Destination") {
+                          destinationConnector = node
+                        }
+                })
+                  %> 
                                 <div class="thumbnail">
-                                    <img alt="Bootstrap Thumbnail First" src="/images/amazon.png" />
-                                    <div class="caption" style="text-align:center;">
-                                        <h3>
-                                            amazon flow
-                                        </h3>
+                                    <img alt="Bootstrap Thumbnail First" 
+                                         src=<%= destinationConnector.image || "/images/question.jpg"%> 
+                                         title=<%= destinationConnector ? destinationConnector.key : "Incomplete" %>
+                                         />
+                                    <div class="caption">
+                                        <div style="text-align:center; font-size:5px">
+                                        <h4>
+                                        <%=flows[i].name%>
+                                        </h4>
+                                      </div>
                                     
                                         <div style="text-align:center; margin: 15px 0;">
-                                            <a class="btn btn-info" href="#">Edit</a> 
+                                            <a class="btn btn-info" href=<%=flowLink%>>Edit</a>
                                             <a class="btn btn-danger" href="#">Delete</a>
                                         </div>
                                     </div>
@@ -68,10 +68,10 @@
                  <% } %>
                 <div class="col-md-3">
                                 <div class="thumbnail">
-                                    <img alt="Add new feed flow" src="https://cdn4.iconfinder.com/data/icons/simplicio/128x128/file_add.png" title="Create new flow"/>
+                                    <img alt="Add new feed flow" src="/images/file_add.png" title="Create new flow"/>
                                      
                                     <div style="text-align:center; margin: 10px 0;">
-                                    <a class="btn btn-success" style="vertical-align: middle" onclick="addNewFlow()"><%  
+                                    <a class="btn btn-success" style="vertical-align: middle" href="/flow"><%  
                                     if (flows.length > 0) {  %>
                                         Add New Flow
                                     <%  }
@@ -96,28 +96,14 @@
 </body>
 </html>
 <script>
-/**
-* Create a random Guid.
-*
-* @return {String} a random guid value.
-*/
-function newGuid () {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
-        function(c) {
-          var r = Math.random() * 16 | 0,
-            v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        }).toLowerCase();
-} 
 
 // dynamically load flows
 // get flows tied to this user
 // add empty flow at the end
-
 function addNewFlow(){
-    var newId = newGuid()
-    window.location.href = '/flow?id=' + newId ;
+    window.location.href = '/flow';
     return false;
 }
+
    
 </script>

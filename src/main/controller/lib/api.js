@@ -42,7 +42,7 @@ var getFlows  = function(req,res){
 var saveFlow = function(req,res){
   var userId  = req.user._id ;
   var flowModel =  req.body['model'] ;
-  Flow.update({userId:userId,name:flowModel.name}, {$set: {model:flowModel}}, {upsert: true}, function(err){
+  Flow.update({userId:userId,name:flowModel.name}, {$set: {model:JSON.stringify(flowModel)}}, {upsert: true}, function(err){
      if (err){
       console.log("i am in error",err)
       res.status(500)

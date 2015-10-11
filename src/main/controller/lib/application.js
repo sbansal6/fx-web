@@ -29,7 +29,7 @@ var getFlows  = function(user,cb){
     var userId  = user._id;
     Flow.find({userId:userId},function(err,flows){
       if (err) {
-        retrun cb(err)
+        return cb(err)
       } else {
         return cb(null,flows)
       }
