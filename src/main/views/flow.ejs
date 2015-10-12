@@ -417,6 +417,9 @@ var myPalette = GO(go.Palette, "myPalette");
 myPalette.nodeTemplate = GO(
         go.Node,
         "Vertical", // the whole node panel
+        new go.Binding("movable","movable"),
+        new go.Binding("copyable","copyable"),
+        new go.Binding("deletable","deletable"),
         GO(go.Picture, // the icon showing the logo
             // You should set the desiredSize (or width and height)
             // whenever you know what size the Picture should be.

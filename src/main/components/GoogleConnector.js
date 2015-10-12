@@ -4,6 +4,9 @@ var GoogleConnector = function(){
       this.key = "Google"
       this.type = "Destination"
       this.image = "/images/google.jpeg"
+      this.movable = false
+      this.copyable = true
+      this.deletable = false
       this.fields = [
          { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
          { name: "ProductName", color: "#F25022", figure: "Rectangle" },

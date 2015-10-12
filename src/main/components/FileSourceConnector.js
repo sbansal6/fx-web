@@ -15,6 +15,9 @@
     this.fileName = ""
     this.fields = []
     this.image = "/images/textfile.gif"
+    this.movable = false
+    this.copyable = true
+    this.deletable = false
   }
 
 

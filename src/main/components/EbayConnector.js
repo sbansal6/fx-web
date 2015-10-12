@@ -4,6 +4,9 @@ var EbayConnector = function(){
       this.key = "Ebay"
       this.type = "Destination"
       this.image = "/images/ebay.jpg"
+      this.movable = false
+      this.copyable = false
+      this.deletable = false
       this.fields = [
          { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
          { name: "ProductName", color: "#F25022", figure: "Rectangle" },
