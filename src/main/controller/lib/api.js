@@ -2,6 +2,7 @@ var fs = require('fs')
 var path=require('path');
 var csv = require('csv');
 var Flow = require('../../model').flow;
+var request = require('request');
 var components = require('../../components');
 
 /*
@@ -49,6 +50,28 @@ var saveFlow = function(req,res){
      }
 
   })  
+}
+
+/*
+* Run the flow as per model specification
+* Hands of the work to worker node via api
+* make a get get request to localhost:3005/process
+*/
+
+var analyzeFlow = function(req,res){
+  var userProfile  = req.user;
+  var flowModel =  req.body['model'];
+  var propertiesObject = { userProfile:userProfile, flowModel:flowModel };
+  request.get("http://localhost:3005/process",function(err,result){
+    if (err){
+      throw err
+    } else {
+      console.log("result of call is",result);
+      res.status(200).json(result);
+    }
+  })
+
+
 }
 
 
@@ -107,4 +130,5 @@ module.exports.getComponents = getComponents;
 module.exports.listFilesInDirectory = listFilesInDirectory ;
 module.exports.getHeaders = getHeaders ;
 module.exports.saveFlow = saveFlow;
+module.exports.analyzeFlow =  analyzeFlow;
 module.exports.getFlows = getFlows;

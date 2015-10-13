@@ -516,7 +516,12 @@ getComponents(function(err, result) {
 })
 
 $( document ).ready(function() {
+        $.get( "/api/analyzeflow", function(result,status ) {
+          alert(JSON.stringify(result))
+          alert( "Load was performed." );
+        });
     load(); // load an initial diagram from some JSON text
+
 });
 
 </script>
