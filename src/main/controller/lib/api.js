@@ -66,8 +66,8 @@ var analyzeFlow = function(req,res){
     if (err){
       throw err
     } else {
-      console.log("result of call is",result);
-      res.status(200).json(result);
+      console.log("result of call is",result.body);
+      res.status(200).json(result.body);
     }
   })
 
