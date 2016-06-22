@@ -112,10 +112,11 @@ var storage = multer.diskStorage({
 })
 var multerUpload = multer({ storage: storage })
 
-app.post('/upload',multerUpload.single('selectFile'),function (req,res) {
+app.post('/upload',multerUpload.any(),function (req,res) {
+  console.log(req.files)
   console.log(req.body);
   console.log(req.file);
-  res.end()
+  res.send({})
 })
 
 require('./src/main/route/index')(app,passport);
