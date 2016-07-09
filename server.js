@@ -32,7 +32,7 @@ app.set('json spaces', 4);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use(express.static('landingpage'));
+app.use(express.static('landingpage2'));
 app.use(express.static('bower_components'));
 //app.use(express.static('theme'));
 app.use(flash());
@@ -93,7 +93,7 @@ app.use(passport.session());
 
 // Routes =============================================================================
 app.get('/', function(req, res){
-    res.sendfile('index.html', { root: __dirname + "/landingpage" } );
+    res.sendfile('index.html', { root: __dirname + "/landingpage2" } );
 });
 
 var storage = multer.diskStorage({
