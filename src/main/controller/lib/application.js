@@ -12,7 +12,7 @@ var main = function (req, res, next) {
   	if (err) {
   		return next(new error.InternalServerError(500, err));
   	} else {
-  		res.render('application', { 
+  		res.render('index', {
         title: 'FeedStage',
         user:req.user,
         flows: flows    
@@ -20,6 +20,13 @@ var main = function (req, res, next) {
   	}
   })  
 };
+
+var decode = function(req,res,next){
+    res.render('decode', {
+        title: 'ADTools-Decode',
+        user:req.user
+    })
+}
 
 /*
 *  Get all flows for the user
@@ -35,5 +42,6 @@ var getFlows  = function(user,cb){
     })
 }
 
-module.exports.main = main; 
+module.exports.main = main;
+module.exports.decode = decode;
 
