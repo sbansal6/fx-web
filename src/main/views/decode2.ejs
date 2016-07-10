@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <% include ../views/partials/head %>
+    <style>
+        .panel-info > .panel-heading {
+            color: #FFFFFF;
+            background-color: #46426f;
+            border-color: #46426f;
+        }
+
+    </style>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../views/partials/header %>
+    </header>
+    
+    <main>
+    <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu" id="nav-accordion">
+                  <li class="mt">
+                      <a class="active" href="/home">
+                          <i class="fa  fa-home fa-1x" data-toggle="tooltip" title="Home"></i>
+                      </a>
+                  </li>
+                  <li class="mt">
+                      <a class="active" href="/decode">
+                          <i class="fa  fa-unlock-alt fa-1x" data-toggle="tooltip" title="Decode"></i>
+                      </a>
+                  </li>
+                  <li class="mt">
+                      <a class="active" href="/encode">
+                          <i class="fa  fa-lock fa-1x" data-toggle="tooltip" title="Encode"></i>
+                      </a>
+                  </li>
+                  <li class="mt">
+                      <a class="active" href="/google">
+                          <i class="fa  fa-google fa-1x" data-toggle="tooltip" title="Google"></i>
+                      </a>
+                  </li>
+
+
+
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+    </aside>
+
+    <section id="main-content">
+          <section class="wrapper site-min-height">
+              <div class="row">
+                  </br>
+                  </div>
+              <div class="row">
+                  <div class="col-lg-3 col-md-6">
+                      <div class="panel panel-info">
+                          <div class="panel-heading">
+                              <div class="row">
+                                  <div class="col-xs-3">
+                                      <i class="fa  fa-unlock-alt fa-5x"></i>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Decoder</div>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Bulk decode urls</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <a href="/decode">
+                              <div class="panel-footer">
+                                  <span class="pull-left">Launch</span>
+                                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                  <div class="clearfix"></div>
+                              </div>
+                          </a>
+                      </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6">
+                      <div class="panel panel-info">
+                          <div class="panel-heading">
+                              <div class="row">
+                                  <div class="col-xs-3">
+                                      <i class="fa fa-lock fa-5x"></i>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Encoder</div>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Bulk encode urls</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <a href="#">
+                              <div class="panel-footer">
+                                  <span class="pull-left">Launch</span>
+                                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                  <div class="clearfix"></div>
+                              </div>
+                          </a>
+                      </div>
+                  </div>
+                  <div class="col-lg-3 col-md-6">
+                      <div class="panel panel-info">
+                          <div class="panel-heading">
+                              <div class="row">
+                                  <div class="col-xs-3">
+                                      <i class="fa fa-google fa-5x"></i>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Google Feed</div>
+                                  </div>
+                                  <div class="col-xs-9 text-right">
+                                      <div>Google Product Feed</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <a href="/google">
+                              <div class="panel-footer">
+                                  <span class="pull-left">Launch</span>
+                                  <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                  <div class="clearfix"></div>
+                              </div>
+                          </a>
+                      </div>
+                  </div>
+
+
+              </div>
+              <!-- /.row -->
+
+          </section><! --/wrapper -->
+      </section><!-- /MAIN CONTENT -->
+
+    </main>
+    
+  
+
+</body>
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+</html>
+
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

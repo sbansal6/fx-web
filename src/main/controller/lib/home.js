@@ -12,10 +12,9 @@ var main = function (req, res, next) {
   	if (err) {
   		return next(new error.InternalServerError(500, err));
   	} else {
-  		res.render('index', {
-        title: 'FeedStage',
-        user:req.user,
-        flows: flows    
+  		res.render('home', {
+        title: 'AdTools - Home',
+        user:req.user
       })
   	}
   })  
@@ -23,7 +22,7 @@ var main = function (req, res, next) {
 
 var decode = function(req,res,next){
     res.render('decode', {
-        title: 'ADTools-Decode',
+        title: 'AdTools - Decode',
         user:req.user
     })
 }
