@@ -1,5 +1,5 @@
 var main = function (req, res) {
   req.logout();
-  res.redirect('/login');
+  res.redirect('/');
 };
 module.exports.main = main;
