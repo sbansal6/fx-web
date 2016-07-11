@@ -1,151 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AdTools:- Decode</title>
-
-    <!--kendo-ui-->
-    <link href="//kendo.cdn.telerik.com/2016.2.607/styles/kendo.common.min.css" rel="stylesheet" />
-    <link href="//kendo.cdn.telerik.com/2016.2.607/styles/kendo.rtl.min.css" rel="stylesheet" />
-    <link href="//kendo.cdn.telerik.com/2016.2.607/styles/kendo.metro.min.css" rel="stylesheet" />
-    <!--bootstrap-->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Custom CSS -->
-    <link href="css/sb-admin.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!--syncfusion-->
-    <link href="syncfusion-javascript/Content/ej/web/default-theme/ej.web.all.min.css" rel="stylesheet" />
-
-
-    <style>
-
-    </style>
-
-</head>
-<body>
-<div id="wrapper">
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">AdTools</a>
+<% layout('layout') -%>
+<div class="row">
+    <div id="tabstrip" style="width: 100%">
+        <ul>
+            <li id="tabText"><a href="#text">Text</a></li>
+            <li id="tabFile"><a href="#file">File</a></li>
+        </ul>
+        <div id="text" class="ace_editor">
         </div>
-        <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav side-nav">
-                <li>
-                    <a href="/">Home</a>
-                </li>
-                <li class="active">
-                    <a href="/decode"><i class="fa  fa-unlock-alt fa-1x"></i>&nbsp;&nbsp;&nbsp;Decode</a>
-                </li>
-                <li>
-                    <a href="/encode"><i class="fa fa-lock fa-1x"></i>&nbsp;&nbsp;&nbsp;Encode</a>
-                </li>
-                <li>
-                    <a href="/google"><i class="fa fa-google fa-1x"></i>&nbsp;&nbsp;&nbsp;GoogleFeed</a>
-                </li>
-
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </nav>
-
-    <div id="page-wrapper">
-
-        <div class="container-fluid">
-
-            <!-- Page Heading -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">
-                        Decode <small></small>
-                    </h1>
-
-                </div>
-            </div>
-            <!-- /.row -->
-
-            <div class="row">
-                <div id="tabstrip" style="width: 100%">
-                    <ul>
-                        <li id="tabText"><a href="#text">Text</a></li>
-                        <li id="tabFile"><a href="#file">File</a></li>
-                    </ul>
-                    <div id="text" class="ace_editor">
-                    </div>
-                </div>
-                <div>
-                    <div class="col-md-4">
-
-                    </div>
-                    <div class="col-md-4 center-block">
-                        <button id="primaryTextButton" class="k-primary">Decode</button>
-                    </div>
-                    <div class="col-md-4">
-
-                    </div>
-
-                </div>
-            </div>
-
+    </div>
+    <div>
+        <div class="col-md-4">
 
         </div>
-        <!-- /.container-fluid -->
+        <div class="col-md-4 center-block">
+            <button id="primaryTextButton" class="k-primary">Decode</button>
+        </div>
+        <div class="col-md-4">
+
+        </div>
 
     </div>
-    <!-- /#page-wrapper -->
-
 </div>
-
-</body>
-
-<!--jquery-->
-<script src="//code.jquery.com/jquery-1.12.3.min.js"></script>
-<!--bootstrap-->
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<!--syncfusion-->
-<script src="jquery.easing/js/jquery.easing.min.js"></script>
-<script src="syncfusion-javascript/Scripts/jsrender.min.js"></script>
-<script src="syncfusion-javascript/Scripts/ej/web/ej.web.all.min.js"></script>
-<!--ace-->
-<script src="ace/src-min/ace.js"></script>
-<!-- handlebars -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.0/handlebars.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $("#tabstrip").ejTab();
-        var txtSrcEditor = ace.edit("text");
-        txtSrcEditor.session.setUseWrapMode(true);
-        txtSrcEditor.getSession().setTabSize(0);
-        txtSrcEditor.setOptions({
-            minLines:10,
-            maxLines: Infinity
-        });
-        txtSrcEditor.setValue('')
-        $("#primaryTextButton").click( function()
-                {
-                    //alert(txtSrcEditor.getValue())
-                    $.post( "/decode",{data:txtSrcEditor.getValue()}, function( data ) {
-                        txtSrcEditor.setValue(data)
-                        //alert(data)
-                    });
-                }
-        );
-
-    });
-
-</script>
-</html>
+<% script('decode.js') -%>
