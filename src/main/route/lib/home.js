@@ -8,5 +8,5 @@ module.exports = function (app,isLoggedIn) {
   app.get('/home', isLoggedIn ,controller.home.main);
   app.get('/decode',isLoggedIn,controller.home.decode);
   //app.get('/encode',isLoggedIn,controller.application.encode);
-  //app.get('/google',isLoggedIn,controller.application.google);
+  app.get('/google',isLoggedIn,controller.home.google);
  };

@@ -27,6 +27,13 @@ var decode = function(req,res,next){
     })
 }
 
+var google = function(req,res,next){
+    res.render('google2', {
+        title: 'AdTools - Google',
+        user:req.user
+    })
+}
+
 /*
 *  Get all flows for the user
 */
@@ -43,4 +50,5 @@ var getFlows  = function(user,cb){
 
 module.exports.main = main;
 module.exports.decode = decode;
+module.exports.google = google;
 
