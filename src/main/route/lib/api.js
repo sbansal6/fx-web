@@ -1,4 +1,5 @@
 var controller = require('../../controller')
+var decode = require('urldecode');
 
 module.exports = function (app,isLoggedIn) {
  app.get('/api/components',isLoggedIn ,controller.api.getComponents); 
@@ -7,4 +8,15 @@ module.exports = function (app,isLoggedIn) {
  app.get('/api/getflows',isLoggedIn,controller.api.getFlows);
  app.post('/api/saveflow',isLoggedIn,controller.api.saveFlow);
  app.get('/api/analyzeflow',isLoggedIn,controller.api.analyzeFlow);
+ 
+ app.post('/decode',isLoggedIn,function (req,res) {
+  console.log(req.body)
+  var data = req.body.data;
+  var lines = data.split('\n');
+  var outlines = [];
+  lines.forEach(function(l){
+   outlines.push(decode(l))
+  })
+  res.send(outlines.join('\n'));
+ })
 };
