@@ -12,7 +12,10 @@ var expressWinston = require('express-winston');
 var winstonDB = require('winston-mongodb').MongoDB;
 var multer  = require('multer')
 
-
+root = {
+  
+};
+root.driveRoot = __dirname;
 
 // Local Requires ==================================================================
 var core = require('./src/main').core;

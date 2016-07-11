@@ -38,7 +38,7 @@ var register = function ( newUser, callBackFunction ) { // accept the callback
         if (err) {
             return callBackFunction(false);
         }
-        newUser.rootDir = path.join(config.filesystem.root,doc._id.toString());
+        newUser.rootDir = path.join(root.driveRoot,doc._id.toString());
         newUser.lastUpdated = new Date();
         mkdirp.sync(newUser.rootDir); //todo make this async
         newUser.save(callBackFunction);

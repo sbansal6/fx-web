@@ -3,6 +3,25 @@ var LocalStrategy = require('passport-local').Strategy;
 
 // load up the client model
 var User = require('../../model').user;
+var Tools  = require('../../model').tools;
+
+/**
+ * Add basic tools to user on signup
+ * @param newUser
+ * @param cb
+ */
+function initializeTools(newUser,cb){
+    var userTools = new Tools();
+    userTools.userId= newUser._id
+    userTools.tools = [
+                {name: "decode",settings:{}},
+                {name: "encode",settings:{}},
+                {name: "google",settings:{}}
+    ]
+    userTools.save(function(err){
+        err ? cb(err) : cb(null,newUser);
+     })
+}
 
 // expose this function to our app using module.exports
 module.exports = function (passport) {
@@ -63,7 +82,7 @@ module.exports = function (passport) {
                             if (err) {
                                 return done(err);
                             } else {
-                                return done(null, newUser);
+                                initializeTools(newUser,done)
                              }
                         });
                     }
