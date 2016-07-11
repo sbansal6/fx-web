@@ -1,4 +1,5 @@
 var express = require('express');
+var engine = require('ejs-locals');
 var session = require('express-session');
 var app = express();
 var path = require('path');
@@ -27,7 +28,9 @@ mongoose.connect(core.environment.mongo.url);
 // Express Configuration =============================================================
 app.disable('etag');
 app.set('views', path.join(__dirname, '/src/main/views'));
+app.engine('ejs', engine);
 app.set('view engine', 'ejs');
+app.set("layout extractScripts", true)
 app.set('json spaces', 4);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

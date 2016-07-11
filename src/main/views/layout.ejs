@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+    <%-stylesheets%>
+</head>
+
+<body>
+
+    <header>
+        <% include ../views/partials/header %>
+    </header>
+
+
+    <main>
+        <aside>
+            <div id="sidebar"  class="nav-collapse ">
+                <!-- sidebar menu start-->
+                <ul class="sidebar-menu" id="nav-accordion">
+                    <li class="mt">
+                        <a class="active" href="/home">
+                            <i class="fa  fa-home fa-1x" data-toggle="tooltip" title="Home"></i>
+                        </a>
+                    </li>
+                    <li class="mt">
+                        <a class="active" href="/decode">
+                            <i class="fa  fa-unlock-alt fa-1x" data-toggle="tooltip" title="Decode"></i>
+                        </a>
+                    </li>
+                    <li class="mt">
+                        <a class="active" href="/encode">
+                            <i class="fa  fa-lock fa-1x" data-toggle="tooltip" title="Encode"></i>
+                        </a>
+                    </li>
+                    <li class="mt">
+                        <a class="active" href="/google">
+                            <i class="fa  fa-google fa-1x" data-toggle="tooltip" title="Google"></i>
+                        </a>
+                    </li>
+
+
+
+                </ul>
+                <!-- sidebar menu end-->
+            </div>
+        </aside>
+
+        <section id="main-content">
+            <section class="wrapper site-min-height">
+                <%- body %>
+            </section><! --/wrapper -->
+        </section><!-- /MAIN CONTENT -->
+
+    </main>
+
+    <div class="starter-template">
+        <%- body %>
+    </div>
+
+    <% include ../views/partials/footer %>
+
+</body>
+<%-scripts%>
+</html>

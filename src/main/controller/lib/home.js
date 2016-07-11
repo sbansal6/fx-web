@@ -21,7 +21,7 @@ var main = function (req, res, next) {
 };
 
 var decode = function(req,res,next){
-    res.render('decode', {
+    res.render('decode2', {
         title: 'AdTools - Decode',
         user:req.user
     })
