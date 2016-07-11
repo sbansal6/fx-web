@@ -28,7 +28,7 @@ var decode = function(req,res,next){
 }
 
 var google = function(req,res,next){
-    res.render('google2', {
+    res.render('google', {
         title: 'AdTools - Google',
         user:req.user
     })
