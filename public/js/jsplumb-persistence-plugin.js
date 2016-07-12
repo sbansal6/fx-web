@@ -141,7 +141,7 @@
             });
 
             connections.push({
-                path: connector.getPath(),
+                //path: connector.getPath(),
                 segment: connector.getSegments(),
                 connectorType: type,
                 connectorAttr: attrs,

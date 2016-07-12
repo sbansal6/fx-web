@@ -22,14 +22,16 @@ var shipDetails = [
     { Name: 'Split Rail Beer & Ale', City: 'USA' },
     { Name: 'Ricardo Adocicados', City: 'Brazil' }
 ];
-
+var flowDiagram ;
 // get node data and fields from server by user
 // if has use that else use from raw node
 
 $('#btnSave').click(function(){
-    alert('i am clicked');
-    var savedObj = jsPlumb.save({selector : "#canvas" });
-    console.log(savedObj);
+    save();
+})
+
+$('#btnLoad').click(function(){
+    jsPlumb.load({savedObj : flowDiagram, containerSelector : "#canvas"});
 })
 
 /**
@@ -137,6 +139,44 @@ function drawNode(node,nodeId){
             addField(nodeId,node,field);
         });
     });
+}
+
+// save physical layout
+// node data is saved on edit of node
+function save(){
+    var nodes = []
+    $(".tableDesign").each(function (idx, elem) {
+        var $elem = $(elem);
+        nodes.push({
+            blockId: $elem.attr('id'),
+            nodeType: $elem.attr('data-nodeType'),
+            positionX: parseInt($elem.css("left"), 10),
+            positionY: parseInt($elem.css("top"), 10)
+        });
+    });
+
+    var connections = [];
+    $.each(jsPlumb.getConnections(), function (idx, connection) {
+        connections.push({
+            connectionId: connection.id,
+            pageSourceId: connection.sourceId,
+            pageTargetId: connection.targetId
+        });
+    });
+
+    var flowChart = {};
+    flowChart.nodes = nodes;
+    flowChart.connections = connections;
+
+    var flowChartJson = JSON.stringify(flowChart);
+    console.log(flowChartJson);
+
+}
+
+// load combines physical with node data
+// and then draw nodes and connections
+function load(){
+
 }
 
 jsPlumb.ready(function() {
