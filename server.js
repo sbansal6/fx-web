@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 var winston = require('winston');
 var expressWinston = require('express-winston');
 var winstonDB = require('winston-mongodb').MongoDB;
-var multer  = require('multer')
+
 
 root = {
   
@@ -102,29 +102,7 @@ app.get('/', function(req, res){
     res.sendfile('index.html', { root: __dirname + "/landingpage2" } );
 });
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads/')
-  },
-  filename: function (req, file, cb) {
-    var getFileExt = function(fileName){
-      var fileExt = fileName.split(".");
-      if( fileExt.length === 1 || ( fileExt[0] === "" && fileExt.length === 2 ) ) {
-        return "";
-      }
-      return fileExt.pop();
-    }
-    cb(null, file.originalname)
-  }
-})
-var multerUpload = multer({ storage: storage })
 
-app.post('/upload',multerUpload.any(),function (req,res) {
-  console.log(req.files)
-  console.log(req.body);
-  console.log(req.file);
-  res.send({})
-})
 
 require('./src/main/route/index')(app,passport);
 // End Routes =========================================================================

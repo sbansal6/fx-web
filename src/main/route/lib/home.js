@@ -1,4 +1,23 @@
+var multer  = require('multer')
 var controller = require('../../controller')
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+        var getFileExt = function(fileName){
+            var fileExt = fileName.split(".");
+            if( fileExt.length === 1 || ( fileExt[0] === "" && fileExt.length === 2 ) ) {
+                return "";
+            }
+            return fileExt.pop();
+        }
+        cb(null, file.originalname)
+    }
+})
+
+var multerUpload = multer({ storage: storage })
 
 
 module.exports = function (app,isLoggedIn) {
@@ -9,4 +28,13 @@ module.exports = function (app,isLoggedIn) {
   app.get('/decode',isLoggedIn,controller.home.decode);
   //app.get('/encode',isLoggedIn,controller.application.encode);
   app.get('/google',isLoggedIn,controller.home.google);
- };
+
+  app.post('/upload',isLoggedIn,multerUpload.any(),function (req,res) {
+        console.log('req user',req.user)
+        console.log(req.files)
+        console.log(req.body);
+        console.log(req.file);
+        res.send({})
+  });
+
+};
