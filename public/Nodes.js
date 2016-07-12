@@ -1,4 +1,4 @@
-var Nodes = [
+var nodes = [
     {    name:'File'
         ,label:'File'
         ,type:'source'

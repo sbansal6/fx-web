@@ -1,7 +1,21 @@
 <% layout('layout') -%>
 <% stylesheet('google.css') -%>
+<% script('js/jsPlumb-2.1.2-min.js') -%>
+<% script('js/keyboard.min.js') -%>
+<% script('js/jsplumb-persistence-plugin.js') -%>
+<% script('nodes.js') -%>
 <% script('google.js') -%>
-
+<div class="row">
+  <div class="col-md-4">
+  </div>
+  <!-- Indicates a successful or positive action -->
+  <div class="col-md-4 text-center">
+  </div>
+  <div class="col-md-4">
+     <button id="btnSave" type="button" class="btn btn-success pull-right right-button">Save</button>
+     <button id="btnSave" type="button" class="btn btn-success pull-right right-button">Load</button>
+  </div>
+</div>
 <div class="row">
     <!----------------Splitter Control---------------->
     <div id="outterSplitter">
