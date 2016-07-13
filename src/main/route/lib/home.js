@@ -1,5 +1,6 @@
 var multer  = require('multer')
 var controller = require('../../controller')
+var tools = require('../../model').tools;
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -36,5 +37,17 @@ module.exports = function (app,isLoggedIn) {
         console.log(req.file);
         res.send({})
   });
+
+  app.post('/save',isLoggedIn,function(req,res){
+        console.log('req user',req.user);
+        console.log('body',req.body);
+        tools.update(
+            {userId:req.user._id},
+            {
+                $set:{}
+            }
+        )
+        res.send({});
+  })
 
 };

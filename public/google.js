@@ -141,15 +141,17 @@ function drawNode(node,nodeId){
     });
 }
 
-// save physical layout
+// save physical layout, save nodes and connections
+// draw function will use these nodes and connections along with data to draw the diagram
 // node data is saved on edit of node
+// save to db later on
 function save(){
     var nodes = []
     $(".tableDesign").each(function (idx, elem) {
         var $elem = $(elem);
         nodes.push({
             blockId: $elem.attr('id'),
-            nodeType: $elem.attr('data-nodeType'),
+            nodeType: $elem.attr('id').split('_')[0],
             positionX: parseInt($elem.css("left"), 10),
             positionY: parseInt($elem.css("top"), 10)
         });
@@ -169,7 +171,13 @@ function save(){
     flowChart.connections = connections;
 
     var flowChartJson = JSON.stringify(flowChart);
-    console.log(flowChartJson);
+    $.ajax({type: "POST",
+        url: "/save",
+        data: flowChartJson,
+        success:function(result) {
+        alert('saved --' + result);
+        }
+    });
 
 }
 
