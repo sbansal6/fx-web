@@ -40,6 +40,12 @@ $('#btnLoad').click(function(){
 function editNode(nodeId){
     alert('editing ' + nodeId);
     // parse node tye from nodeID
+    var nodeType = nodeId.split('_')[0];
+    // get data from server if exists by node_id
+    // use that data
+    // save again after edit
+    getNodeDataById(nodeId)
+
     // get nodeID specific data from users--> tool --> nodes
     // update properties on node
     //nodes[0].fields.push('field4');
@@ -172,7 +178,7 @@ function save(){
 
     var flowChartJson = JSON.stringify(flowChart);
     $.ajax({type: "POST",
-        url: "/save",
+        url: "/savecanvas",
         data:
         {
             toolName:"google",
@@ -183,6 +189,20 @@ function save(){
         }
     });
 
+}
+
+function getNodeDataById(nodeId){
+    $.ajax({type: "GET",
+        url: "/getstate",
+        data:
+        {
+            toolName:"google",
+            nodeId:nodeId 
+        },
+        success:function(result) {
+            alert('saved --' + result);
+        }
+    });
 }
 
 // load combines physical with node data

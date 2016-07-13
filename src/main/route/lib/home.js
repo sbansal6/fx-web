@@ -38,7 +38,10 @@ module.exports = function (app,isLoggedIn) {
         res.send({})
     });
 
-    app.post('/save', isLoggedIn, function (req, res) {
+    /**
+     * save canvas state
+     */
+    app.post('/savecanvas', isLoggedIn, function (req, res) {
         console.log('req user', req.user);
         console.log('body', req.body);
         Tools.update(
@@ -54,5 +57,22 @@ module.exports = function (app,isLoggedIn) {
                 }
             }
         )
+    })
+
+    /**
+     * Return node state(data) by nodeId
+     */
+    app.get('/getstate',isLoggedIn,function(req,res){
+        console.log('req user', req.user);
+        console.log('body', req.body);
+        console.log('query', req.query);
+        Tools.find({userId:req.user._id,"tools.name":req.query.toolName,"tools.nodes.id":req.query.nodeId},function(err,docs){
+            if (err) {
+                console.log('err', err)
+            } else {
+                console.log('ia m result', docs[0])
+                res.send(docs)
+            }
+        })
     })
 }
