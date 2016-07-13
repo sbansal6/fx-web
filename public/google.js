@@ -173,7 +173,11 @@ function save(){
     var flowChartJson = JSON.stringify(flowChart);
     $.ajax({type: "POST",
         url: "/save",
-        data: flowChartJson,
+        data:
+        {
+            toolName:"google",
+            canvas: flowChartJson
+        },
         success:function(result) {
         alert('saved --' + result);
         }

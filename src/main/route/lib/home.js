@@ -1,6 +1,6 @@
 var multer  = require('multer')
 var controller = require('../../controller')
-var tools = require('../../model').tools;
+var Tools = require('../../model').tools;
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -41,19 +41,10 @@ module.exports = function (app,isLoggedIn) {
     app.post('/save', isLoggedIn, function (req, res) {
         console.log('req user', req.user);
         console.log('body', req.body);
-        tools.update(
-            {
-                "userId": req.user._id,
-                "tools.name": "google"
-            },
-            {
-                $set: {
-                    "canvas": req.body
-                }
-            },
-            {
-                upsert:true
-            },
+        Tools.update(
+            {userId: req.user._id, "tools.name":req.body.toolName},
+            {$set:{"tools.$.canvas":req.body.canvas}},
+            {upsert:true},
             function (err, result) {
                 if (err) {
                     console.log('err', err)

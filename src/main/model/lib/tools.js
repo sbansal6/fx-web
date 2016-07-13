@@ -5,7 +5,14 @@ var mongoose = require('mongoose');
 // define the schema for our user model
 var toolsSchema = mongoose.Schema({
     userId: String,
-    tools: [{name:String,settings:[new mongoose.Schema({}),{strict:false}]}]
+    tools: [
+        {
+            name:String,
+            settings:[new mongoose.Schema({}),{strict:false}],
+            canvas:[new mongoose.Schema({}),{strict:false}],
+            nodeData:[new mongoose.Schema({}),{strict:false}]
+        }
+    ]
 });
 
 // create the model for users and expose it to our app
