@@ -22,32 +22,46 @@ var multerUpload = multer({ storage: storage })
 
 
 module.exports = function (app,isLoggedIn) {
-  // =====================================
-  // APPLICATION PAGE (with logout links)
-  // =====================================
-  app.get('/home', isLoggedIn ,controller.home.main);
-  app.get('/decode',isLoggedIn,controller.home.decode);
-  //app.get('/encode',isLoggedIn,controller.application.encode);
-  app.get('/google',isLoggedIn,controller.home.google);
+    // =====================================
+    // APPLICATION PAGE (with logout links)
+    // =====================================
+    app.get('/home', isLoggedIn, controller.home.main);
+    app.get('/decode', isLoggedIn, controller.home.decode);
+    //app.get('/encode',isLoggedIn,controller.application.encode);
+    app.get('/google', isLoggedIn, controller.home.google);
 
-  app.post('/upload',isLoggedIn,multerUpload.any(),function (req,res) {
-        console.log('req user',req.user)
+    app.post('/upload', isLoggedIn, multerUpload.any(), function (req, res) {
+        console.log('req user', req.user)
         console.log(req.files)
         console.log(req.body);
         console.log(req.file);
         res.send({})
-  });
+    });
 
-  app.post('/save',isLoggedIn,function(req,res){
-        console.log('req user',req.user);
-        console.log('body',req.body);
+    app.post('/save', isLoggedIn, function (req, res) {
+        console.log('req user', req.user);
+        console.log('body', req.body);
         tools.update(
-            {userId:req.user._id},
             {
-                $set:{}
+                "userId": req.user._id,
+                "tools.name": "google"
+            },
+            {
+                $set: {
+                    "canvas": req.body
+                }
+            },
+            {
+                upsert:true
+            },
+            function (err, result) {
+                if (err) {
+                    console.log('err', err)
+                } else {
+                    console.log('ia m result', result)
+                    res.send({})
+                }
             }
         )
-        res.send({});
-  })
-
-};
+    })
+}
