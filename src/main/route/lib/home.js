@@ -42,7 +42,7 @@ module.exports = function (app,isLoggedIn) {
     /**
      * save canvas state
      */
-    app.post('/savecanvas', isLoggedIn, function (req, res) {
+    app.post('/canvas', isLoggedIn, function (req, res) {
         console.log('req user', req.user);
         console.log('body', req.body);
         Tools.update(
@@ -59,11 +59,19 @@ module.exports = function (app,isLoggedIn) {
         )
     })
 
+    /**
+     * Get State of canvas
+     */
+    app.get('/canvas',isLoggedIn,function(req,res){
+
+    })
+
+
     //todo :-  test case here because of json parsingss
     /**
      * Return node state(data) by nodeId
      */
-    app.get('/getstate',isLoggedIn,function(req,res){
+    app.get('/nodestate',isLoggedIn,function(req,res){
         // get tools for this user
         Tools.findOne({userId:req.user._id},function(err,doc){
             if (err) {
@@ -85,5 +93,12 @@ module.exports = function (app,isLoggedIn) {
             }
 
         })
+    })
+
+    /**
+     * Post node state (data) by nodeId
+     */
+    app.post('/nodestate',isLoggedIn, function (req, res) {
+
     })
 }
