@@ -10,7 +10,7 @@ var toolsSchema = mongoose.Schema({
             name:String,
             settings:[new mongoose.Schema({}),{strict:false}],
             canvas:[new mongoose.Schema({}),{strict:false}],
-            nodeData:[new mongoose.Schema({}),{strict:false}]
+            nodes:[new mongoose.Schema({}),{strict:false}]
         }
     ]
 });

@@ -1,5 +1,6 @@
-var multer  = require('multer')
-var controller = require('../../controller')
+var multer  = require('multer');
+var _ = require('underscore');
+var controller = require('../../controller');
 var Tools = require('../../model').tools;
 
 var storage = multer.diskStorage({
@@ -66,13 +67,25 @@ module.exports = function (app,isLoggedIn) {
         console.log('req user', req.user);
         console.log('body', req.body);
         console.log('query', req.query);
-        Tools.find({userId:req.user._id,"tools.name":req.query.toolName,"tools.nodes.id":req.query.nodeId},function(err,docs){
+        // get tools for this user
+        Tools.findOne({userId:req.user._id},function(err,doc){
             if (err) {
                 console.log('err', err)
             } else {
-                console.log('ia m result', docs[0])
-                res.send(docs)
+                console.log('ia m result', doc)
+                var tool = _.find(doc.tools, function (t) {
+                    return t.name === req.query.toolName
+                });
+                var node = _.find(tool.nodes, function (n) {
+                    return n.id === req.query.nodeId
+                });
+                if (node) {
+                    res.send(node.data)
+                } else {
+                    res.send({})
+                }
             }
+
         })
     })
 }
