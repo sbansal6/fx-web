@@ -53,36 +53,34 @@ module.exports = function (app,isLoggedIn) {
                 if (err) {
                     console.log('err', err)
                 } else {
-                    console.log('ia m result', result)
                     res.send({})
                 }
             }
         )
     })
 
+    //todo :-  test case here because of json parsingss
     /**
      * Return node state(data) by nodeId
      */
     app.get('/getstate',isLoggedIn,function(req,res){
-        console.log('req user', req.user);
-        console.log('body', req.body);
-        console.log('query', req.query);
         // get tools for this user
         Tools.findOne({userId:req.user._id},function(err,doc){
             if (err) {
                 console.log('err', err)
             } else {
-                console.log('ia m result', doc)
                 var tool = _.find(doc.tools, function (t) {
                     return t.name === req.query.toolName
                 });
                 var node = _.find(tool.nodes, function (n) {
+                    n = JSON.parse(JSON.stringify(n));
                     return n.id === req.query.nodeId
                 });
                 if (node) {
-                    res.send(node.data)
+                    var data = JSON.parse(JSON.stringify(node)).data;
+                    res.send(data);
                 } else {
-                    res.send({})
+                    res.send({});
                 }
             }
 
