@@ -8,9 +8,9 @@ var toolsSchema = mongoose.Schema({
     tools: [
         {
             name:String,
-            settings:[new mongoose.Schema({}),{strict:false}],
-            canvas:[new mongoose.Schema({}),{strict:false}],
-            nodes:[new mongoose.Schema({}),{strict:false}]
+            settings:[mongoose.Schema.Types.Mixed],
+            canvas:[mongoose.Schema.Types.Mixed],
+            nodes:[mongoose.Schema.Types.Mixed]
         }
     ]
 });

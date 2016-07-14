@@ -1,9 +1,21 @@
 // SDK REQUIRES
 var LocalStrategy = require('passport-local').Strategy;
+var _ = require('underscore');
 
 // load up the client model
 var User = require('../../model').user;
 var Tools  = require('../../model').tools;
+var nodes  = require('./nodes');
+
+function getNode(name){
+    var node = _.find(nodes,function(n){
+        return n.name === name
+    })
+    return {
+        id: node.name + '_' + new Date().getTime(),
+        data:node.data
+    }
+}
 
 /**
  * Add basic tools to user on signup
@@ -12,11 +24,14 @@ var Tools  = require('../../model').tools;
  */
 function initializeTools(newUser,cb){
     var userTools = new Tools();
+    var googleInitialNodes = []
+    googleInitialNodes.push(getNode('File'))
+    googleInitialNodes.push(getNode('Google'))
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},
                 {name: "encode",settings:{}},
-                {name: "google",settings:{}}
+                {name: "google",settings:{},"canvas":{},nodes:googleInitialNodes}
     ]
     userTools.save(function(err){
         err ? cb(err) : cb(null,newUser);
