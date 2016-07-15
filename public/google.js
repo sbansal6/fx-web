@@ -17,6 +17,8 @@ String.prototype.format = function(placeholders) {
         return s;
     }
 };
+var TOOL = [];
+
 var shipDetails = [
     { Name: 'Hanari Carnes', City: 'Brazil' },
     { Name: 'Split Rail Beer & Ale', City: 'USA' },
@@ -144,10 +146,7 @@ function drawNode(node,nodeId){
     });
 }
 
-// save physical layout, save nodes and connections
-// draw function will use these nodes and connections along with data to draw the diagram
-// node data is saved on edit of node
-// save to db later on
+// save canvas as well as nodes
 function save(){
     var nodes = []
     $(".tableDesign").each(function (idx, elem) {
@@ -174,12 +173,15 @@ function save(){
     flowChart.connections = connections;
 
     var flowChartJson = JSON.stringify(flowChart);
+    TOOL.canvas = flowChartJson
     $.ajax({type: "POST",
-        url: "/savecanvas",
+        url: "/tool",
         data:
         {
             toolName:"google",
-            canvas: flowChartJson
+            canvas: TOOL.canvas,
+            settings:TOOL.settings,
+            nodes:TOOL.nodes
         },
         success:function(result) {
         alert('saved --' + result);
@@ -265,10 +267,10 @@ jsPlumb.ready(function() {
         },
         success:function(result) {
             console.log('result',result)
-            result.nodes.forEach(function(n){
+            TOOL = result;
+            TOOL.nodes.forEach(function(n){
                 drawNode(n)
             });
-
         }
     });
 
