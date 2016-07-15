@@ -51,10 +51,7 @@ function editNode(nodeId){
     //nodes[0].fields.push('field4');
     //drawNode(nodes[0],nodeId)
 
-
-
-
-//            $("#form").alpaca({
+    //            $("#form").alpaca({
 //                "schema": {
 //                    "title":"User Feedback",
 //                    "description":"What do you think about Alpaca?",
@@ -222,7 +219,6 @@ jsPlumb.ready(function() {
     $('#Grid').ejGrid({
         dataSource: shipDetails
     });
-
     jsPlumb.importDefaults({
         Connector: ["Straight"],
         PaintStyle: {strokeStyle: "rgba(50,50,50,1)", lineWidth:2.5},
@@ -260,7 +256,21 @@ jsPlumb.ready(function() {
 
         });
     });
-    nodes.forEach(function(n){
-        drawNode(n)
+
+    $.ajax({type: "GET",
+        url: "/tool",
+        data:
+        {
+            toolName:"google"
+        },
+        success:function(result) {
+            console.log('result',result)
+            result.nodes.forEach(function(n){
+                drawNode(n)
+            });
+
+        }
     });
+
+
 });

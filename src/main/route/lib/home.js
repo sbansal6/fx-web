@@ -1,7 +1,7 @@
 var multer  = require('multer');
 var _ = require('underscore');
 var controller = require('../../controller');
-var Tools = require('../../model').tools;
+var tools = require('../../model').tools;
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -28,6 +28,7 @@ module.exports = function (app,isLoggedIn) {
     // =====================================
     app.get('/home', isLoggedIn, controller.home.main);
     app.get('/decode', isLoggedIn, controller.home.decode);
+
     //app.get('/encode',isLoggedIn,controller.application.encode);
     app.get('/google', isLoggedIn, controller.home.google);
 
@@ -40,65 +41,52 @@ module.exports = function (app,isLoggedIn) {
     });
 
     /**
-     * save canvas state
+     * Get tool by name
      */
-    app.post('/canvas', isLoggedIn, function (req, res) {
-        console.log('req user', req.user);
-        console.log('body', req.body);
-        Tools.update(
-            {userId: req.user._id, "tools.name":req.body.toolName},
-            {$set:{"tools.$.canvas":req.body.canvas}},
-            {upsert:true},
-            function (err, result) {
+    app.get('/tool',isLoggedIn,function(req,res){
+        var user = req.user;
+        var toolName  = req.query.toolName ? req.query.toolName : undefined;
+        tools.findOne({userId:user._id},function(err,doc){
+            if (err){
+                console.log('err in get tool',err)
+            } else {
+                if (toolName){
+                    var tool = _.find(doc.tools, function (t) {
+                        return t.name === toolName
+                    });
+                    tool ? res.json(tool) : res.json({status:"tool not found"})
+                } else{
+                    res.json(doc.tools)
+                }
+
+            }
+        })
+    })
+
+    /**
+     * Update a tool by name
+     */
+    app.post('/tool',isLoggedIn,function(req,res){
+        var user = req.user;
+        var body = req.body;
+        var toolName = body.toolName;
+        tools.update(
+            {userId:user._id,"tools.name":toolName},
+            {
+                $set:{
+                "tools.$.settings":body.settings,
+                "tools.$.canvas":body.canvas,
+                "tools.$.nodes":body.nodes
+            }
+            },
+            function (err) {
                 if (err) {
                     console.log('err', err)
                 } else {
-                    res.send({})
+                    res.json({status:"updated"})
                 }
             }
         )
     })
 
-    /**
-     * Get State of canvas
-     */
-    app.get('/canvas',isLoggedIn,function(req,res){
-
-    })
-
-
-    //todo :-  test case here because of json parsingss
-    /**
-     * Return node state(data) by nodeId
-     */
-    app.get('/nodestate',isLoggedIn,function(req,res){
-        // get tools for this user
-        Tools.findOne({userId:req.user._id},function(err,doc){
-            if (err) {
-                console.log('err', err)
-            } else {
-                var tool = _.find(doc.tools, function (t) {
-                    return t.name === req.query.toolName
-                });
-                var node = _.find(tool.nodes, function (n) {
-                    n = JSON.parse(JSON.stringify(n));
-                    return n.id === req.query.nodeId
-                });
-                if (node) {
-                    var data = JSON.parse(JSON.stringify(node)).data;
-                    res.send(data);
-                } else {
-                    res.send({});
-                }
-            }
-
-        })
-    })
-
-    /**
-     * Post node state (data) by nodeId
-     */
-    app.post('/nodestate',isLoggedIn, function (req, res) {
-
-    })
 }

@@ -7,14 +7,27 @@ var User = require('../../model').user;
 var Tools  = require('../../model').tools;
 var nodes  = require('./nodes');
 
+/**
+ * Generates a GUID string.
+ * @returns {String} The generated GUID.
+ * @example af8a8416-6e18-a307-bd9c-f2c947bbb3aa
+ * @author Slavik Meltser (slavik@meltser.info).
+ * @link http://slavik.meltser.info/?p=142
+ */
+function guid() {
+    function _p8(s) {
+        var p = (Math.random().toString(16)+"000000000").substr(2,8);
+        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
+    }
+    return _p8() + _p8(true) + _p8(true) + _p8();
+}
+
 function getNode(name){
     var node = _.find(nodes,function(n){
         return n.name === name
     })
-    return {
-        id: node.name + '_' + new Date().getTime(),
-        data:node.data
-    }
+    node.id = node.name + '_' +  guid()
+    return node;
 }
 
 /**

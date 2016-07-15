@@ -8,8 +8,8 @@ var toolsSchema = mongoose.Schema({
     tools: [
         {
             name:String,
-            settings:[mongoose.Schema.Types.Mixed],
-            canvas:[mongoose.Schema.Types.Mixed],
+            settings:mongoose.Schema.Types.Mixed,
+            canvas:mongoose.Schema.Types.Mixed,
             nodes:[mongoose.Schema.Types.Mixed]
         }
     ]
