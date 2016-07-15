@@ -26,7 +26,7 @@ function getNode(name){
     var node = _.find(nodes,function(n){
         return n.name === name
     })
-    node.id = node.name + '_' +  guid()
+    node.nodeId = node.name + '_' +  guid()
     return node;
 }
 

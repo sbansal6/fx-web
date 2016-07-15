@@ -17,6 +17,22 @@ String.prototype.format = function(placeholders) {
         return s;
     }
 };
+
+/**
+ * Generates a GUID string.
+ * @returns {String} The generated GUID.
+ * @example af8a8416-6e18-a307-bd9c-f2c947bbb3aa
+ * @author Slavik Meltser (slavik@meltser.info).
+ * @link http://slavik.meltser.info/?p=142
+ */
+function guid() {
+    function _p8(s) {
+        var p = (Math.random().toString(16)+"000000000").substr(2,8);
+        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
+    }
+    return _p8() + _p8(true) + _p8(true) + _p8();
+}
+
 var TOOL = [];
 
 var shipDetails = [
@@ -136,9 +152,21 @@ function setEndPoint(rowId,node){
 }
 
 function drawNode(node,nodeId){
+    console.log('drawing node',node,node.positionX,node.positionY)
     $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
-        var nodeId = nodeId ? nodeId : (node.name + '_' + new Date().getTime());
-        $('.canvas').append(data.format({node_id: nodeId,node_name:node.name,nodeClass:node.name,image:node.image}));
+        var nodeId = nodeId ? nodeId : (node.name + '_' + guid());
+        console.log('appending',data.format({
+            node_id: nodeId,
+            node_name:node.name,
+            image:node.image
+        }))
+        $('.canvas').append(data.format({
+            node_id: nodeId,
+            node_name:node.name,
+            image:node.image
+        }));
+        $('#'+nodeId).css('left', (node.positionX ? node.positionX : 30) + 'px');
+        $('#'+nodeId).css('top', (node.positionY ? node.positionY : 30) + 'px');
         jsPlumb.draggable(nodeId,{containment:"parent"});
         node.fields.forEach(function(field){
             addField(nodeId,node,field);
@@ -152,8 +180,8 @@ function save(){
     $(".tableDesign").each(function (idx, elem) {
         var $elem = $(elem);
         nodes.push({
-            blockId: $elem.attr('id'),
-            nodeType: $elem.attr('id').split('_')[0],
+            nodeId: $elem.attr('id'),
+            nodeName: $elem.attr('id').split('_')[0],
             positionX: parseInt($elem.css("left"), 10),
             positionY: parseInt($elem.css("top"), 10)
         });
@@ -268,9 +296,28 @@ jsPlumb.ready(function() {
         success:function(result) {
             console.log('result',result)
             TOOL = result;
-            TOOL.nodes.forEach(function(n){
-                drawNode(n)
-            });
+            if (TOOL.canvas){
+                console.log('loading from existing canvas')
+                // draw nodes
+                var canvasObject = JSON.parse(TOOL.canvas)
+                canvasObject.nodes.forEach(function(cn){
+                    // get corresponding node from TOOL.Nodes
+                    var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
+                    if (onode){
+                        onode.nodeId  = cn.nodeId;
+                        onode.positionX = cn.positionX;
+                        onode.positionY = cn.positionY;
+                        drawNode(onode);
+                    }
+                })
+                // connect existing connectors
+
+            } else {
+                // first time drawing canvas
+                TOOL.nodes.forEach(function(n){
+                    drawNode(n)
+                });
+            }
         }
     });
 
