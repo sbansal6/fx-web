@@ -151,10 +151,10 @@ function setEndPoint(rowId,node){
     }
 }
 
-function drawNode(node,nodeId){
+function drawNode(node,cb){
     console.log('drawing node',node,node.positionX,node.positionY)
     $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
-        var nodeId = nodeId ? nodeId : (node.name + '_' + guid());
+        var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
         console.log('appending',data.format({
             node_id: nodeId,
             node_name:node.name,
@@ -171,6 +171,7 @@ function drawNode(node,nodeId){
         node.fields.forEach(function(field){
             addField(nodeId,node,field);
         });
+        cb()
     });
 }
 
@@ -300,28 +301,55 @@ jsPlumb.ready(function() {
                 console.log('loading from existing canvas')
                 // draw nodes
                 var canvasObject = JSON.parse(TOOL.canvas)
-                canvasObject.nodes.forEach(function(cn){
-                    // get corresponding node from TOOL.Nodes
-                    var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
-                    if (onode){
-                        onode.nodeId  = cn.nodeId;
-                        onode.positionX = cn.positionX;
-                        onode.positionY = cn.positionY;
-                        drawNode(onode);
-                    }
-                })
-                // connect existing connectors
-                var connections = canvasObject.connections;
-                connections.forEach(function(c){
-                    console.log('connection',c)
-                    $.each(connections, function( index, elem ) {
-                        var connection1 = jsPlumb.connect({
-                            source: elem.pageSourceId,
-                            target: elem.pageTargetId
+                async.waterfall([
+                 function(cb){
+                     canvasObject.nodes.forEach(function(cn){
+                         // get corresponding node from TOOL.Nodes
+                         var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
+                         if (onode){
+                             onode.nodeId  = cn.nodeId;
+                             onode.positionX = cn.positionX;
+                             onode.positionY = cn.positionY;
+                             drawNode(onode,cb);
+                         }
+                     })
+                 }  ,
+                 function(cb){
+                        alert('on to connectors')
+                        // connect existing connectors
+                        var connections = canvasObject.connections;
+                        jsPlumb.connect({
+                            source: "File_86d025ea-e670-a95b-c936-bbb67899bd2e_field1",
+                            target: "Google_df19e1c1-d3eb-92e0-8e5a-bd3900f9ff3b_id"
 
                         });
-                    });
-                })
+                     cb()
+                    }
+                ])
+
+
+
+
+                // canvasObject.nodes.forEach(function(cn){
+                //     // get corresponding node from TOOL.Nodes
+                //     var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
+                //     if (onode){
+                //         onode.nodeId  = cn.nodeId;
+                //         onode.positionX = cn.positionX;
+                //         onode.positionY = cn.positionY;
+                //         drawNode(onode);
+                //     }
+                // })
+
+                // connections.forEach(function(c){
+                //     console.log('connection',c)
+                //     jsPlumb.connect({
+                //            source: "File_86d025ea-e670-a95b-c936-bbb67899bd2e_field1",
+                //            target: "Google_df19e1c1-d3eb-92e0-8e5a-bd3900f9ff3b_id"
+                //
+                //     });
+                //
+                // })
             } else {
                 // first time drawing canvas
                 TOOL.nodes.forEach(function(n){
