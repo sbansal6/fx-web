@@ -1,3 +1,11 @@
+var TOOL = [];
+var shipDetails = [
+    { Name: 'Hanari Carnes', City: 'Brazil' },
+    { Name: 'Split Rail Beer & Ale', City: 'USA' },
+    { Name: 'Ricardo Adocicados', City: 'Brazil' }
+];
+var flowDiagram ;
+
 String.prototype.format = function(placeholders) {
     if ($.isArray(placeholders)) {
         var args = arguments;
@@ -32,25 +40,6 @@ function guid() {
     }
     return _p8() + _p8(true) + _p8(true) + _p8();
 }
-
-var TOOL = [];
-
-var shipDetails = [
-    { Name: 'Hanari Carnes', City: 'Brazil' },
-    { Name: 'Split Rail Beer & Ale', City: 'USA' },
-    { Name: 'Ricardo Adocicados', City: 'Brazil' }
-];
-var flowDiagram ;
-// get node data and fields from server by user
-// if has use that else use from raw node
-
-$('#btnSave').click(function(){
-    save();
-})
-
-$('#btnLoad').click(function(){
-    jsPlumb.load({savedObj : flowDiagram, containerSelector : "#canvas"});
-})
 
 /**
  * Edit Node now , add more fields or whatever
@@ -250,6 +239,18 @@ function load(){
 
 }
 
+// get node data and fields from server by user
+// if has use that else use from raw node
+
+$('#btnSave').click(function(){
+    save();
+})
+
+$('#btnLoad').click(function(){
+    jsPlumb.load({savedObj : flowDiagram, containerSelector : "#canvas"});
+})
+
+
 jsPlumb.ready(function() {
     $("#outterSplitter").ejSplitter({
         height: 1520,
@@ -298,7 +299,6 @@ jsPlumb.ready(function() {
 
         });
     });
-
     $.ajax({type: "GET",
         url: "/tool",
         data:
@@ -314,8 +314,7 @@ jsPlumb.ready(function() {
                 var canvasObject = JSON.parse(TOOL.canvas)
                 async.waterfall([
                  function(cb){
-                     canvasObject.nodes.forEach(function(cn){
-                         // get corresponding node from TOOL.Nodes
+                     async.eachSeries(canvasObject.nodes,function(cn,cb){
                          var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
                          if (onode){
                              onode.nodeId  = cn.nodeId;
@@ -323,7 +322,7 @@ jsPlumb.ready(function() {
                              onode.positionY = cn.positionY;
                              drawNode(onode,cb);
                          }
-                     })
+                     },cb)
                  }  ,
                  function(cb){
                         alert('on to connectors')
@@ -347,6 +346,4 @@ jsPlumb.ready(function() {
             }
         }
     });
-
-
 });
