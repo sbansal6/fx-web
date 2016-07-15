@@ -311,7 +311,17 @@ jsPlumb.ready(function() {
                     }
                 })
                 // connect existing connectors
+                var connections = canvasObject.connections;
+                connections.forEach(function(c){
+                    console.log('connection',c)
+                    $.each(connections, function( index, elem ) {
+                        var connection1 = jsPlumb.connect({
+                            source: elem.pageSourceId,
+                            target: elem.pageTargetId
 
+                        });
+                    });
+                })
             } else {
                 // first time drawing canvas
                 TOOL.nodes.forEach(function(n){
