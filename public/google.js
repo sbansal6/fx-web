@@ -193,9 +193,20 @@ function save(){
         connections.push({
             connectionId: connection.id,
             pageSourceId: connection.sourceId,
-            pageTargetId: connection.targetId
+            pageTargetId: connection.targetId,
+            anchors: $.map(connection.endpoints, function(endpoint) {
+                return [[endpoint.anchor.x,
+                    endpoint.anchor.y,
+                    endpoint.anchor.orientation[0],
+                    endpoint.anchor.orientation[1],
+                    endpoint.anchor.offsets[0],
+                    endpoint.anchor.offsets[1]]];
+
+            })
         });
     });
+
+
 
     var flowChart = {};
     flowChart.nodes = nodes;
@@ -318,38 +329,16 @@ jsPlumb.ready(function() {
                         alert('on to connectors')
                         // connect existing connectors
                         var connections = canvasObject.connections;
-                        jsPlumb.connect({
-                            source: "File_86d025ea-e670-a95b-c936-bbb67899bd2e_field1",
-                            target: "Google_df19e1c1-d3eb-92e0-8e5a-bd3900f9ff3b_id"
-
+                        connections.forEach(function(c){
+                            jsPlumb.connect({
+                                source: c.pageSourceId,
+                                target: c.pageTargetId,
+                                anchors:c.anchors
+                            });
                         });
                      cb()
                     }
                 ])
-
-
-
-
-                // canvasObject.nodes.forEach(function(cn){
-                //     // get corresponding node from TOOL.Nodes
-                //     var onode = _.find(TOOL.nodes,function(n){return n.name === cn.nodeName})
-                //     if (onode){
-                //         onode.nodeId  = cn.nodeId;
-                //         onode.positionX = cn.positionX;
-                //         onode.positionY = cn.positionY;
-                //         drawNode(onode);
-                //     }
-                // })
-
-                // connections.forEach(function(c){
-                //     console.log('connection',c)
-                //     jsPlumb.connect({
-                //            source: "File_86d025ea-e670-a95b-c936-bbb67899bd2e_field1",
-                //            target: "Google_df19e1c1-d3eb-92e0-8e5a-bd3900f9ff3b_id"
-                //
-                //     });
-                //
-                // })
             } else {
                 // first time drawing canvas
                 TOOL.nodes.forEach(function(n){
