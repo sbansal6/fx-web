@@ -51,22 +51,65 @@ function editNode(nodeId) {
     var thisNode = _.find(TOOL.nodes, function(n) {
         return n.nodeId === nodeId
     })
-    console.log('this node', thisNode);
-    $.get("assests/bootui.html?time=" + (new Date()).getTime(), function(data) {
-        $('body').append(data)
-        $('body').append(data);
-        $("#form").alpaca({
-            "schema": thisNode.schema,
-            "options":thisNode.options,
-            "data":this.data
-        });
-        $('#myModal').dialog({
-            autoOpen: true,
-            my: "center",
-            at: "center",
-            of: window
-        });
+
+    $('#form').empty();
+    $("#form").alpaca({
+        "schema": thisNode.schema,
+        "options": {
+            "fields":{
+                "selectFile": {
+                    "type": "file"
+
+                },
+                "type":{
+                    "removeDefaultNone":true
+                }
+            },
+            "form": {
+                "attributes": {
+                    "method": "POST",
+                    "action": "/upload"
+                },
+                "buttons": {
+                    "submit": {
+                        "value": "Save",
+                        "click": function(){
+                            event.preventDefault()
+                            // this has all the values, use this to update data object or any other object on save.
+                            var val = this.getValue();
+                            var form = $('#alpaca2')
+                            form.ajaxSubmit({
+                                error: function(xhr) {
+                                    console.log('error happend in form submit',xhr.status)
+                                    alert('Error: ' + xhr.status);
+                                },
+                                success: function(response) {
+                                    alert(JSON.stringify(response));
+                                    console.log('selected node',nodeId)
+                                }
+                            });
+                            return false;
+
+                        }
+                    }
+
+
+                }
+            }
+
+        }
     });
+    $('#myModal').dialog({
+        autoOpen: true,
+        width:'30%',
+        my: "center",
+        at: "center",
+        of: window,
+        resizable: false,
+        draggable: true
+    });
+    $('#myModal').dialog('option', 'title', 'Edit Node');
+
 }
 
 function addField(nodeId, node, field) {

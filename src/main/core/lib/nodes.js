@@ -37,7 +37,7 @@ var nodes = [
             "form": {
                 "attributes": {
                     "method": "POST",
-                    "action": "http://localhost:3001/upload"
+                    "action": "/upload"
                 },
                 "buttons": {
                     "submit": {
@@ -52,12 +52,8 @@ var nodes = [
                                     alert('Error: ' + xhr.status);
                                 },
                                 success: function(response) {
-                                    $("#status").empty().text(response);
-                                    alert(JSON.stringify(response));
-                                    //var selected = $("#diagram").getKendoDiagram().select();
-                                    //var nodeById = getNodeById(selected);
-                                    //alert(nodeById)
-                                    // code dialog
+                                    alert(response);
+                                    console.log('selected node',nodeId)
                                 }
                             });
                             return false;

@@ -37,7 +37,8 @@ module.exports = function (app,isLoggedIn) {
         console.log(req.files)
         console.log(req.body);
         console.log(req.file);
-        res.send({})
+        res.send(['field1','field2','field3'])
+        //res.send({})
     });
 
     /**
