@@ -86,6 +86,7 @@ function editNode(nodeId) {
                                 success: function(response) {
                                     alert(JSON.stringify(response));
                                     console.log('selected node',nodeId)
+                                    $('#myModal').dialog("close");
                                 }
                             });
                             return false;
