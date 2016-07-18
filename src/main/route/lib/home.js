@@ -70,7 +70,11 @@ module.exports = function (app,isLoggedIn) {
             if (err){
                 res.status(500)
             } else {
-                res.status(200).json(result);
+                var headers = [];
+                result.headers.forEach(function(h){
+                    headers.push({name:h})
+                })
+                res.status(200).json(headers);
             }
         })
 

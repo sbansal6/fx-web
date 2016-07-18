@@ -74,7 +74,7 @@ function editNode(nodeId) {
                     "submit": {
                         "value": "Save",
                         "click": function(){
-                            event.preventDefault()
+                            //event.preventDefault()
                             // this has all the values, use this to update data object or any other object on save.
                             var val = this.getValue();
                             var form = $('#alpaca2')
@@ -85,9 +85,12 @@ function editNode(nodeId) {
                                 },
                                 success: function(response) {
                                     var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
-                                    this.node.fields = response;
+                                    console.log('thisNode',thisNode)
+                                    thisNode.fields = response;
+                                    console.log('thisNode after',JSON.stringify(thisNode))
                                     console.log('selected node',nodeId,thisNode)
                                     $('#myModal').dialog("close");
+                                    drawNode(thisNode)
                                 }
                             });
                             return false;
@@ -183,7 +186,10 @@ function setEndPoint(rowId, node) {
 
 function drawNode(node, cb) {
     console.log('drawing node', node, node.positionX, node.positionY)
-    $.get("assests/node.html?time=" + (new Date()).getTime(), function(data,cb) {
+    if (node.nodeId){
+        jsPlumb.remove(node.nodeId);
+    }
+    $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
         var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
         console.log('appending', data.format({
             node_id: nodeId,
