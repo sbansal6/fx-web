@@ -1,11 +1,14 @@
 var multer  = require('multer');
+var path = require('path');
 var _ = require('underscore');
+var fs = require('fs')
+var csv = require('csv');
 var controller = require('../../controller');
 var tools = require('../../model').tools;
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './uploads/')
+        cb(null, req.user.rootDir);
     },
     filename: function (req, file, cb) {
         var getFileExt = function(fileName){
@@ -21,6 +24,32 @@ var storage = multer.diskStorage({
 
 var multerUpload = multer({ storage: storage })
 
+var headers = function(req,cb){
+    var fullFileName = path.join(req.user.rootDir,req.files[0].originalname);
+    //console.log('fullFileName',fullFileName);
+    var delimiter = req.body.type === 'csv' ? ',' : '/t';
+    //console.log('delimiter',delimiter)
+    var input = fs.createReadStream(fullFileName);
+    var n = 0;
+    var parser = csv.parse({delimiter: delimiter})
+    input.pipe(parser);
+    var hit = false;
+    var headers = "";
+    var n = 0;
+    parser.on('readable', function() {
+        n++;
+        if (!hit) {
+            var first = parser.read();
+            headers = first;
+            input.unpipe(parser);
+            parser.end();
+            hit = true;
+            cb(null,{headers:headers})
+        }
+    })
+
+}
+
 
 module.exports = function (app,isLoggedIn) {
     // =====================================
@@ -33,12 +62,18 @@ module.exports = function (app,isLoggedIn) {
     app.get('/google', isLoggedIn, controller.home.google);
 
     app.post('/upload', isLoggedIn, multerUpload.any(), function (req, res) {
-        console.log('req user', req.user)
-        console.log(req.files)
-        console.log(req.body);
-        console.log(req.file);
-        res.send(['field1','field2','field3'])
-        //res.send({})
+        //console.log('req user', req.user);
+        //console.log('req.files',req.files);
+        //console.log('req.body',req.body);
+        //console.log('req.query',req.query);
+        headers(req,function(err,result){
+            if (err){
+                res.status(500)
+            } else {
+                res.status(200).json(result);
+            }
+        })
+
     });
 
     /**

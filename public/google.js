@@ -84,8 +84,9 @@ function editNode(nodeId) {
                                     alert('Error: ' + xhr.status);
                                 },
                                 success: function(response) {
-                                    alert(JSON.stringify(response));
-                                    console.log('selected node',nodeId)
+                                    var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
+                                    this.node.fields = response;
+                                    console.log('selected node',nodeId,thisNode)
                                     $('#myModal').dialog("close");
                                 }
                             });
@@ -182,7 +183,7 @@ function setEndPoint(rowId, node) {
 
 function drawNode(node, cb) {
     console.log('drawing node', node, node.positionX, node.positionY)
-    $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
+    $.get("assests/node.html?time=" + (new Date()).getTime(), function(data,cb) {
         var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
         console.log('appending', data.format({
             node_id: nodeId,
