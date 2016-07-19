@@ -1,15 +1,19 @@
 var TOOL = [];
-var shipDetails = [{
+var shipDetails = [
+    {
     Name: 'Hanari Carnes',
     City: 'Brazil'
-}, {
+},
+    {
     Name: 'Split Rail Beer & Ale',
     City: 'USA'
-}, {
+},
+    {
     Name: 'Ricardo Adocicados',
     City: 'Brazil'
 }];
 var flowDiagram;
+
 
 String.prototype.format = function(placeholders) {
     if ($.isArray(placeholders)) {
@@ -54,7 +58,21 @@ function editNode(nodeId) {
 
     $('#form').empty();
     $("#form").alpaca({
-        "schema": thisNode.schema,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "selectFile": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "type": {
+                    "type":"string",
+                    "title":"FileType",
+                    "enum":['csv','tab'],
+                    "required": true
+                }
+            }
+        },
         "options": {
             "fields":{
                 "selectFile": {
@@ -85,12 +103,13 @@ function editNode(nodeId) {
                                 },
                                 success: function(response) {
                                     var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
-                                    console.log('thisNode',thisNode)
-                                    thisNode.fields = response;
-                                    console.log('thisNode after',JSON.stringify(thisNode))
-                                    console.log('selected node',nodeId,thisNode)
+                                    thisNode.fields = response.fields;
+                                    thisNode.data = val;
+                                    thisNode.fileName = response.fileName;
                                     $('#myModal').dialog("close");
-                                    drawNode(thisNode)
+                                    drawNode(thisNode,function(){
+                                        console.log('Node edited and redrawn');
+                                    })
                                 }
                             });
                             return false;
@@ -102,8 +121,10 @@ function editNode(nodeId) {
                 }
             }
 
-        }
+        },
+        "data":{}
     });
+
     $('#myModal').dialog({
         autoOpen: true,
         width:'30%',
@@ -355,7 +376,6 @@ jsPlumb.ready(function() {
             toolName: "google"
         },
         success: function(result) {
-            console.log('result', result)
             TOOL = result;
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
@@ -363,7 +383,7 @@ jsPlumb.ready(function() {
                 var canvasObject = JSON.parse(TOOL.canvas)
                 async.waterfall([
                     function(cb) {
-                        async.eachSeries(canvasObject.nodes, function(cn, cb) {
+                        async.eachSeries(canvasObject.nodes, function(cn, eachSeriesCb) {
                             var onode = _.find(TOOL.nodes, function(n) {
                                 return n.name === cn.nodeName
                             })
@@ -371,7 +391,7 @@ jsPlumb.ready(function() {
                                 onode.nodeId = cn.nodeId;
                                 onode.positionX = cn.positionX;
                                 onode.positionY = cn.positionY;
-                                drawNode(onode, cb);
+                                drawNode(onode, eachSeriesCb);
                             }
                         }, cb)
                     },
@@ -387,12 +407,17 @@ jsPlumb.ready(function() {
                         });
                         cb()
                     }
-                ])
-            } else {
+                ],function(){
+                    console.log('done loading from canvas')
+                })
+            }
+            else {
                 // first time drawing canvas
-                TOOL.nodes.forEach(function(n) {
-                    drawNode(n)
-                });
+                async.eachSeries(TOOL.nodes,function(n,eachSeriesCb){
+                    drawNode(n,eachSeriesCb)
+                },function(){
+                    console.log('done loading from nodes')
+                })
             }
         }
     });

@@ -70,11 +70,14 @@ module.exports = function (app,isLoggedIn) {
             if (err){
                 res.status(500)
             } else {
-                var headers = [];
+                var response = {};
+                response.fields = [];
+                response.fileName = req.files[0].originalname;
                 result.headers.forEach(function(h){
-                    headers.push({name:h})
+                    response.fields.push({name:h})
                 })
-                res.status(200).json(headers);
+                console.log()
+                res.status(200).json(response);
             }
         })
 

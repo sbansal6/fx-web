@@ -46,6 +46,7 @@ function initializeTools(newUser,cb){
                 {name: "encode",settings:{}},
                 {name: "google",settings:{},"canvas":{},nodes:googleInitialNodes}
     ]
+    //todo :- add positionX and positionY as per elements in array
     userTools.save(function(err){
         err ? cb(err) : cb(null,newUser);
      })
