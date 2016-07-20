@@ -5,7 +5,7 @@ var _ = require('underscore');
 // load up the client model
 var User = require('../../model').user;
 var Tools  = require('../../model').tools;
-var nodes  = require('./nodes');
+var nodeService  = require('../../services/node.service');
 
 /**
  * Add basic tools to user on signup
@@ -15,8 +15,8 @@ var nodes  = require('./nodes');
 function initializeTools(newUser,cb){
     var userTools = new Tools();
     var googleInitialNodes = []
-    googleInitialNodes.push(nodes.getNodeStructure('File'))
-    googleInitialNodes.push(nodes.getNodeStructure('Google'))
+    googleInitialNodes.push(nodeService.getNodeStructure('File'))
+    googleInitialNodes.push(nodeService.getNodeStructure('Google'))
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},

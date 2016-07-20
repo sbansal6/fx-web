@@ -1,9 +1,7 @@
-var nodeLib = require('./nodes');
+var nodeService = require('./node.service');
 var expect = require('chai').expect;
 
-describe('nodes',function(){
-
-
+describe('node.service',function(){
     describe('getFieldsFromModelSchema',function(){
         var modelSchema =  {
             id: {
@@ -80,17 +78,18 @@ describe('nodes',function(){
             multipack: {}
         }
         it('should return an array of fields with valid schema',function(){
-           var fields = nodeLib.getFieldsFromModelSchema(modelSchema);
+            var fields = nodeService.getFieldsFromModelSchema(modelSchema);
             expect(fields).to.be.an('array');
             expect(fields[0]).to.have.property('name')
             expect(fields[0]).to.have.property('required')
         })
     })
-
     describe('getNodeStructure',function(){
         it('test1',function(){
-            console.log(nodeLib.getNodeStructure('Google'))
+            var googleStructure = nodeService.getNodeStructure('Google')
+            expect(googleStructure).to.be.an('object')
         })
     })
 
 })
+
