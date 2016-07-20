@@ -8,29 +8,6 @@ var Tools  = require('../../model').tools;
 var nodes  = require('./nodes');
 
 /**
- * Generates a GUID string.
- * @returns {String} The generated GUID.
- * @example af8a8416-6e18-a307-bd9c-f2c947bbb3aa
- * @author Slavik Meltser (slavik@meltser.info).
- * @link http://slavik.meltser.info/?p=142
- */
-function guid() {
-    function _p8(s) {
-        var p = (Math.random().toString(16)+"000000000").substr(2,8);
-        return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
-    }
-    return _p8() + _p8(true) + _p8(true) + _p8();
-}
-
-function getNode(name){
-    var node = _.find(nodes,function(n){
-        return n.name === name
-    })
-    node.nodeId = node.name + '_' +  guid()
-    return node;
-}
-
-/**
  * Add basic tools to user on signup
  * @param newUser
  * @param cb
@@ -38,8 +15,8 @@ function getNode(name){
 function initializeTools(newUser,cb){
     var userTools = new Tools();
     var googleInitialNodes = []
-    googleInitialNodes.push(getNode('File'))
-    googleInitialNodes.push(getNode('Google'))
+    googleInitialNodes.push(nodes.getNodeStructure('File'))
+    googleInitialNodes.push(nodes.getNodeStructure('Google'))
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},
