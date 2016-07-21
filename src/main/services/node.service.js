@@ -190,11 +190,11 @@ var getNodeStructure = function(nodeName){
  * @param modelSchema
  * @returns {Array}
  */
-var getFieldsFromModelSchema = function(modelSchema){
+var getFieldsFromModelSchema = function(nodeModelSchema){
     var fields = [];
-    for (var key in modelSchema){
+    for (var key in nodeModelSchema){
         var required = false;
-        if (modelSchema[key]["validation"] && modelSchema[key]["validation"]["minLength"]){
+        if (nodeModelSchema[key]["validation"] && nodeModelSchema[key]["validation"]["minLength"]){
             required = true;
         }
         var field = {name:key,required:required}
@@ -229,7 +229,50 @@ var getValidationSchema = function(nodeModelSchema){
     return validation
 }
 
+var tempSchema = {
+    id: {
+        sanitization: {
+            type: 'string',
+            rules: ['trim']
+
+        },
+        validation: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 2
+        },
+    },
+    title: {
+        sanitization: {
+            type: 'string',
+            rules: ['trim']
+
+        },
+        validation: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 5
+        },
+
+    }
+}
+var sanitization  = getSanitizeSchema(tempSchema)
+var validation = getValidationSchema(tempSchema)
+
+// this will go processor test
+//var data = {
+//    id: "qwdqwdqwdqwdqwd",
+//    title:"asxasxasxasxasxasxas"
+//
+//}
+//console.log('sanitize',inspector.sanitize(sanitization, data).data)
+//console.log('validator',inspector.validate(validation,data))
+
 module.exports = {
     getNodeStructure:getNodeStructure,
-    getFieldsFromModelSchema:getFieldsFromModelSchema
+    getFieldsFromModelSchema:getFieldsFromModelSchema,
+    getSanitizeSchema:getSanitizeSchema,
+    getValidationSchema:getValidationSchema
 }
+
+

@@ -15,7 +15,7 @@ var winstonDB = require('winston-mongodb').MongoDB;
 root = {
   
 };
-root.driveRoot = __dirname;
+root.driveRoot = path.join(__dirname,'drive');
 
 // Local Requires ==================================================================
 var core = require('./src/main').core;

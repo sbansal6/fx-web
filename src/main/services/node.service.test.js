@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 
 describe('node.service',function(){
     describe('getFieldsFromModelSchema',function(){
-        var modelSchema =  {
+        var nodeModelSchema =  {
             id: {
                 sanitization: {
                     type: 'string',
@@ -78,18 +78,17 @@ describe('node.service',function(){
             multipack: {}
         }
         it('should return an array of fields with valid schema',function(){
-            var fields = nodeService.getFieldsFromModelSchema(modelSchema);
+            var fields = nodeService.getFieldsFromModelSchema(nodeModelSchema);
             expect(fields).to.be.an('array');
             expect(fields[0]).to.have.property('name')
             expect(fields[0]).to.have.property('required')
         })
     })
     describe('getNodeStructure',function(){
-        it('test1',function(){
+        it('Returns valid structure',function(){
             var googleStructure = nodeService.getNodeStructure('Google')
             expect(googleStructure).to.be.an('object')
         })
     })
-
 })
 
