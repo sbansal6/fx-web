@@ -157,8 +157,8 @@ function addSourceEndPoint(rowId) {
             height: 15
         }],
         endpointStyle: {
-            fillStyle: "orange",
-            outlineColor: "orange",
+            fillStyle: "#ff7473",
+            outlineColor: "#ff7473",
             outlineWidth: 1
         },
         hoverPaintStyle: {
@@ -178,8 +178,8 @@ function addTargetEndPoint(rowId) {
             height: 12
         }],
         endpointStyle: {
-            fillStyle: "blue",
-            outlineColor: "blue",
+            fillStyle: "#424a5d",
+            outlineColor: "#424a5d",
             outlineWidth: 1
         },
         hoverPaintStyle: {

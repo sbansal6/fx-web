@@ -31,7 +31,7 @@ var Processor = function(model,options){
      *      get it from components library
      */
     var merchantConnector  = getItem(model.nodeDataArray,{key: 'Google'});
-    
+
     var mappings = getFieldsMapping();
 
     /**
