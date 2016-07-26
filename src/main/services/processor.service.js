@@ -1,8 +1,23 @@
-
 var path  = require('path');
 var fs = require('fs');
 var csv = require('csv');
 var _ = require('underscore');
+
+
+function getFieldsMapping(connections){
+    var mappings = {};
+    connections.forEach(function(link){
+        mappings[link["pageSourceId"]] = link["pageTargetId"]
+    })
+    return mappings;
+}
+
+
+function process(toolData,userData){
+    console.log('toolData',toolData);
+    console.log('userData',userData)
+}
+
 
 /**
  * Processor object/class is responsible for processing the model
@@ -63,18 +78,6 @@ var Processor = function(model,options){
         transformEachRowCb(null,outputRow);
     }
 
-    /**
-     * Returns mapping between source and destination
-     * *** should be able to map same field to multiple fields
-     * ***Phase2 should honor the intermediate stages
-     */
-    function getFieldsMapping(){
-        var mappings = {};
-        model.linkDataArray.forEach(function(link){
-            mappings[link["fromPort"]] = link["toPort"]
-        })
-        return mappings;
-    }
 
     /**
      * function that actually process input and converts to ouput
@@ -149,4 +152,5 @@ var Processor = function(model,options){
 
 }
 
-module.exports = Processor
+module.exports.getFieldsMapping = getFieldsMapping;
+module.exports.process = process;
