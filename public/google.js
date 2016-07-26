@@ -1,17 +1,17 @@
 var TOOL = [];
 var shipDetails = [
     {
-    Name: 'Hanari Carnes',
-    City: 'Brazil'
-},
+        Name: 'Hanari Carnes',
+        City: 'Brazil'
+    },
     {
-    Name: 'Split Rail Beer & Ale',
-    City: 'USA'
-},
+        Name: 'Split Rail Beer & Ale',
+        City: 'USA'
+    },
     {
-    Name: 'Ricardo Adocicados',
-    City: 'Brazil'
-}];
+        Name: 'Ricardo Adocicados',
+        City: 'Brazil'
+    }];
 var flowDiagram;
 
 
@@ -271,7 +271,7 @@ function save() {
     flowChart.nodes = nodes;
     flowChart.connections = connections;
 
-    var flowChartJson = JSON.stringify(flowChart);
+    var flowChartJson = flowChart;
     TOOL.canvas = flowChartJson
     $.ajax({
         type: "POST",
@@ -333,7 +333,7 @@ $('#btnAnalyze').click(function() {
     flowChart.nodes = nodes;
     flowChart.connections = connections;
 
-    var flowChartJson = JSON.stringify(flowChart);
+    var flowChartJson = flowChart;
     TOOL.canvas = flowChartJson
     $.ajax({
         type: "POST",
@@ -423,7 +423,7 @@ jsPlumb.ready(function() {
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
                 // draw nodes
-                var canvasObject = JSON.parse(TOOL.canvas)
+                var canvasObject = TOOL.canvas;
                 async.waterfall([
                     function(cb) {
                         async.eachSeries(canvasObject.nodes, function(cn, eachSeriesCb) {
@@ -442,10 +442,17 @@ jsPlumb.ready(function() {
                         // connect existing connectors
                         var connections = canvasObject.connections;
                         connections.forEach(function(c) {
+                            // ** fix, acnhors getting saved as string in mongo
+                            // trick to convert to int
+                            var anchorsInt = $.map(c.anchors,function(a){
+                                return [$.map(a,function(ai){
+                                    return Number(ai)
+                                })]
+                            })
                             jsPlumb.connect({
                                 source: c.pageSourceId,
                                 target: c.pageTargetId,
-                                anchors: c.anchors
+                                anchors: anchorsInt
                             });
                         });
                         cb()
