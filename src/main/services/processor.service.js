@@ -13,7 +13,7 @@ function getFieldsMapping(connections){
 }
 
 
-function process(toolData,userData){
+function analyze(toolData,userData){
     console.log('toolData',toolData);
     console.log('userData',userData)
 }
@@ -153,4 +153,4 @@ var Processor = function(model,options){
 }
 
 module.exports.getFieldsMapping = getFieldsMapping;
-module.exports.process = process;
+module.exports.analyze = analyze;

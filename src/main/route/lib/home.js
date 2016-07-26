@@ -51,6 +51,25 @@ var headers = function(req,cb){
 }
 
 
+function updateTool(req,cb){
+    var user = req.user;
+    var body = req.body;
+    var toolName = body.toolName;
+    var query = {userId:user._id,"tools.name":toolName}
+    var update = {
+        "tools.$.settings":body.settings,
+        "tools.$.canvas":body.canvas,
+        "tools.$.nodes":body.nodes
+    }
+    tools.findOneAndUpdate(
+        query,
+        update,
+        {new:true},
+        cb
+    )
+}
+
+
 module.exports = function (app,isLoggedIn) {
     // =====================================
     // APPLICATION PAGE (with logout links)
@@ -110,26 +129,17 @@ module.exports = function (app,isLoggedIn) {
      * Update a tool by name
      */
     app.post('/tool',isLoggedIn,function(req,res){
-        var user = req.user;
-        var body = req.body;
-        var toolName = body.toolName;
-        tools.update(
-            {userId:user._id,"tools.name":toolName},
-            {
-                $set:{
-                "tools.$.settings":body.settings,
-                "tools.$.canvas":body.canvas,
-                "tools.$.nodes":body.nodes
+        updateTool(req,function(err,doc){
+            if (err) {
+                console.log('err', err)
+            } else {
+                res.json({status:"updated"})
             }
-            },
-            function (err) {
-                if (err) {
-                    console.log('err', err)
-                } else {
-                    res.json({status:"updated"})
-                }
-            }
-        )
+        })
+    })
+
+    app.post('/analyze',isLoggedIn,function(req,res){
+
     })
 
 }

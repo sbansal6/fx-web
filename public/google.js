@@ -267,9 +267,6 @@ function save() {
             })
         });
     });
-
-
-
     var flowChart = {};
     flowChart.nodes = nodes;
     flowChart.connections = connections;
@@ -300,11 +297,8 @@ $('#btnSave').click(function() {
     save();
 })
 
-$('#btnLoad').click(function() {
-    jsPlumb.load({
-        savedObj: flowDiagram,
-        containerSelector: "#canvas"
-    });
+$('#btnAnalyze').click(function() {
+    save();
 })
 
 jsPlumb.ready(function() {
