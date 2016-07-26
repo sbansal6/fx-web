@@ -13,9 +13,10 @@ function getFieldsMapping(connections){
 }
 
 
-function analyze(toolData,userData){
+function analyze(toolData,userData,cb){
     console.log('toolData',toolData);
-    console.log('userData',userData)
+    console.log('userData',userData),
+    cb();
 }
 
 

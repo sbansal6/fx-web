@@ -5,6 +5,7 @@ var fs = require('fs')
 var csv = require('csv');
 var controller = require('../../controller');
 var tools = require('../../model').tools;
+var processorService = require('../../services/processor.service');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -139,7 +140,19 @@ module.exports = function (app,isLoggedIn) {
     })
 
     app.post('/analyze',isLoggedIn,function(req,res){
-
+        updateTool(req,function(err,doc){
+            if (err) {
+                console.log('err', err)
+            } else {
+                processorService.analyze(doc,req.user,function(err,result){
+                    if (err) {
+                        console.log('err', err)
+                    } else {
+                        res.json({status:"analyzed"})
+                    }
+                })
+            }
+        })
     })
 
 }
