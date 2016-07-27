@@ -3,14 +3,58 @@ var fs = require('fs');
 var csv = require('csv');
 var _ = require('underscore');
 
-
-function getFieldsMapping(connections){
-    var mappings = {};
-    connections.forEach(function(link){
-        mappings[link["pageSourceId"]] = link["pageTargetId"]
-    })
-    return mappings;
+/**
+ * Should return something like this
+ var mappings = {
+    "field1" : [
+        {nodeId:"xxxx",field:"sccsa"},
+        {nodeId:"transform"}
+    ],
+    "field2" : [
+        {nodeId:"xxxx",field:"sccsa"},
+        {nodeId:"transform"}
+    ]
 }
+ * @param connections
+ * @returns {{}}
+ */
+function getFieldsMapping(connections){
+
+}
+
+function getMappedFieldsByNode(connections,nodeName){
+    var fieldsMapped = {};
+    connections.forEach(function(c){
+        var sourceParts = c["pageSourceId"].split('_');
+        var sourceComponentName = sourceParts[0];
+        var sourceFieldName = sourceParts[2];
+        if (sourceComponentName === nodeName){
+            fieldsMapped[sourceFieldName] = [];
+            var destinationParts = c["pageTargetId"].split('_');
+            var destinationComponentName = destinationParts[0];
+            var destinationFieldName = destinationParts[2];
+
+        }
+    });
+    return fieldsMapped;
+}
+
+/**
+ * Returns list of fields from source file component
+ * @param toolData
+ */
+function sourceFields(toolData){
+    var fields = [];
+    var fileNode = _.find(toolData.nodes,function(n){
+        return (n.name === 'File')
+    })
+    fileNode.fields.forEach(function(f){
+        fields.push(f.name)
+    })
+    return fields;
+}
+
+
 
 
 function analyze(toolData,userData,cb){
@@ -153,5 +197,7 @@ var Processor = function(model,options){
 
 }
 
+module.exports.sourceFields = sourceFields;
 module.exports.getFieldsMapping = getFieldsMapping;
+module.exports.getMappedFieldsByNode =  getMappedFieldsByNode;
 module.exports.analyze = analyze;
