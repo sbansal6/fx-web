@@ -18,26 +18,64 @@ var _ = require('underscore');
  * @param connections
  * @returns {{}}
  */
-function getFieldsMapping(connections){
-
-}
-
-function getMappedFieldsByNode(connections,nodeName){
-    var fieldsMapped = {};
-    connections.forEach(function(c){
-        var sourceParts = c["pageSourceId"].split('_');
-        var sourceComponentName = sourceParts[0];
-        var sourceFieldName = sourceParts[2];
-        if (sourceComponentName === nodeName){
-            fieldsMapped[sourceFieldName] = [];
-            var destinationParts = c["pageTargetId"].split('_');
-            var destinationComponentName = destinationParts[0];
-            var destinationFieldName = destinationParts[2];
-
+function getFieldMappings(toolData,fieldName){
+    var fieldMapping = {
+        transformations:[],
+        destination:null
+    }
+    toolData.canvas.connections.forEach(function(c){
+        var source = parseField(c["pageSourceId"]);
+        var target = parseField(c["pageTargetId"]);
+        if(source.fieldName == fieldName){
+            var node = getNodePropertyById(toolData,target.nodeId);
+            if (node['category'] === 'transform'){
+               fieldMapping['transformation'].push(target.nodeId);
+            }
+            if (node['category'] === 'target') {
+                fieldMapping['destination'] = target.fieldName;
+            }
         }
-    });
-    return fieldsMapped;
+    })
+    return fieldMapping;
 }
+
+function getNodePropertyById(toolData,nodeId){
+    var node = _.find(toolData.nodes,function(n){
+        return n.nodeId === nodeId
+    })
+    return node;
+}
+
+/**
+ * Parse nodename and field name from field string
+ * @param field
+ * @returns {{nodeName: *, fieldName: *}}
+ */
+function parseField(field){
+    var fieldParts = field.split('_');
+    return {
+        nodeId:fieldParts[0] + '_' + fieldParts[1],
+        nodeName:fieldParts[0],
+        fieldName:fieldParts[2]
+    }
+}
+
+//function getMappedFieldsByNode(connections,nodeName){
+//    var fieldsMapped = {};
+//    connections.forEach(function(c){
+//        var sourceParts = c["pageSourceId"].split('_');
+//        var sourceComponentName = sourceParts[0];
+//        var sourceFieldName = sourceParts[2];
+//        if (sourceComponentName === nodeName){
+//            fieldsMapped[sourceFieldName] = [];
+//            var destinationParts = c["pageTargetId"].split('_');
+//            var destinationComponentName = destinationParts[0];
+//            var destinationFieldName = destinationParts[2];
+//
+//        }
+//    });
+//    return fieldsMapped;
+//}
 
 /**
  * Returns list of fields from source file component
@@ -54,15 +92,31 @@ function sourceFields(toolData){
     return fields;
 }
 
-
-
-
 function analyze(toolData,userData,cb){
-    console.log('toolData',toolData);
-    console.log('userData',userData),
-    cb();
-}
+    console.log('===============')
+    console.log('toolData',JSON.stringify(toolData,null,4));
+    var directory = path.join(root.driveRoot,userData.id) ;
+    var fileNode = _.find(toolData.nodes,function(n){
+        return n.name === 'File'
+    })
+    var inputFileFullName = path.join(directory, fileNode.fileName) ;
+    var outputRows = []
+    console.log('inputFileFullName',inputFileFullName)
+    var inputStream = fs.createReadStream(inputFileFullName);
+    inputStream.pipe(csv.parse({ columns: true }))
+        .pipe(csv.transform(function (row, next) {
+            next(null,row)
+        }))
+        //.pipe(csv.stringify({ header: true }))
+        .on("data", function(data){
+            outputRows.push(data)
+        })
+        .on("end", function(){
+            console.log("Final data",outputRows)
+            cb(null,outputRows)
+        });
 
+}
 
 /**
  * Processor object/class is responsible for processing the model
@@ -198,6 +252,6 @@ var Processor = function(model,options){
 }
 
 module.exports.sourceFields = sourceFields;
-module.exports.getFieldsMapping = getFieldsMapping;
-module.exports.getMappedFieldsByNode =  getMappedFieldsByNode;
+module.exports.getNodePropertyById =  getNodePropertyById;
+module.exports.getFieldMappings = getFieldMappings;
 module.exports.analyze = analyze;

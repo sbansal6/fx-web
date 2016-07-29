@@ -66,7 +66,16 @@ function updateTool(req,cb){
         query,
         update,
         {new:true},
-        cb
+        function(err,doc){
+            if (err){
+                cb(err)
+            } else {
+                var tool = _.find(doc.tools, function (t) {
+                    return t.name === toolName
+                });
+                cb(null,tool)
+            }
+        }
     )
 }
 
@@ -82,6 +91,7 @@ module.exports = function (app,isLoggedIn) {
     app.get('/google', isLoggedIn, controller.home.google);
 
     app.post('/upload', isLoggedIn, multerUpload.any(), function (req, res) {
+        console.log('i am in upload')
         //console.log('req user', req.user);
         //console.log('req.files',req.files);
         //console.log('req.body',req.body);
@@ -148,7 +158,7 @@ module.exports = function (app,isLoggedIn) {
                     if (err) {
                         console.log('err', err)
                     } else {
-                        res.json({status:"analyzed"})
+                        res.json(result)
                     }
                 })
             }

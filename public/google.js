@@ -55,7 +55,6 @@ function editNode(nodeId) {
     var thisNode = _.find(TOOL.nodes, function(n) {
         return n.nodeId === nodeId
     })
-
     $('#form').empty();
     $("#form").alpaca({
         "schema": {
@@ -124,7 +123,6 @@ function editNode(nodeId) {
         },
         "data":{}
     });
-
     $('#myModal').dialog({
         autoOpen: true,
         width:'30%',
@@ -135,7 +133,6 @@ function editNode(nodeId) {
         draggable: true
     });
     $('#myModal').dialog('option', 'title', 'Edit Node');
-
 }
 
 function addField(nodeId, node, field) {
@@ -298,6 +295,7 @@ $('#btnSave').click(function() {
 })
 
 $('#btnAnalyze').click(function() {
+    var gridObj = $("#Grid").data("ejGrid");
     var nodes = []
     $(".tableDesign").each(function(idx, elem) {
         var $elem = $(elem);
@@ -346,6 +344,11 @@ $('#btnAnalyze').click(function() {
         },
         success: function(result) {
             alert('analyzed --' + JSON.stringify(result));
+            $('#GridContainer').empty()
+            $('#GridContainer').append('<div id="Grid"></div>')
+            $('#Grid').ejGrid({
+                dataSource:result
+            });
         }
     });
 })
@@ -360,8 +363,11 @@ jsPlumb.ready(function() {
             collapsible: true
         }]
     });
+    //todo :- should populate with empty columns
+    $('#GridContainer').empty()
+    $('#GridContainer').append('<div id="Grid"></div>')
     $('#Grid').ejGrid({
-        dataSource: shipDetails
+        dataSource:shipDetails
     });
     jsPlumb.importDefaults({
         Connector: ["Straight"],
@@ -440,21 +446,23 @@ jsPlumb.ready(function() {
                     },
                     function(cb) {
                         // connect existing connectors
-                        var connections = canvasObject.connections;
-                        connections.forEach(function(c) {
-                            // ** fix, acnhors getting saved as string in mongo
-                            // trick to convert to int
-                            var anchorsInt = $.map(c.anchors,function(a){
-                                return [$.map(a,function(ai){
-                                    return Number(ai)
-                                })]
-                            })
-                            jsPlumb.connect({
-                                source: c.pageSourceId,
-                                target: c.pageTargetId,
-                                anchors: anchorsInt
+                        if (canvasObject.connections){
+                            var connections = canvasObject.connections;
+                            connections.forEach(function(c) {
+                                // ** fix, acnhors getting saved as string in mongo
+                                // trick to convert to int
+                                var anchorsInt = $.map(c.anchors,function(a){
+                                    return [$.map(a,function(ai){
+                                        return Number(ai)
+                                    })]
+                                })
+                                jsPlumb.connect({
+                                    source: c.pageSourceId,
+                                    target: c.pageTargetId,
+                                    anchors: anchorsInt
+                                });
                             });
-                        });
+                        }
                         cb()
                     }
                 ],function(){
