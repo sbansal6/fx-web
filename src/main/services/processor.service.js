@@ -92,6 +92,32 @@ function sourceFields(toolData){
     return fields;
 }
 
+/**
+ * Process Each row, apply all intermediate tranformation logic and convert to final schema nameß
+ */
+function transformEachRow(toolData,row){
+    // only pass fields for which there is a  destination mapping
+    // out header name should correspond to destination connector name
+    var outputRow = {}
+    var mappings ;
+    for (var fieldKey in row){
+        mappings = getFieldMappings(toolData,fieldKey);
+        //console.log('for ',fieldKey,'mappings',mappings)
+        if (mappings.transformations.length > 0) {
+            // apply all transformations
+            mappings.transformations.forEach(function (t) {
+
+            })
+        }
+        if (mappings.destination){
+            // convert to final destination name
+            outputRow[mappings['destination']] = row[fieldKey]
+        }
+    }
+    return outputRow;
+}
+
+
 function analyze(toolData,userData,cb){
     console.log('===============')
     console.log('toolData',JSON.stringify(toolData,null,4));
@@ -105,7 +131,12 @@ function analyze(toolData,userData,cb){
     var inputStream = fs.createReadStream(inputFileFullName);
     inputStream.pipe(csv.parse({ columns: true }))
         .pipe(csv.transform(function (row, next) {
-            next(null,row)
+            //console.log('row',row)
+            //next(null,row);
+            next(null,transformEachRow(toolData,row))
+            // transformEachRow(toolData,row, mappings, function (err, outRow) {
+            //     next(null,outRow)
+            // });
         }))
         //.pipe(csv.stringify({ header: true }))
         .on("data", function(data){
@@ -254,4 +285,5 @@ var Processor = function(model,options){
 module.exports.sourceFields = sourceFields;
 module.exports.getNodePropertyById =  getNodePropertyById;
 module.exports.getFieldMappings = getFieldMappings;
+module.exports.transformEachRow  = transformEachRow;
 module.exports.analyze = analyze;
