@@ -363,6 +363,7 @@ jsPlumb.ready(function() {
             collapsible: true
         }]
     });
+    $("#tabstrip").ejTab();
     //todo :- should populate with empty columns
     $('#GridContainer').empty()
     $('#GridContainer').append('<div id="Grid"></div>')

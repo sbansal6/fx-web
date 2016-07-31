@@ -17,22 +17,36 @@
   </div>
 </div>
 <div class="row">
-    <!----------------Splitter Control---------------->
-    <div id="outterSplitter">
-        <div>
-            <div class="cont">
-                <div id="canvas" class="col-md-8 canvas" style="width: 800px;height: 1500px;border:solid">
+    <div id="tabstrip" style="width: 100%">
+        <ul>
+            <li id="tabDesign"><a href="#design">Design</a></li>
+            <li id="tabGrid"><a href="#grid">Grid</a></li>
+        </ul>
+        <div id="design">
+            <!----------------Splitter Control---------------->
+            <div id="outterSplitter">
+                <div>
+                    <div class="cont">
+                        <div id="canvas" class="col-md-8 canvas" style="width: 800px;height: 1500px">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="cont">
+
+                    </div>
                 </div>
             </div>
+            <!------------------------------------------------->
         </div>
-        <div>
-            <div class="cont">
-                <div id='GridContainer'>
-                </div>
+
+        <div id="grid">
+            <div id='GridContainer'>
             </div>
         </div>
+
     </div>
-    <!------------------------------------------------->
+
 </div>
 <div id="myModal">
     <div id="form"></div>
