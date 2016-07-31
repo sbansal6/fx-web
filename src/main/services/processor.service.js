@@ -40,6 +40,7 @@ function getFieldMappings(toolData,fieldName){
 }
 
 function getMappingsRecursive(connections,mappings,i,destinationFieldName,nodeId){
+     //console.log('checking for',destinationFieldName)
      connections.forEach(function(c){
         var source =  parseField(c["pageSourceId"]);
         var target = parseField(c["pageTargetId"]);
@@ -73,7 +74,7 @@ function parseField(field){
     return {
         nodeId:fieldParts[0] + '_' + fieldParts[1],
         nodeName:fieldParts[0],
-        fieldName:fieldParts[2]
+        fieldName:(fieldParts.slice(2)).join('_')
     }
 }
 
@@ -120,16 +121,14 @@ function transformEachRow(toolData,row){
     var destinationFields = _.find(toolData.nodes,function(n){
         return n.type === 'target'
     }).fields.map(function(f){return f.name})
-    //console.log('destinationFields',destinationFields)
-    //console.log('toolData.canvas.connections',toolData.canvas.connections)
     destinationFields.forEach(function(f){
         var mappings = getMappingsRecursive(toolData.canvas.connections,{},0,f,null);
+        //console.log('checking for',f,mappings)
         if (Object.keys(mappings).length > 0){
             destinationFieldsThatAreMapped[f] = mappings
         }
-        //destinationFieldsThatAreMapped.push({:getMappingsRecursive(toolData.canvas.connections,{},0,f,null)})
     })
-
+    //console.log('destination fields mapped',destinationFieldsThatAreMapped)
     for (var key in destinationFieldsThatAreMapped){
         outputRow[key] = getOutputValue(toolData,row,destinationFieldsThatAreMapped[key])
     }
@@ -309,5 +308,6 @@ module.exports.sourceFields = sourceFields;
 module.exports.getNodePropertyById =  getNodePropertyById;
 module.exports.getFieldMappings = getFieldMappings;
 module.exports.transformEachRow  = transformEachRow;
-module.exports.getMappingsRecursive = getMappingsRecursive
+module.exports.getMappingsRecursive = getMappingsRecursive;
+module.exports.parseField = parseField;
 module.exports.analyze = analyze;
