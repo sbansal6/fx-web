@@ -6,6 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "aws-sdk": "^2.4.11",
     "bcrypt-nodejs": "0.0.3",
     "blueimp-file-upload-expressjs": "^0.4.4",

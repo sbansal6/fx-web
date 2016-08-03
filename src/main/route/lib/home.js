@@ -134,7 +134,7 @@ module.exports = function (app,isLoggedIn) {
 
             }
         })
-    })
+    });
 
     /**
      * Update a tool by name
@@ -147,7 +147,7 @@ module.exports = function (app,isLoggedIn) {
                 res.json({status:"updated"})
             }
         })
-    })
+    });
 
     app.post('/analyze',isLoggedIn,function(req,res){
         updateTool(req,function(err,doc){
@@ -163,6 +163,6 @@ module.exports = function (app,isLoggedIn) {
                 })
             }
         })
-    })
+    });
 
 }

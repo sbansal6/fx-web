@@ -637,7 +637,6 @@ describe('processor.service',function(){
     ]
     }
 
-
     describe('parseField',function(){
 
         it('should parse field',function(){
@@ -752,14 +751,73 @@ describe('processor.service',function(){
 
     })
 
+    describe('destinationFieldMappings',function(){
+
+        it('should return two mapped fields',function(){
+            var mappedFields = processorService.destinationFieldMappings(toolData)
+            expect(mappedFields).to.be.an('object');
+            expect(Object.keys(mappedFields).length).to.equal(2);
+            expect(mappedFields).to.have.property('id')
+            expect(mappedFields).to.have.property('link')
+            //console.log(processorService.destinationFieldMappings(toolData))
+        })
+
+        it('should return five mapped fields',function(){
+            var mappedFields = processorService.destinationFieldMappings(toolData2)
+            expect(mappedFields).to.be.an('object');
+            expect(Object.keys(mappedFields).length).to.equal(5);
+            expect(mappedFields).to.have.property('id')
+            expect(mappedFields).to.have.property('title')
+            expect(mappedFields).to.have.property('description')
+            expect(mappedFields).to.have.property('google_product_category')
+            expect(mappedFields).to.have.property('product_type')
+        })
+
+    })
+
     describe('transformEachRow',function(){
+        var mappings1 ={ id:
+        { '0':
+        { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+            nodeName: 'File',
+            fieldName: 'ProductId' } },
+            link:
+            { '0':
+            { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+                nodeName: 'File',
+                fieldName: 'ProductId' } } }
+        var mappings2  = { id:
+        { '0':
+        { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+            nodeName: 'File',
+            fieldName: 'ProductId' } },
+            title:
+            { '0':
+            { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+                nodeName: 'File',
+                fieldName: 'Desc' } },
+            description:
+            { '0':
+            { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+                nodeName: 'File',
+                fieldName: 'Details' } },
+            google_product_category:
+            { '0':
+            { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+                nodeName: 'File',
+                fieldName: 'MPN' } },
+            product_type:
+            { '0':
+            { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
+                nodeName: 'File',
+                fieldName: 'Color' } } }
         it('should return output field with id property only',function(){
             var row = { ProductId: '12ed',
                 Desc: 'e1e12',
                 Details: 'e12e21',
                 MPN: 'cc',
                 Color: 'blue' }
-            var output = processorService.transformEachRow(toolData,row);
+            var output = processorService.transformEachRow(mappings1,row);
             expect(output).to.be.an('object');
             expect(output).to.have.property('id');
             expect(output['id']).to.equal('12ed');
@@ -768,13 +826,13 @@ describe('processor.service',function(){
 
         })
 
-        it('case 2',function(){
+        it('should transform into a valid row',function(){
             var row = { ProductId: '12ed',
                 Desc: 'e1e12',
                 Details: 'e12e21',
                 MPN: 'cc',
                 Color: 'blue' }
-            var output = processorService.transformEachRow(toolData2,row);
+            var output = processorService.transformEachRow(mappings2,row);
             expect(output).to.be.an('object');
             expect(output).to.have.property('id');
             expect(output['id']).to.equal('12ed');
