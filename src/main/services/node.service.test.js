@@ -1,9 +1,85 @@
-var nodeService = require('./node.service');
+var rewire = require('rewire');
+var nodeService = rewire('./node.service');
 var expect = require('chai').expect;
 
 describe('node.service',function(){
-    describe('getFieldsFromModelSchema',function(){
-        var nodeModelSchema =  {
+
+    var NODES = [
+        {    name:'File'
+            ,label:'File'
+            ,type:'source'
+            ,category:'source'
+            ,image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png"
+            ,modelSchema:{
+            field1:{},
+            field2:{},
+            field3:{}
+        }
+            ,schema : {
+            "type": "object",
+            "properties": {
+                "selectFile": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "type": {
+                    "type":"string",
+                    "title":"FileType",
+                    "enum":['csv','tab']
+                }
+            }
+        }
+            ,options :{
+            "fields":{
+                "selectFile": {
+                    "type": "file"
+
+                },
+                "type":{
+                    "removeDefaultNone":true
+                }
+            },
+            "form": {
+                "attributes": {
+                    "method": "POST",
+                    "action": "/upload"
+                },
+                "buttons": {
+                    "submit": {
+                        "value": "Submit the Form",
+                        "click": function(){
+                            // this has all the values, use this to update data object or any other object on save.
+                            var val = this.getValue();
+                            var form = $('#alpaca2')
+                            form.ajaxSubmit({
+                                error: function(xhr) {
+                                    console.log('error happend in form submit',xhr.status)
+                                    alert('Error: ' + xhr.status);
+                                },
+                                success: function(response) {
+                                    alert(response);
+                                    console.log('selected node',nodeId)
+                                }
+                            });
+                            return false;
+
+                        }
+                    }
+
+
+                }
+            }
+
+        }
+            ,data:{}
+        },
+        {
+            name: 'Google'
+            , label: 'Google'
+            , type: 'target'
+            , category: 'target'
+            , image: "http://www.about-searchengines.com/_/rsrc/1375438908754/home/google-g-logo-s.png"
+            , modelSchema: {
             id: {
                 sanitization: {
                     type: 'string',
@@ -77,16 +153,26 @@ describe('node.service',function(){
             adult: {},
             multipack: {}
         }
+
+        }
+    ];
+
+    before(function(){
+        nodeService.__set__('NODES',NODES);
+    })
+
+    describe('getNodeFields',function(){
         it('should return an array of fields with valid schema',function(){
-            var fields = nodeService.getFieldsFromModelSchema(nodeModelSchema);
+            var fields = nodeService.getNodeFields('Google');
             expect(fields).to.be.an('array');
             expect(fields[0]).to.have.property('name')
             expect(fields[0]).to.have.property('required')
         })
     })
-    describe('getNodeStructure',function(){
+
+    describe('getNodeUIStructure',function(){
         it('Returns valid structure',function(){
-            var googleStructure = nodeService.getNodeStructure('Google')
+            var googleStructure = nodeService.getNodeUIStructure('Google')
             expect(googleStructure).to.be.an('object')
         })
     })

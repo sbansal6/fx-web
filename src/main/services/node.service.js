@@ -173,15 +173,24 @@ function guid() {
  * Trim down version of node for UI display
  * Only pass info specific to this instance of node
  */
-var getNodeStructure = function(nodeName){
+var getNodeUIStructure = function(nodeName){
+    var node = getNodeByName(nodeName);
+    node.nodeId = node.name + '_' +  guid();
+    // extract fields from modelSchema
+    node.fields = getNodeFields(nodeName);
+    // remove not required properties
+    delete node.modelSchema;
+    return node;
+}
+
+/**
+ * Return node from NODE array by name
+ * @param nodeName
+ */
+var getNodeByName = function(nodeName){
     var node = _.find(NODES,function(n){
         return n.name === nodeName
     })
-    node.nodeId = node.name + '_' +  guid();
-    // extract fields from modelSchema
-    node.fields = getFieldsFromModelSchema(node.modelSchema);
-    // remove not required properties
-    delete node.modelSchema;
     return node;
 }
 
@@ -190,11 +199,12 @@ var getNodeStructure = function(nodeName){
  * @param modelSchema
  * @returns {Array}
  */
-var getFieldsFromModelSchema = function(nodeModelSchema){
+var getNodeFields = function(nodeName){
+    var node = getNodeByName(nodeName)
     var fields = [];
-    for (var key in nodeModelSchema){
+    for (var key in node.modelSchema){
         var required = false;
-        if (nodeModelSchema[key]["validation"] && nodeModelSchema[key]["validation"]["minLength"]){
+        if (node.modelSchema[key]["validation"] && node.modelSchema[key]["validation"]["minLength"]){
             required = true;
         }
         var field = {name:key,required:required}
@@ -202,77 +212,36 @@ var getFieldsFromModelSchema = function(nodeModelSchema){
     }
     return fields;
 }
-var getSanitizeSchema = function(nodeModelSchema){
+
+var getNodeSanitizeSchema = function(nodeName){
+    var node = getNodeByName(nodeName);
     var sanitization = {type:"object",properties:{}}
-    if (!nodeModelSchema){
-        throw new Error("missing connector schema")
-    }
-    for (var field in nodeModelSchema){
-        if (nodeModelSchema[field].sanitization){
-            sanitization.properties[field] = nodeModelSchema[field].sanitization;
+    for (var field in node.modelSchema){
+        if (node.modelSchema[field].sanitization){
+            sanitization.properties[field] = node.modelSchema[field].sanitization;
         }
 
     }
     return sanitization
 }
-var getValidationSchema = function(nodeModelSchema){
+
+var getNodeValidationSchema = function(nodeName){
+    var node = getNodeByName(nodeName);
     var validation = {type:"object",properties:{}}
-    if (!nodeModelSchema){
-        throw new Error("missing connector schema")
-    }
-    for (var field in nodeModelSchema){
-        if (nodeModelSchema[field].validation){
-            validation.properties[field] = nodeModelSchema[field].validation;
+    for (var field in node.modelSchema){
+        if (node.modelSchema[field].validation){
+            validation.properties[field] = node.modelSchema[field].validation;
         }
 
     }
     return validation
 }
 
-var tempSchema = {
-    id: {
-        sanitization: {
-            type: 'string',
-            rules: ['trim']
-
-        },
-        validation: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 2
-        },
-    },
-    title: {
-        sanitization: {
-            type: 'string',
-            rules: ['trim']
-
-        },
-        validation: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 5
-        },
-
-    }
-}
-var sanitization  = getSanitizeSchema(tempSchema)
-var validation = getValidationSchema(tempSchema)
-
-// this will go processor test
-//var data = {
-//    id: "qwdqwdqwdqwdqwd",
-//    title:"asxasxasxasxasxasxas"
-//
-//}
-//console.log('sanitize',inspector.sanitize(sanitization, data).data)
-//console.log('validator',inspector.validate(validation,data))
-
 module.exports = {
-    getNodeStructure:getNodeStructure,
-    getFieldsFromModelSchema:getFieldsFromModelSchema,
-    getSanitizeSchema:getSanitizeSchema,
-    getValidationSchema:getValidationSchema
+    getNodeUIStructure:getNodeUIStructure,
+    getNodeFields:getNodeFields,
+    getNodeSanitizeSchema:getNodeSanitizeSchema,
+    getNodeValidationSchema:getNodeValidationSchema
 }
 
 

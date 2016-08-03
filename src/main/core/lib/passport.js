@@ -15,8 +15,8 @@ var nodeService  = require('../../services/node.service');
 function initializeTools(newUser,cb){
     var userTools = new Tools();
     var googleInitialNodes = []
-    googleInitialNodes.push(nodeService.getNodeStructure('File'))
-    googleInitialNodes.push(nodeService.getNodeStructure('Google'))
+    googleInitialNodes.push(nodeService.getNodeUIStructure('File'))
+    googleInitialNodes.push(nodeService.getNodeUIStructure('Google'))
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},
