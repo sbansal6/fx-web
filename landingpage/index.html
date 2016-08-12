@@ -26,6 +26,51 @@
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+
+    <style>
+      .bt-login,.bt-login:hover, .bt-login:active, .bt-login:focus {
+        background-color: #46426f;
+        color: #ffffff;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        transition: background-color 300ms linear 0s;
+      }
+
+
+      .login-tab {
+        margin: 0 auto;
+        max-width: 380px;
+      }
+
+      .login-modal-header {
+        background: #ff7473;
+        color: #fff;
+      }
+
+      .login-modal-header .modal-title {
+        color: #fff;
+      }
+
+      .login-modal-header .close {
+        color: #fff;
+      }
+
+      .login-modal i {
+        color: #000;
+      }
+
+      .login-modal form {
+        max-width: 340px;
+      }
+
+      .tab-pane form {
+        margin: 0 auto;
+      }
+      .login-modal-footer{
+        margin-top:15px;
+        margin-bottom:15px;
+      }
+    </style>
   </head>
   <body data-spy="scroll" data-target="#navigation" data-offset="120">
     <div id="all">
@@ -54,14 +99,14 @@
       <!-- *** LOGIN MODAL ***______________________________________________________-->
       <div id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true" class="modal fade">
         <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" data-dismiss="modal" aria-hidden="true" class="close">×</button>
+          <div class="modal-content login-modal">
+            <div class="modal-header login-modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title text-center" id="loginModalLabel">Login</h4>
             </div>
             <div class="modal-body">
               <!-- LOGIN FORM -->
               <form class="form-login" action="/login" method="post">
-                <h2 class="form-login-heading">Login</h2>
                 <div class="login-wrap">
                   <input type="text" class="form-control" placeholder="Email" name="email" autofocus>
                   <br>
@@ -69,17 +114,14 @@
                   <label class="checkbox">
 
                   </label>
-                  <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
+                  <button class="btn btn-theme btn-block bt-login" type="submit"><i class="fa fa-lock"></i> LOG IN</button>
                   <hr>
 
                   <div class="registration">
                     <!--<a class="" href="#signup">-->
                       <!--Forgot Password?<br/>-->
                     <!--</a>-->
-                    Don't have an account yet?<br/>
-                    <a id="linkSignUp">
-                      Create an account
-                    </a>
+                    Don't have an account yet?<a id="linkSignUp"> Sign Up</a>
                   </div>
                 </div>
               </form>
@@ -92,21 +134,29 @@
       <!-- *** SIGNUP MODAL ***_________________________________________________________-->
       <div id="modalSignUp" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true" class="modal fade">
         <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" data-dismiss="modal" aria-hidden="true" class="close">×</button>
+          <div class="modal-content login-modal">
+            <div class="modal-header login-modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title text-center" id="loginModalLabel">Sign Up</h4>
             </div>
             <div class="modal-body">
               <!-- SIGN UP FORM -->
               <form class="form-login" action="/signup" method="post">
-                <h2 class="form-login-heading">Sign Up</h2>
                 <div class="login-wrap">
                   <input id= "inputSignUpEmail" type="text" class="form-control" placeholder="Email" name="email" autofocus>
                   <br>
                   <input type="password" class="form-control" placeholder="Password" name="password">
                   <br>
-                  <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> SIGN UP</button>
+                  <button class="btn btn-theme btn-block bt-login" type="submit"><i class="fa fa-lock"></i> SIGN UP</button>
                   <hr>
+
+                  <div class="registration">
+                    <!--<a class="" href="#signup">-->
+                    <!--Forgot Password?<br/>-->
+                    <!--</a>-->
+                    Already have an account?<a id="refLinkLogin"> Login In</a>
+                  </div>
+
                 </div>
               </form>
             </div>
@@ -238,13 +288,21 @@
     <!---->
     <script>
       $(document).ready(function(){
+
         $("#linkLogin").click(function(){
           $("#modalLogin").modal();
         });
+
         $("#linkSignUp").click(function(){
           $("#modalLogin").modal('hide');
           $("#modalSignUp").modal();
         });
+
+        $("#refLinkLogin").click(function(){
+          $("#modalSignUp").modal('hide');
+          $("#modalLogin").modal();
+        });
+
         $("#submit_intro").click(function(){
           var email = $('#email_intro').val();
           $('#inputSignUpEmail').val(email);
