@@ -108,7 +108,7 @@
               <!-- LOGIN FORM -->
               <form class="form-login" action="/login" method="post">
                 <div class="login-wrap">
-                  <input type="text" class="form-control" placeholder="Email" name="email" autofocus>
+                  <input id="inputLoginEmail" type="email" class="form-control" placeholder="Email" name="email">
                   <br>
                   <input type="password" class="form-control" placeholder="Password" name="password">
                   <label class="checkbox">
@@ -288,6 +288,19 @@
     <!---->
     <script>
       $(document).ready(function(){
+
+        $('#modalLogin').on('shown.bs.modal', function () {
+          $('#inputLoginEmail').focus()
+        });
+
+        $('#modalSignUp').on('shown.bs.modal', function () {
+          $('#inputSignUpEmail').focus()
+        });
+
+
+        $('#modalLogin').on('shown.bs.modal', function () {
+          $('#inputEmail').focus()
+        });
 
         $("#linkLogin").click(function(){
           $("#modalLogin").modal();
