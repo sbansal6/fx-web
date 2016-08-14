@@ -353,7 +353,10 @@ $('#btnAnalyze').click(function() {
     });
 })
 
+
+
 jsPlumb.ready(function() {
+
     $("#tabstrip").ejTab();
     //todo :- should populate with empty columns
     $('#GridContainer').empty()
@@ -422,6 +425,10 @@ jsPlumb.ready(function() {
             size: { height: "600"},
             legend: { visible: true,position: 'right', alignment:"near" }
         });
+
+    $("#btnExport").click(function(){
+        $('.e-table').tableExport({type:'csv',escape:'false'});
+    });
 
     jsPlumb.importDefaults({
         Connector: ["Straight"],

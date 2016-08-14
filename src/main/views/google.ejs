@@ -2,6 +2,9 @@
 <% stylesheet('google.css') -%>
 <% script('js/jsPlumb-2.1.2-min.js') -%>
 <% script('js/keyboard.min.js') -%>
+<% script('js/html2canvas.js') -%>
+<% script('js/jquery.base64.js') -%>
+<% script('js/tableExport.js') -%>
 <% script('google.js') -%>
 <div class="row">
   <div class="col-md-4">
@@ -10,17 +13,20 @@
   <div class="col-md-4 text-center">
   </div>
   <div class="col-md-4">
-     <button id="btnSave" type="button" class="btn btn-success pull-right right-button">Save</button>
-     <button id="btnAnalyze" type="button" class="btn btn-info pull-right right-button">Analyze</button>
+      <div class="btn-group pull-right" role="group" aria-label="Basic example">
+          <button id="btnAnalyze" type="button" class="btn btn-primary btn-sm">Analyze</button>
+          <button id="btnExport" type="button" class="btn btn-info btn-sm">Export</button>
+          <button id="btnSave" type="button" class="btn btn-success btn-sm">Save</button>
+      </div>
   </div>
 </div>
 <div class="row">
     <div id="tabstrip" style="width: 100%">
         <ul>
-            <li id="tabDesign"><a href="#design">Design</a></li>
-            <li id="tabGrid"><a href="#grid">Grid</a></li>
+            <li id="tabDesign"><a href="#linkDesign">Design</a></li>
+            <li id="tabGrid"><a href="#linkGrid">Grid</a></li>
         </ul>
-        <div id="design">
+        <div id="linkDesign">
             <div class="row">
                 <div class="col-md-8" style="border: groove">
                     <div id="canvas" class="col-md-8 canvas" style="width: 800px;height: 1500px">
@@ -31,15 +37,18 @@
                     </div>
                 <div>
             </div>
+        </div>
 
-        </div>
-        <div id="grid">
-            <div id='GridContainer'>
-            </div>
-        </div>
+
 
     </div>
 
+</div>
+        <div id="linkGrid">
+            <div id='GridContainer'>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="myModal">
     <div id="form"></div>
