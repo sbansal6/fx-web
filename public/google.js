@@ -525,7 +525,12 @@ jsPlumb.ready(function() {
             }
             else {
                 // first time drawing canvas
+                var nodeCount = 0;
                 async.eachSeries(TOOL.nodes,function(n,eachSeriesCb){
+                    nodeCount++;
+                    n.positionX = 30 * (nodeCount === 1 ? 1 : 15);
+                    n.positionY = 30 ;
+                    console.log('node',n)
                     drawNode(n,eachSeriesCb)
                 },function(){
                     console.log('done loading from nodes')

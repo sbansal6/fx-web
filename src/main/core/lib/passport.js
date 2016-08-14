@@ -116,7 +116,7 @@ module.exports = function (passport) {
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         if (env === 'develop'){
-            email = 'test';
+            email = 'test@gmail.com';
             password = 'test';
             console.log('signing in as develop env')
         }
