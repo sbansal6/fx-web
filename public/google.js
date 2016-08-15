@@ -419,7 +419,7 @@ jsPlumb.ready(function() {
         { title: "Start date" },
         { title: "Salary" }
     ]});
-    
+
     $("#btnExport").click(function(){
         $('.e-table').tableExport({type:'csv',escape:'false'});
     });
