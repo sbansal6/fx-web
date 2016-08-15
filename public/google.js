@@ -368,10 +368,11 @@ $('#btnAnalyze').click(function() {
         success: function(result) {
             alert('analyzed --' + JSON.stringify(result));
             $('#GridContainer').empty()
-            $('#GridContainer').append('<table id="gridTable" class="display" width="100%"></table>')
+            $('#GridContainer').append('<table id="gridTable" class="table table-striped table-bordered" style="width:100%"></table>')
             //Get dynamic column.
             var dynamicColumns = [];
             var i = 0;
+            var maxKeys = Object.keys(result[0]).length;
             $.each(result[0], function (key, value) {
                 var obj = { sTitle: key };
                 dynamicColumns[i] = obj;
@@ -401,7 +402,11 @@ $('#btnAnalyze').click(function() {
                 "bFilter": true,
                 "bSort": true,
                 "aaData": rowDataSet,
-                "aoColumns": dynamicColumns  //These are dynamically created columns present in JSON object.
+                "aoColumns": dynamicColumns,  //These are dynamically created columns present in JSON object.
+                // dont display message filter
+                "columnDefs": [
+                    { "visible": false, "targets": maxKeys - 1 }
+                ]
             });
         }
     });

@@ -8,4 +8,11 @@ stats: -
    ..
    ..
    do same for all rows 
- 
+
+
+ datatable styling:
+
+ 1) https://datatables.net/examples/api/show_hide.html
+ 2) show message as expanded or tooltil , filter by isvalid
+
+ tooltip https://datatables.net/beta/1.9/examples/advanced_init/events_post_init.html

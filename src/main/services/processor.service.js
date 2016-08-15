@@ -92,7 +92,9 @@ function sanitizeRow(sanitizationSchema,row){
  */
 function validateRow(validationSchema,row){
     var validationResult = inspector.validate(validationSchema,row)
-
+    row.isValid = validationResult['valid'];
+    row.message = validationResult['error'];
+    return row;
 }
 
 function analyze(toolData,userData,cb){
@@ -109,9 +111,6 @@ function analyze(toolData,userData,cb){
     var destinationFieldMapping = destinationFieldMappings(toolData);
     var santizeSchema = nodeService.getNodeSanitizeSchema(targetConnectorName);
     var validateSchema = nodeService.getNodeValidationSchema(targetConnectorName);
-    console.log('santizeSchema',santizeSchema);
-    console.log('validateSchema',validateSchema);
-
     inputStream.pipe(csv.parse({ columns: true }))
         .pipe(csv.transform(function (row, next) {
             async.waterfall([
@@ -124,13 +123,11 @@ function analyze(toolData,userData,cb){
                 }
                 ,
                 function(row,validateCb){
-                    validateRow(validateSchema,row)
-                    validateCb(null,row);
+                    validateCb(null,validateRow(validateSchema,row));
                 }
             ],function(err,row){
                 next(null,row)
             })
-
         }))
         .on("data", function(data){
             outputRows.push(data)
@@ -138,7 +135,6 @@ function analyze(toolData,userData,cb){
         .on("end", function(){
             cb(null,outputRows)
         });
-
 }
 
 module.exports.destinationFieldMappings = destinationFieldMappings
