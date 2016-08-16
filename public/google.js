@@ -317,6 +317,80 @@ function save() {
 
 }
 
+function renderGrid(result){
+    $('#GridContainer').empty()
+    $('#GridContainer').append('<table id="gridTable" class="display" width="100%"></table>')
+    //Get dynamic column.
+    var dynamicColumns = [];
+    var i = 0;
+    var maxKeys = Object.keys(result[0]).length;
+    $.each(result[0], function (key, value) {
+        var obj = { sTitle: toCamelCase(key) };
+        dynamicColumns[i] = obj;
+        i++;
+    });
+    //fetch all records from JSON result and make row data set.
+    var rowDataSet = [];
+    var i = 0;
+    $.each(result, function (key, value) {
+        var rowData = [];
+        var j = 0;
+        $.each(result[i], function (key, value) {
+            rowData[j] = JSON.stringify(value,null,4);
+            j++;
+        });
+        rowDataSet[i] = rowData;
+
+        i++;
+    });
+    $('#gridTable').DataTable({
+        "bDestroy": true,
+        "bJQueryUI": true,
+        "bFilter": true,
+        "bSort": true,
+        "aaData": rowDataSet,
+        "aoColumns": dynamicColumns,  //These are dynamically created columns present in JSON object.
+    });
+    // add tooltip
+    $('#gridTable tbody tr').each( function() {
+        var row = $('td', this);
+        var title = $(row[maxKeys - 1]).text();
+        this.setAttribute( 'title', JSON.stringify(title) );
+    });
+    // remove column from grid
+    var table = $('#gridTable').DataTable();
+    table.column(maxKeys - 1).visible(false)
+}
+
+function renderChart(){
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(drawStacked);
+    function drawStacked() {
+        var data = google.visualization.arrayToDataTable([
+            ['City', '2010 Population', '2000 Population'],
+            ['New York City, NY', 8175000, 8008000],
+            ['Los Angeles, CA', 3792000, 3694000],
+            ['Chicago, IL', 2695000, 2896000],
+            ['Houston, TX', 2099000, 1953000],
+            ['Philadelphia, PA', 1526000, 1517000]
+        ]);
+        var options = {
+            title: 'Population of Largest U.S. Cities',
+            chartArea: {width: '50%'},
+            isStacked: true,
+            hAxis: {
+                title: 'Total Population',
+                minValue: 0,
+            },
+            vAxis: {
+                title: 'City'
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('chart'));
+        chart.draw(data, options);
+    }
+
+}
 
 // get node data and fields from server by user
 // if has use that else use from raw node
@@ -373,88 +447,10 @@ $('#btnAnalyze').click(function() {
             nodes: TOOL.nodes
         },
         success: function(result) {
-            alert('analyzed --' + JSON.stringify(result));
-            $('#GridContainer').empty()
-            $('#GridContainer').append('<table id="gridTable" class="display" width="100%"></table>')
-            //Get dynamic column.
-            var dynamicColumns = [];
-            var i = 0;
-            var maxKeys = Object.keys(result[0]).length;
-            $.each(result[0], function (key, value) {
-                var obj = { sTitle: toCamelCase(key) };
-                dynamicColumns[i] = obj;
-                i++;
-            });
-            //fetch all records from JSON result and make row data set.
-            var rowDataSet = [];
-            var i = 0;
-            $.each(result, function (key, value) {
-                var rowData = [];
-                var j = 0;
-                $.each(result[i], function (key, value) {
-                    rowData[j] = JSON.stringify(value,null,4);
-                    j++;
-                });
-                rowDataSet[i] = rowData;
+            //alert('analyzed --' + JSON.stringify(result));
+            renderGrid(result);
+            renderChart();
 
-                i++;
-            });
-            $('#gridTable').DataTable({
-                "bDestroy": true,
-                "bJQueryUI": true,
-                "bFilter": true,
-                "bSort": true,
-                "aaData": rowDataSet,
-                "aoColumns": dynamicColumns,  //These are dynamically created columns present in JSON object.
-             });
-            // add tooltip
-            $('#gridTable tbody tr').each( function() {
-                var row = $('td', this);
-                var title = $(row[maxKeys - 1]).text();
-                this.setAttribute( 'title', JSON.stringify(title) );
-            });
-            // remove column from grid
-            var table = $('#gridTable').DataTable();
-            table.column(maxKeys - 1).visible(false)
-
-            var ctx = document.getElementById("myChart");
-            var myChart = new Chart(ctx, {
-                type: 'horizontalBar',
-                responsive:true,
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
-                    }
-                }
-            });
         }
     });
 })
