@@ -57,6 +57,13 @@ String.prototype.format = function(placeholders) {
     }
 };
 
+function toCamelCase(str){
+    return str.split(' ').map(function(word){
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join('');
+}
+
+
 /**
  * Generates a GUID string.
  * @returns {String} The generated GUID.
@@ -368,13 +375,13 @@ $('#btnAnalyze').click(function() {
         success: function(result) {
             alert('analyzed --' + JSON.stringify(result));
             $('#GridContainer').empty()
-            $('#GridContainer').append('<table id="gridTable" class="table table-striped table-bordered" style="width:100%"></table>')
+            $('#GridContainer').append('<table id="gridTable" class="display" width="100%"></table>')
             //Get dynamic column.
             var dynamicColumns = [];
             var i = 0;
             var maxKeys = Object.keys(result[0]).length;
             $.each(result[0], function (key, value) {
-                var obj = { sTitle: key };
+                var obj = { sTitle: toCamelCase(key) };
                 dynamicColumns[i] = obj;
                 i++;
             });
@@ -385,29 +392,30 @@ $('#btnAnalyze').click(function() {
                 var rowData = [];
                 var j = 0;
                 $.each(result[i], function (key, value) {
-                    rowData[j] = value;
+                    rowData[j] = JSON.stringify(value,null,4);
                     j++;
                 });
                 rowDataSet[i] = rowData;
 
                 i++;
             });
-            $('#gridTable').dataTable({
+            $('#gridTable').DataTable({
                 "bDestroy": true,
-                "bScrollCollapse": true,
                 "bJQueryUI": true,
-                "bPaginate": false,
-                "sScrollY": "310px",
-                "bInfo": true,
                 "bFilter": true,
                 "bSort": true,
                 "aaData": rowDataSet,
                 "aoColumns": dynamicColumns,  //These are dynamically created columns present in JSON object.
-                // dont display message filter
-                "columnDefs": [
-                    { "visible": false, "targets": maxKeys - 1 }
-                ]
+             });
+            // add tooltip
+            $('#gridTable tbody tr').each( function() {
+                var row = $('td', this);
+                var title = $(row[maxKeys - 1]).text();
+                this.setAttribute( 'title', JSON.stringify(title) );
             });
+            // remove column from grid
+            var table = $('#gridTable').DataTable();
+            table.column(maxKeys - 1).visible(false)
         }
     });
 })
