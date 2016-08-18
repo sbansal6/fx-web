@@ -85,6 +85,41 @@ function sanitizeRow(sanitizationSchema,row){
     return sanitizedRow.data;
 }
 
+/** Should return statistics in following format
+ * [
+ *   ['Record', 'Valid', 'Invalid'],
+     ['Id', 1000, 2000],
+     ['Title', 500, 2500],
+     ['Description', 700, 2300],
+     ['Google Product Category', 600, 2400],
+     ['Product Type', 1000, 2000]
+ * ]
+ */
+function generateStatistics(rows){
+    var stats = [];
+    stats.push(['Record','Valid','Invalid'])
+    var fields = {};
+    for ( var key in rows[0]){
+        if (key !== 'isvalid' || key !== 'message' ){
+            fields[key] = {invalid:0};
+        }
+    }
+    var totalRowCount = 0;
+    rows.forEach(function(r){
+        totalRowCount++;
+        r.message.forEach(function(mr){
+            var fieldName = mr.property.substring(2)
+            fields[fieldName].invalid ++
+        })
+    })
+    for (var key in fields){
+        stats.push([key,totalRowCount-fields[key].invalid,fields[key].invalid])
+    }
+    return stats;
+}
+
+
+
 /**
  * Validate a row as per schema and append validation result to row
  * @param validationSchema
@@ -133,7 +168,10 @@ function analyze(toolData,userData,cb){
             outputRows.push(data)
         })
         .on("end", function(){
-            cb(null,outputRows)
+            var output = {};
+            output.outputRows = outputRows;
+            output.stats = generateStatistics(outputRows);
+            cb(null,output)
         });
 }
 
@@ -142,3 +180,4 @@ module.exports.transformEachRow  = transformEachRow;
 module.exports.getMappingsRecursive = getMappingsRecursive;
 module.exports.parseField = parseField;
 module.exports.analyze = analyze;
+module.exports.generateStatistics = generateStatistics;

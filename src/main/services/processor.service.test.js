@@ -775,6 +775,177 @@ describe('processor.service',function(){
 
     })
 
+    describe('generateStatistics',function(){
+        var rows = [
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            }
+        ];
+        var stats = [ [ 'Record', 'Valid', 'Invalid' ],
+            [ 'id', 0, 10 ],
+            [ 'title', 5, 5 ],
+            [ 'description', 10, 0 ],
+            [ 'isValid', 10, 0 ],
+            [ 'message', 10, 0 ] ]
+        it('return valid stats',function(){
+            var result = processorService.generateStatistics(rows);
+            expect(result).to.deep.equal(stats)
+        })
+
+    })
+
     describe('transformEachRow',function(){
         var mappings1 ={ id:
         { '0':
@@ -848,5 +1019,5 @@ describe('processor.service',function(){
         })
     })
 
-    
+
 })

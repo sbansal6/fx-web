@@ -360,18 +360,11 @@ function renderGrid(result){
     table.column(maxKeys - 1).visible(false)
 }
 
-function renderChart(){
+function renderChart(stats){
     google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(drawStacked);
     function drawStacked() {
-        var data = google.visualization.arrayToDataTable([
-            ['Record', 'Valid', 'Invalid'],
-            ['Id', 1000, 2000],
-            ['Title', 500, 2500],
-            ['Description', 700, 2300],
-            ['Google Product Category', 600, 2400],
-            ['Product Type', 1000, 2000]
-        ]);
+        var data = google.visualization.arrayToDataTable(stats);
         var options = {
             title: 'Feed Statistics',
             chartArea: {width: '50%'},
@@ -446,8 +439,8 @@ $('#btnAnalyze').click(function() {
         },
         success: function(result) {
             //alert('analyzed --' + JSON.stringify(result));
-            renderGrid(result);
-            renderChart();
+            renderGrid(result.outputRows);
+            renderChart(result.stats);
 
         }
     });
