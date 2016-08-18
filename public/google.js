@@ -353,7 +353,7 @@ function renderGrid(result){
     $('#gridTable tbody tr').each( function() {
         var row = $('td', this);
         var title = $(row[maxKeys - 1]).text();
-        this.setAttribute( 'title', JSON.stringify(title) );
+        this.setAttribute( 'title', title );
     });
     // remove column from grid
     var table = $('#gridTable').DataTable();

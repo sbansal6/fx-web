@@ -946,6 +946,169 @@ describe('processor.service',function(){
 
     })
 
+    describe('reformatErrorMessage',function(){
+        var rows = [
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            },
+            {
+                "id": "121hhc",
+                "title": "cscascas",
+                "description": "ncascas",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 6",
+                        "property": "@.id"
+                    },
+                    {
+                        "code": null,
+                        "message": "must be shorter than 5 elements, but it has 8",
+                        "property": "@.title"
+                    }
+                ]
+            },
+            {
+                "id": "12ed",
+                "title": "e1e12",
+                "description": "e12e21",
+                "isValid": false,
+                "message": [
+                    {
+                        "code": null,
+                        "message": "must be shorter than 2 elements, but it has 4",
+                        "property": "@.id"
+                    }
+                ]
+            }
+        ];
+        it('reformat error messages as ',function(){
+            processorService.reformatErrorMessage(rows)
+        })
+    })
+
     describe('transformEachRow',function(){
         var mappings1 ={ id:
         { '0':

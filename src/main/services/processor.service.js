@@ -118,6 +118,19 @@ function generateStatistics(rows){
     return stats;
 }
 
+/**
+ * Convert message to html tooltip ready format
+ */
+function reformatErrorMessage(outputRows){
+    outputRows.forEach(function(r){
+        var stringMessage = [];
+        r.message.forEach(function(em){
+            stringMessage.push(em.property.substring(2) + ' :- ' + em.message) ;
+        });
+        r.message = stringMessage.join('&#013');
+    });
+    return outputRows;
+}
 
 
 /**
@@ -169,8 +182,8 @@ function analyze(toolData,userData,cb){
         })
         .on("end", function(){
             var output = {};
-            output.outputRows = outputRows;
             output.stats = generateStatistics(outputRows);
+            output.outputRows = reformatErrorMessage(outputRows);
             cb(null,output)
         });
 }
@@ -181,3 +194,4 @@ module.exports.getMappingsRecursive = getMappingsRecursive;
 module.exports.parseField = parseField;
 module.exports.analyze = analyze;
 module.exports.generateStatistics = generateStatistics;
+module.exports.reformatErrorMessage = reformatErrorMessage;
