@@ -348,6 +348,12 @@ function renderGrid(result){
         "bSort": true,
         "aaData": rowDataSet,
         "aoColumns": dynamicColumns,  //These are dynamically created columns present in JSON object.
+        "fnRowCallback":function(nRow,aData,iDisplayIndex,iDisplayIndexFull){
+            if ( aData[maxKeys - 2] == "false" )
+            {
+                $('td', nRow).css('color', 'Red');
+            }
+        }
     });
     // add tooltip
     $('#gridTable tbody tr').each( function() {
