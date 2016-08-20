@@ -101,12 +101,10 @@ function generateStatistics(rows){
     stats.push(['Record','Valid','Invalid'])
     var fields = {};
     for ( var key in rows[0]){
-        console.log('key',key)
         if ( (key !== 'isValid') && (key !== 'message') ){
             fields[key] = {invalid:0};
         }
     }
-    console.log('fields',fields)
     var totalRowCount = 0;
     rows.forEach(function(r){
         totalRowCount++;
