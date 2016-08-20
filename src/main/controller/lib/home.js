@@ -13,7 +13,7 @@ var main = function (req, res, next) {
   		return next(new error.InternalServerError(500, err));
   	} else {
   		res.render('home', {
-        title: 'AdTools - Home',
+        title: 'FeedExchange - Home',
         user:req.user
       })
   	}
@@ -22,14 +22,14 @@ var main = function (req, res, next) {
 
 var decode = function(req,res,next){
     res.render('decode', {
-        title: 'AdTools - Decode',
+        title: 'FeedExchange - Decode',
         user:req.user
     })
 }
 
 var google = function(req,res,next){
     res.render('google', {
-        title: 'AdTools - Google',
+        title: 'FeedExchange - Google',
         user:req.user
     })
 }

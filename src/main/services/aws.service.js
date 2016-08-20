@@ -6,8 +6,8 @@ var AWS = require('aws-sdk'),
 AWS.config.loadFromPath('../../../aws-config.json');
 
 // assume you already have the S3 Bucket created, and it is called ierg4210-shopxx-photos
-var rootBucket = 'adtools-fs'
-var s3 = new AWS.S3({params: {Bucket: 'adtools-fs'}});
+var rootBucket = 'FeedExchange-fs'
+var s3 = new AWS.S3({params: {Bucket: 'FeedExchange-fs'}});
 
 function createFolder(userId,cb){
     s3.createBucket({Bucket:path.join(rootBucket,userId)},function(err,data){
