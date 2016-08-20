@@ -261,7 +261,7 @@ function drawNode(node, cb) {
 }
 
 // save canvas as well as nodes
-function save() {
+function save(cb) {
     var nodes = []
     $(".tableDesign").each(function(idx, elem) {
         var $elem = $(elem);
@@ -272,7 +272,6 @@ function save() {
             positionY: parseInt($elem.css("top"), 10)
         });
     });
-
     var connections = [];
     $.each(jsPlumb.getConnections(), function(idx, connection) {
         connections.push({
@@ -296,7 +295,6 @@ function save() {
     var flowChart = {};
     flowChart.nodes = nodes;
     flowChart.connections = connections;
-
     var flowChartJson = flowChart;
     TOOL.canvas = flowChartJson
     $.ajax({
@@ -309,7 +307,7 @@ function save() {
             nodes: TOOL.nodes
         },
         success: function(result) {
-            alert('saved --' + result);
+            cb();
         }
     });
 
@@ -367,7 +365,6 @@ function renderGrid(result){
 }
 
 function renderChart(stats){
-    google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(drawStacked);
     function drawStacked() {
         var data = google.visualization.arrayToDataTable(stats);
@@ -393,67 +390,32 @@ function renderChart(stats){
 // if has use that else use from raw node
 
 $('#btnSave').click(function() {
-    save();
+    save(function(){
+        alert('Settings saved!!');
+    });
 })
 
 $('#btnAnalyze').click(function() {
-    var nodes = []
-    $(".tableDesign").each(function(idx, elem) {
-        var $elem = $(elem);
-        nodes.push({
-            nodeId: $elem.attr('id'),
-            nodeName: $elem.attr('id').split('_')[0],
-            positionX: parseInt($elem.css("left"), 10),
-            positionY: parseInt($elem.css("top"), 10)
+    save(function(){
+        $.ajax({
+            type: "POST",
+            url: "/analyze",
+            data: {
+                toolName: "google",
+                canvas: TOOL.canvas,
+                settings: TOOL.settings,
+                nodes: TOOL.nodes
+            },
+            success: function(result) {
+                renderGrid(result.outputRows);
+                renderChart(result.stats);
+            }
         });
     });
 
-    var connections = [];
-    $.each(jsPlumb.getConnections(), function(idx, connection) {
-        connections.push({
-            connectionId: connection.id,
-            pageSourceId: connection.sourceId,
-            pageTargetId: connection.targetId,
-            anchors: $.map(connection.endpoints, function(endpoint) {
-                return [
-                    [endpoint.anchor.x,
-                        endpoint.anchor.y,
-                        endpoint.anchor.orientation[0],
-                        endpoint.anchor.orientation[1],
-                        endpoint.anchor.offsets[0],
-                        endpoint.anchor.offsets[1]
-                    ]
-                ];
-
-            })
-        });
-    });
-    var flowChart = {};
-    flowChart.nodes = nodes;
-    flowChart.connections = connections;
-
-    var flowChartJson = flowChart;
-    TOOL.canvas = flowChartJson
-    $.ajax({
-        type: "POST",
-        url: "/analyze",
-        data: {
-            toolName: "google",
-            canvas: TOOL.canvas,
-            settings: TOOL.settings,
-            nodes: TOOL.nodes
-        },
-        success: function(result) {
-            //alert('analyzed --' + JSON.stringify(result));
-            renderGrid(result.outputRows);
-            renderChart(result.stats);
-
-        }
-    });
 })
 
 jsPlumb.ready(function() {
-
     $('#gridTable').DataTable({
         data: dataSet,
         columns: [
@@ -464,11 +426,10 @@ jsPlumb.ready(function() {
         { title: "Start date" },
         { title: "Salary" }
     ]});
-
     $("#btnExport").click(function(){
         $('.e-table').tableExport({type:'csv',escape:'false'});
     });
-
+    google.charts.load('current', {packages: ['corechart', 'bar']});
     jsPlumb.importDefaults({
         Connector: ["Straight"],
         PaintStyle: {
