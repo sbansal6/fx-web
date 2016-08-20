@@ -96,20 +96,31 @@ function sanitizeRow(sanitizationSchema,row){
  * ]
  */
 function generateStatistics(rows){
+    //console.log('rows',rows)
     var stats = [];
     stats.push(['Record','Valid','Invalid'])
     var fields = {};
     for ( var key in rows[0]){
-        if (key !== 'isvalid' || key !== 'message' ){
+        console.log('key',key)
+        if ( (key !== 'isValid') && (key !== 'message') ){
             fields[key] = {invalid:0};
         }
     }
+    console.log('fields',fields)
     var totalRowCount = 0;
     rows.forEach(function(r){
         totalRowCount++;
         r.message.forEach(function(mr){
             var fieldName = mr.property.substring(2)
-            fields[fieldName].invalid ++
+            if (fields[fieldName]) {
+                fields[fieldName].invalid ++
+            }
+            // if field doesn't exist in fields table
+            // this happens for required fields that are not mapped
+            else {
+                fields[fieldName] = {"invalid":1}
+            }
+
         })
     })
     for (var key in fields){
