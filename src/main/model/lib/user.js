@@ -16,6 +16,7 @@ var userSchema = mongoose.Schema({
     rootDir: { type: String, default: "" },
     createDate: { type: Date, default: Date.now },
     lastUpdated: { type: Date, default: Date.now },
+    resetPasswordToken: String
 });
 // methods ======================
 // generating a hash
