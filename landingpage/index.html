@@ -142,7 +142,7 @@
             </div>
             <div class="modal-body">
               <!-- SIGN UP FORM -->
-              <form class="form-login" action="/signup" method="post">
+              <form id="signUpForm" class="form-login" action="/signup" method="post">
                 <div class="login-wrap">
                   <input id= "inputSignUpEmail" type="email" class="form-control" placeholder="Email" name="email" autofocus>
                   <br>
@@ -333,11 +333,22 @@
           }
         }
         var url = window.location.href;
-        var error = $.urlParam('message');
+        var error ;
+
+        error = $.urlParam('loginError');
         if(error){
           history.pushState({}, '', '/' );
           $("<div id='msgPop' class='alert alert-danger'> " + decodeURIComponent(error) + "</div>").insertBefore('#loginForm')
+          $("#modalSignUp").modal('hide');
           $("#modalLogin").modal();
+        }
+
+        error = $.urlParam('signUpError');
+        if(error){
+          history.pushState({}, '', '/' );
+          $("<div id='msgPop' class='alert alert-danger'> " + decodeURIComponent(error) + "</div>").insertBefore('#signUpForm')
+          $("#modalLogin").modal('hide');
+          $("#modalSignUp").modal();
         }
 
       })
