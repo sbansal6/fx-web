@@ -100,13 +100,14 @@
       <div id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="Login" aria-hidden="true" class="modal fade">
         <div class="modal-dialog modal-sm">
           <div class="modal-content login-modal">
-            <div class="modal-header login-modal-header">
+            <div id="loginModalHeader" class="modal-header login-modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title text-center" id="loginModalLabel">Login</h4>
+
             </div>
-            <div class="modal-body">
+            <div id="loginModalBody" class="modal-body">
               <!-- LOGIN FORM -->
-              <form class="form-login" action="/login" method="post">
+              <form id = "loginForm" class="form-login" action="/login" method="post">
                 <div class="login-wrap">
                   <input id="inputLoginEmail" type="email" class="form-control" placeholder="Email" name="email">
                   <br>
@@ -119,7 +120,7 @@
 
                   <div class="registration">
                     <!--<a class="" href="#signup">-->
-                      <!--Forgot Password?<br/>-->
+                    <!--Forgot Password?<br/>-->
                     <!--</a>-->
                     Don't have an account yet?<a id="linkSignUp"> Sign Up</a>
                   </div>
@@ -137,7 +138,7 @@
           <div class="modal-content login-modal">
             <div class="modal-header login-modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title text-center" id="loginModalLabel">Sign Up</h4>
+              <h4 class="modal-title text-center" id="signUpModalLabel">Sign Up</h4>
             </div>
             <div class="modal-body">
               <!-- SIGN UP FORM -->
@@ -321,6 +322,24 @@
           $('#inputSignUpEmail').val(email);
           $("#modalSignUp").modal();
         });
+
+        $.urlParam = function(name){
+          var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+          if (results==null){
+            return null;
+          }
+          else{
+            return results[1] || 0;
+          }
+        }
+        var url = window.location.href;
+        var error = $.urlParam('message');
+        if(error){
+          history.pushState({}, '', '/' );
+          $("<div id='msgPop' class='alert alert-danger'> " + decodeURIComponent(error) + "</div>").insertBefore('#loginForm')
+          $("#modalLogin").modal();
+        }
+
       })
 
     </script>
