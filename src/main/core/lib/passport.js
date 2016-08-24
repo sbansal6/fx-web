@@ -16,8 +16,9 @@ var nodeService  = require('../../services/node.service');
 function initializeTools(newUser,cb){
     var userTools = new Tools();
     var googleInitialNodes = []
-    googleInitialNodes.push(nodeService.getNodeUIStructure('File'))
-    googleInitialNodes.push(nodeService.getNodeUIStructure('Google'))
+    googleInitialNodes.push(nodeService.getNodeUIStructure('File'));
+    googleInitialNodes.push(nodeService.getNodeUIStructure('Google'));
+    googleInitialNodes.push(nodeService.getNodeUIStructure('StringCleaner'));
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},
@@ -100,12 +101,11 @@ module.exports = function (passport) {
 
         }));
 
-   // =========================================================================
+    // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
     passport.use('local-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',

@@ -151,6 +151,52 @@ var NODES= [
         multipack: {}
     }
 
+    },
+    {
+        name:"StringCleaner",
+        label:"StringCleaner",
+        type:"transformation",
+        category:"transformation",
+        image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "choice": {
+                    "title": "Do you want to pick a Flavour or a Topping?",
+                    "type": "string",
+                    "enum": ["Flavour", "Topping"],
+                    "required": true
+                },
+                "flavour": {
+                    "title": "Pick a Flavour",
+                    "type": "string",
+                    "enum": ["Vanilla", "Chocolate", "Coffee", "Strawberry", "Mint"]
+                },
+                "topping": {
+                    "title": "Pick a Topping",
+                    "type": "string",
+                    "enum": ["Marshmellow", "Chocolate Chip", "Caramel", "Cookie Dough"]
+                }
+            },
+            "dependencies": {
+                "flavour": ["choice"],
+                "topping": ["choice"]
+            }
+        },
+        "options": {
+            "fields": {
+                "flavour": {
+                    "dependencies": {
+                        "choice": "Flavour"
+                    }
+                },
+                "topping": {
+                    "dependencies": {
+                        "choice": "Topping"
+                    }
+                }
+            }
+        }
     }
 ];
 
