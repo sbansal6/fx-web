@@ -11,63 +11,71 @@ var NODES= [
         field1:{},
         field2:{},
         field3:{}
-    }
-        ,schema : {
-        "type": "object",
-        "properties": {
-            "selectFile": {
-                "type": "string",
-                "format": "uri"
-            },
-            "type": {
-                "type":"string",
-                "title":"FileType",
-                "enum":['csv','tab']
-            }
-        }
-    }
-        ,options :{
-        "fields":{
-            "selectFile": {
-                "type": "file"
-
-            },
-            "type":{
-                "removeDefaultNone":true
-            }
-        },
-        "form": {
-            "attributes": {
-                "method": "POST",
-                "action": "/upload"
-            },
-            "buttons": {
-                "submit": {
-                    "value": "Submit the Form",
-                    "click": function(){
-                        // this has all the values, use this to update data object or any other object on save.
-                        var val = this.getValue();
-                        var form = $('#alpaca2')
-                        form.ajaxSubmit({
-                            error: function(xhr) {
-                                console.log('error happend in form submit',xhr.status)
-                                alert('Error: ' + xhr.status);
-                            },
-                            success: function(response) {
-                                alert(response);
-                                console.log('selected node',nodeId)
-                            }
-                        });
-                        return false;
-
-                    }
+         }
+        ,schema: {
+            "type": "object",
+            "properties": {
+                "selectFile": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "type": {
+                    "type":"string",
+                    "title":"FileType",
+                    "enum":['csv','tab'],
+                    "required": true
                 }
-
-
             }
         }
+        ,options: {
+            "fields":{
+                "selectFile": {
+                    "type": "file"
 
-    }
+                },
+                "type":{
+                    "removeDefaultNone":true
+                }
+            },
+            "form": {
+                "attributes": {
+                    "method": "POST",
+                    "action": "/upload"
+                },
+                "buttons": {
+                    "submit": {
+                        "value": "Save",
+                        "click": function(){
+                            //event.preventDefault()
+                            // this has all the values, use this to update data object or any other object on save.
+                            var val = this.getValue();
+                            var form = $('#alpaca2')
+                            form.ajaxSubmit({
+                                error: function(xhr) {
+                                    console.log('error happend in form submit',xhr.status)
+                                    alert('Error: ' + xhr.status);
+                                },
+                                success: function(response) {
+                                    var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
+                                    thisNode.fields = response.fields;
+                                    thisNode.data = val;
+                                    thisNode.fileName = response.fileName;
+                                    $('#myModal').dialog("close");
+                                    drawNode(thisNode,function(){
+                                        console.log('Node edited and redrawn');
+                                    })
+                                }
+                            });
+                            return false;
+
+                        }
+                    }
+
+
+                }
+            }
+
+        }
         ,data:{}
     },
     {
@@ -153,8 +161,8 @@ var NODES= [
 
     },
     {
-        name:"StringCleaner",
-        label:"StringCleaner",
+        name:"Function",
+        label:"Function",
         type:"transformation",
         category:"transformation",
         image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
