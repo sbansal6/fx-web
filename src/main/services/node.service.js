@@ -161,8 +161,8 @@ var NODES= [
 
     },
     {
-        name:"Function",
-        label:"Function",
+        name:"Fn",
+        label:"Fn",
         type:"transformation",
         category:"transformation",
         image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",

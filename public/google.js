@@ -102,14 +102,36 @@ function editNode(nodeId) {
     $('#myModal').dialog('option', 'title', 'Edit Node');
 }
 
-function addField(nodeId, node, field) {
-    var rowId = nodeId + '_' + field.name
-    var tableRow = '<tr id=' + rowId + '>' +
-        '<td align="center">' + field.name + '</td>' +
-        '</tr>'
-    $('#' + nodeId + " .table").append(tableRow);
-    setEndPoint(rowId, node)
+function addFields(nodeId,node){
+    if (node.fields.length>0){
+        node.fields.forEach(function(field) {
+            var rowId = nodeId + '_' + field.name
+            var tableRow = '<tr id=' + rowId + '>' +
+                '<td align="center">' + field.name + '</td>' +
+                '</tr>'
+            $('#' + nodeId + " .table").append(tableRow);
+            setEndPoint(rowId, node)
+        });
+    } else {
+        var rowId = nodeId + '_' + 'default';
+        var tableRow = '<tr id=' + rowId + '>' +
+            '<td align="center"></td>' +
+            '</tr>'
+        $('#' + nodeId + " .table").append(tableRow);
+        console.log('printing node',node)
+        setEndPoint(rowId, node)
+    }
 }
+
+// function addField(nodeId, node, field) {
+//
+//     var rowId = nodeId + '_' + field.name
+//     var tableRow = '<tr id=' + rowId + '>' +
+//         '<td align="center">' + field.name + '</td>' +
+//         '</tr>'
+//     $('#' + nodeId + " .table").append(tableRow);
+//     setEndPoint(rowId, node)
+// }
 
 function addSourceEndPoint(rowId) {
     jsPlumb.addEndpoint(rowId, {
@@ -157,7 +179,7 @@ function addTargetEndPoint(rowId) {
 }
 
 function setEndPoint(rowId, node) {
-    if (node.type === 'transform') {
+    if (node.type === 'transformation') {
         addSourceEndPoint(rowId);
         addTargetEndPoint(rowId);
     }
@@ -191,9 +213,10 @@ function drawNode(node, cb) {
         jsPlumb.draggable(nodeId, {
             containment: "parent"
         });
-        node.fields.forEach(function(field) {
-            addField(nodeId, node, field);
-        });
+        addFields(nodeId,node);
+        // node.fields.forEach(function(field) {
+        //     addField(nodeId, node, field);
+        // });
         cb()
     });
 }
@@ -352,7 +375,6 @@ $('#btnAnalyze').click(function() {
     });
 
 })
-
 jsPlumb.ready(function() {
     $('#gridTable').DataTable({
         data: dataSet,
