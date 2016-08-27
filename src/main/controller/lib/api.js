@@ -3,7 +3,7 @@ var path=require('path');
 var csv = require('csv');
 var Flow = require('../../model').flow;
 var request = require('request');
-var components = require('../../components');
+
 
 /*
 *  Returns all components via api call

@@ -84,10 +84,13 @@ function editNode(nodeId) {
     var thisNode = _.find(TOOL.nodes, function(n) {
         return n.nodeId === nodeId
     })
+    var thisNodeOptions = _.find(NODES_OPTIONS,function(n){
+        return n.name === thisNode.name
+    })
     $('#form').empty();
     $("#form").alpaca({
         "schema": thisNode.schema,
-        "options": thisNode.options,
+        "options": thisNodeOptions.options,
         "data":thisNode.data
     });
     $('#myModal').dialog({
@@ -122,16 +125,6 @@ function addFields(nodeId,node){
         setEndPoint(rowId, node)
     }
 }
-
-// function addField(nodeId, node, field) {
-//
-//     var rowId = nodeId + '_' + field.name
-//     var tableRow = '<tr id=' + rowId + '>' +
-//         '<td align="center">' + field.name + '</td>' +
-//         '</tr>'
-//     $('#' + nodeId + " .table").append(tableRow);
-//     setEndPoint(rowId, node)
-// }
 
 function addSourceEndPoint(rowId) {
     jsPlumb.addEndpoint(rowId, {
