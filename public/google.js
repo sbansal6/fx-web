@@ -374,15 +374,7 @@ $('#btnAnalyze').click(function() {
 
 })
 
-
 jsPlumb.ready(function() {
-    // jQuery(document).ajaxStart(function () {
-    //     //show ajax indicator
-    //     ajaxindicatorstart('loading data.. please wait..');
-    // }).ajaxStop(function () {
-    //     //hide ajax indicator
-    //     ajaxindicatorstop();
-    // });
     $('#gridTable').DataTable({
         data: dataSet,
         columns: [
