@@ -1,7 +1,8 @@
 var multer  = require('multer');
 var path = require('path');
 var _ = require('underscore');
-var fs = require('fs')
+var fs = require('fs');
+var sutil = require('line-stream-util')
 var csv = require('csv');
 var controller = require('../../controller');
 var tools = require('../../model').tools;
@@ -27,30 +28,15 @@ var multerUpload = multer({ storage: storage })
 
 var headers = function(req,cb){
     var fullFileName = path.join(req.user.rootDir,req.files[0].originalname);
-    //console.log('fullFileName',fullFileName);
     var delimiter = req.body.type === 'csv' ? ',' : '/t';
-    //console.log('delimiter',delimiter)
-    var input = fs.createReadStream(fullFileName);
-    var n = 0;
-    var parser = csv.parse({delimiter: delimiter})
-    input.pipe(parser);
-    var hit = false;
-    var headers = "";
-    var n = 0;
-    parser.on('readable', function() {
-        n++;
-        if (!hit) {
-            var first = parser.read();
-            headers = first;
-            input.unpipe(parser);
-            parser.end();
-            hit = true;
-            cb(null,{headers:headers})
-        }
-    })
-
+    fs.createReadStream(fullFileName)
+        .pipe(sutil.head(1)) // get head lines
+        .pipe(sutil.split())
+        .setEncoding('utf8')
+        .on('data', function(data){
+            cb(null,{headers:data.split(delimiter)})
+        })
 }
-
 
 function updateTool(req,cb){
     var user = req.user;
@@ -79,7 +65,6 @@ function updateTool(req,cb){
     )
 }
 
-
 module.exports = function (app,isLoggedIn) {
     // =====================================
     // APPLICATION PAGE (with logout links)
@@ -106,7 +91,6 @@ module.exports = function (app,isLoggedIn) {
                 result.headers.forEach(function(h){
                     response.fields.push({name:h})
                 })
-                console.log()
                 res.status(200).json(response);
             }
         })

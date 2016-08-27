@@ -90,7 +90,7 @@ function editNode(nodeId) {
     $('#form').empty();
     $("#form").alpaca({
         "schema": thisNode.schema,
-        "options": thisNodeOptions.options,
+        "options": thisNodeOptions.options(nodeId),
         "data":thisNode.data
     });
     $('#myModal').dialog({
@@ -106,7 +106,7 @@ function editNode(nodeId) {
 }
 
 function addFields(nodeId,node){
-    if (node.fields.length>0){
+    if (node.fields && node.fields.length > 0){
         node.fields.forEach(function(field) {
             var rowId = nodeId + '_' + field.name
             var tableRow = '<tr id=' + rowId + '>' +
@@ -439,6 +439,7 @@ jsPlumb.ready(function() {
             toolName: "google"
         },
         success: function(result) {
+            console.log('return ',result)
             TOOL = result;
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
