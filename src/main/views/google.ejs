@@ -8,12 +8,7 @@
 <% script('Nodes.js') -%>
 <% script('google.js') -%>
 <div class="row">
-  <div class="col-md-4">
-  </div>
-  <!-- Indicates a successful or positive action -->
-  <div class="col-md-4 text-center">
-  </div>
-  <div class="col-md-4">
+  <div class="col-md-12">
       <div class="btn-group pull-right" role="group" aria-label="Basic example">
           <button id="btnAnalyze" type="button" class="btn btn-primary btn-sm">Analyze</button>
           <button id="btnExport" type="button" class="btn btn-info btn-sm">Export</button>
@@ -22,7 +17,7 @@
   </div>
 </div>
 <div class="row">
-    <div>
+    <div class="col-md-12">
         <ul class="nav nav-tabs">
             <li class="active">
                 <a  href="#1" data-toggle="tab">Design</a>
@@ -32,25 +27,22 @@
         </ul>
         <div class="tab-content ">
             <div class="tab-pane active" id="1">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div id="canvas" class="col-md-8 canvas" style="width: 600px;height: 1500px">
+                <div class="col-md-8">
+                        <div id="canvas" class="col-md-8 canvas" style="width: 750px;height: 1500px">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                <div class="col-md-4">
                         <div class="row">
                             <div id="chart">
                             </div>
                         </div>
                     </div>
-          </div>
             </div>
             <div class="tab-pane" id="2">
                 <div id='GridContainer'>
                     <table id="gridTable" class="display" width="100%"></table>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
