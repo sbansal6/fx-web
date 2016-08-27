@@ -354,7 +354,7 @@ $('#btnAnalyze').click(function() {
             url: "/analyze",
             beforeSend: function() {
                 // Here we show the loader
-                ajaxindicatorstart('loading data.. please wait..');
+                ajaxindicatorstart('analyzing feed.. please wait..');
             },
             complete: function(){
                 ajaxindicatorstop();

@@ -151,7 +151,6 @@ function validateRow(validationSchema,row){
     var validationResult = inspector.validate(validationSchema,row)
     row.isValid = validationResult['valid'];
     row.message = validationResult['error'];
-    console.log('row',row)
     return row;
 }
 
