@@ -340,9 +340,6 @@ function renderChart(stats){
 
 }
 
-// get node data and fields from server by user
-// if has use that else use from raw node
-
 $('#btnSave').click(function() {
     save(function(){
         alert('Settings saved!!');
@@ -351,9 +348,17 @@ $('#btnSave').click(function() {
 
 $('#btnAnalyze').click(function() {
     save(function(){
+
         $.ajax({
             type: "POST",
             url: "/analyze",
+            beforeSend: function() {
+                // Here we show the loader
+                ajaxindicatorstart('loading data.. please wait..');
+            },
+            complete: function(){
+                ajaxindicatorstop();
+            },
             data: {
                 toolName: "google",
                 canvas: TOOL.canvas,
@@ -368,7 +373,16 @@ $('#btnAnalyze').click(function() {
     });
 
 })
+
+
 jsPlumb.ready(function() {
+    // jQuery(document).ajaxStart(function () {
+    //     //show ajax indicator
+    //     ajaxindicatorstart('loading data.. please wait..');
+    // }).ajaxStop(function () {
+    //     //hide ajax indicator
+    //     ajaxindicatorstop();
+    // });
     $('#gridTable').DataTable({
         data: dataSet,
         columns: [

@@ -18,7 +18,7 @@ function initializeTools(newUser,cb){
     var googleInitialNodes = []
     googleInitialNodes.push(nodeService.getNodeUIStructure('File'));
     googleInitialNodes.push(nodeService.getNodeUIStructure('Google'));
-    googleInitialNodes.push(nodeService.getNodeUIStructure('Fn'));
+    //googleInitialNodes.push(nodeService.getNodeUIStructure('Fn'));
     userTools.userId= newUser._id
     userTools.tools = [
                 {name: "decode",settings:{}},
