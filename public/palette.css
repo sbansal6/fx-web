@@ -1,0 +1,36 @@
+#palette {
+    overflow-x: auto;
+    background: #f3f3f3;
+    height: 60px;
+    text-align: center;
+    padding: 5px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid #999;
+}
+.palette_node {
+    cursor:move;
+    font-size:13px;
+    background: #ddd;
+    margin: 5px auto;
+    height: 40px;
+    border: 2px solid #999;
+    background-position: 5% 50%;
+    background-repeat: no-repeat;
+    width: 80px;
+    background-size: contain;
+    position: absolute;
+}
+.palette_node:hover {
+    border-color: #ff7f0e;
+    background-color: #eee;
+}
+
+
+.palette_node:hover .palette_port {
+    border-color: #999;
+    background-color: #eee;
+}

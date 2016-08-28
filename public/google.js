@@ -340,6 +340,14 @@ function renderChart(stats){
 
 }
 
+function loadPalette(){
+    var d = document.createElement("div");
+    var node = "Test"
+    d.id = "scsacasc" + "_outer";
+    $("#palette").append(d);
+    $("#" + d.id).append('<div class="palette_node" id="' + node + '"></div>')
+}
+
 $('#btnSave').click(function() {
     save(function(){
         alert('Settings saved!!');
@@ -438,6 +446,7 @@ jsPlumb.ready(function() {
 
         });
     });
+    loadPalette()
     $.ajax({
         type: "GET",
         url: "/tool",

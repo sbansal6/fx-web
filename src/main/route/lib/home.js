@@ -98,7 +98,8 @@ module.exports = function (app,isLoggedIn) {
     });
 
     /**
-     * Get tool by name
+     * Get workflow by name
+     * For example :- Google workflow, facebook workflow
      */
     app.get('/tool',isLoggedIn,function(req,res){
         var user = req.user;
