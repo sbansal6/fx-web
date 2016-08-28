@@ -340,12 +340,20 @@ function renderChart(stats){
 
 }
 
-function loadPalette(){
-    var d = document.createElement("div");
-    var node = "Test"
-    d.id = "scsacasc" + "_outer";
-    $("#palette").append(d);
-    $("#" + d.id).append('<div class="palette_node" id="' + node + '"></div>')
+function loadPalette(nodes){
+    nodes.forEach(function(n){
+        var d = document.createElement("div");
+        var nodeName = n.name;
+        d.id = nodeName;
+        $("#palette").append(d);
+        $("#" + d.id).append('<div class="palette_node" id="' + nodeName + '">'+nodeName+'</div>');
+        $(d).draggable({
+            helper: 'clone',
+            appendTo: 'body',
+            revert: true,
+            revertDuration: 50
+        });
+    });
 }
 
 $('#btnSave').click(function() {
@@ -446,7 +454,6 @@ jsPlumb.ready(function() {
 
         });
     });
-    loadPalette()
     $.ajax({
         type: "GET",
         url: "/tool",
@@ -454,8 +461,9 @@ jsPlumb.ready(function() {
             toolName: "google"
         },
         success: function(result) {
-            console.log('return ',result)
-            TOOL = result;
+            console.log('return from ',result)
+            TOOL = result.tool;
+            loadPalette(result.paletteNodes);
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
                 // draw nodes

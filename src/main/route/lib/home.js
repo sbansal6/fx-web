@@ -6,6 +6,7 @@ var sutil = require('line-stream-util')
 var csv = require('csv');
 var controller = require('../../controller');
 var tools = require('../../model').tools;
+var nodeService = require('../../services/node.service');
 var processorService = require('../../services/processor.service');
 
 var storage = multer.diskStorage({
@@ -111,8 +112,13 @@ module.exports = function (app,isLoggedIn) {
                 if (toolName){
                     var tool = _.find(doc.tools, function (t) {
                         return t.name === toolName
-                    });
-                    tool ? res.json(tool) : res.json({status:"tool not found"})
+                    })
+                    if (tool){
+                        var paletteNodes = nodeService.paletteNodes();
+                        res.json({tool:tool,paletteNodes:paletteNodes});
+                    } else {
+                        res.json({status:"tool not found"})
+                    }
                 } else{
                     res.json(doc.tools)
                 }

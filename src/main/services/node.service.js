@@ -113,8 +113,42 @@ var NODES= [
     }
     },
     {
-        name:"Fn",
-        label:"Fn",
+        name:"Replace",
+        label:"Replace",
+        type:"transformation",
+        category:"transformation",
+        palette: true,
+        image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "choice": {
+                    "title": "Do you want to pick a Flavour or a Topping?",
+                    "type": "string",
+                    "enum": ["Flavour", "Topping"],
+                    "required": true
+                },
+                "flavour": {
+                    "title": "Pick a Flavour",
+                    "type": "string",
+                    "enum": ["Vanilla", "Chocolate", "Coffee", "Strawberry", "Mint"]
+                },
+                "topping": {
+                    "title": "Pick a Topping",
+                    "type": "string",
+                    "enum": ["Marshmellow", "Chocolate Chip", "Caramel", "Cookie Dough"]
+                }
+            },
+            "dependencies": {
+                "flavour": ["choice"],
+                "topping": ["choice"]
+            }
+        },
+        "data":{}
+    },
+    {
+        name:"SubString",
+        label:"SubString",
         type:"transformation",
         category:"transformation",
         palette: true,
@@ -231,11 +265,21 @@ var getNodeValidationSchema = function(nodeName){
     return validation
 }
 
+/**
+ * Returns nodes that are supposed to be in palette
+ */
+var paletteNodes = function () {
+    return _.filter(NODES,function(n){
+        return (n.palette === true)
+    })
+}
+
 module.exports = {
     getNodeUIStructure:getNodeUIStructure,
     getNodeFields:getNodeFields,
     getNodeSanitizeSchema:getNodeSanitizeSchema,
-    getNodeValidationSchema:getNodeValidationSchema
+    getNodeValidationSchema:getNodeValidationSchema,
+    paletteNodes:paletteNodes
 }
 
 

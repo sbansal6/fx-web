@@ -1,8 +1,8 @@
 #palette {
-    overflow-x: auto;
+    display: block;
+    position: relative;
     background: #f3f3f3;
     height: 60px;
-    text-align: center;
     padding: 5px;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -11,24 +11,27 @@
     user-select: none;
     border: 1px solid #999;
 }
+
 .palette_node {
+    float: left;
+    display: inline-block;
+    position: relative;
+    padding: 10px;
     cursor:move;
     font-size:13px;
     background: #ddd;
-    margin: 5px auto;
+    margin: 5px;
     height: 40px;
-    border: 2px solid #999;
-    background-position: 5% 50%;
-    background-repeat: no-repeat;
+    border: 1px solid #999;
     width: 80px;
     background-size: contain;
-    position: absolute;
+    text-align: center;
 }
+
 .palette_node:hover {
     border-color: #ff7f0e;
     background-color: #eee;
 }
-
 
 .palette_node:hover .palette_port {
     border-color: #999;
