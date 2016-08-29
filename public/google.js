@@ -1,4 +1,5 @@
 var TOOL = [];
+var PALETTE_NODES = [];
 var dataSet = [
     [ "Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800" ],
     [ "Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750" ],
@@ -38,44 +39,6 @@ var dataSet = [
     [ "Unity Butler", "Marketing Designer", "San Francisco", "5384", "2009/12/09", "$85,675" ]
 ];
 
-String.prototype.format = function(placeholders) {
-    if ($.isArray(placeholders)) {
-        var args = arguments;
-        return this.replace(/{(\d+)}/g, function(match, number) {
-            return typeof args[number] != 'undefined' ?
-                args[number] :
-                match;
-        });
-    } else { //Object
-        var s = this;
-        for (var propertyName in placeholders) {
-            var re = new RegExp('{' + propertyName + '}', 'gm');
-            s = s.replace(re, placeholders[propertyName]);
-        }
-        return s;
-    }
-};
-
-function toCamelCase(str){
-    return str.split(' ').map(function(word){
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    }).join('');
-}
-
-/**
- * Generates a GUID string.
- * @returns {String} The generated GUID.
- * @example af8a8416-6e18-a307-bd9c-f2c947bbb3aa
- * @author Slavik Meltser (slavik@meltser.info).
- * @link http://slavik.meltser.info/?p=142
- */
-function guid() {
-    function _p8(s) {
-        var p = (Math.random().toString(16) + "000000000").substr(2, 8);
-        return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
-    }
-    return _p8() + _p8(true) + _p8(true) + _p8();
-}
 
 /**
  * Edit Node now , add more fields or whatever
@@ -185,17 +148,11 @@ function setEndPoint(rowId, node) {
 }
 
 function drawNode(node, cb) {
-    console.log('drawing node', node, node.positionX, node.positionY)
     if (node.nodeId){
         jsPlumb.remove(node.nodeId);
     }
     $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
         var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
-        console.log('appending', data.format({
-            node_id: nodeId,
-            node_name: node.name,
-            image: node.image
-        }))
         $('.canvas').append(data.format({
             node_id: nodeId,
             node_name: node.name,
@@ -207,9 +164,6 @@ function drawNode(node, cb) {
             containment: "parent"
         });
         addFields(nodeId,node);
-        // node.fields.forEach(function(field) {
-        //     addField(nodeId, node, field);
-        // });
         cb()
     });
 }
@@ -341,7 +295,7 @@ function renderChart(stats){
 }
 
 function loadPalette(nodes){
-    nodes.forEach(function(n){
+    PALETTE_NODES.forEach(function(n){
         var d = document.createElement("div");
         var nodeName = n.name;
         d.id = nodeName;
@@ -353,6 +307,28 @@ function loadPalette(nodes){
             revert: true,
             revertDuration: 50
         });
+    });
+}
+
+function initOnDrag(){
+    $("#canvas").droppable({
+        containment: "canvas",
+        drop: function (e, ui) {
+            var droppedElement = ui.helper.clone();
+            var mainDiv = ui.draggable;
+            var draggable = $(mainDiv[0].lastChild);
+            var draggableId = draggable.attr('id');
+            ui.helper.remove();
+            // find node details from tools paletteNodes
+            // add node to chart/ draw node
+            var originalNode = _.find(PALETTE_NODES,function (pn) {
+                return (pn.name === draggableId)
+            });
+            console.log('originalNode',originalNode)
+            drawNode(originalNode,function(){
+
+            })
+        }
     });
 }
 
@@ -405,6 +381,7 @@ jsPlumb.ready(function() {
         $('.e-table').tableExport({type:'csv',escape:'false'});
     });
     google.charts.load('current', {packages: ['corechart', 'bar']});
+    initOnDrag();
     jsPlumb.importDefaults({
         Connector: ["Straight"],
         PaintStyle: {
@@ -463,7 +440,8 @@ jsPlumb.ready(function() {
         success: function(result) {
             console.log('return from ',result)
             TOOL = result.tool;
-            loadPalette(result.paletteNodes);
+            PALETTE_NODES = result.paletteNodes;
+            loadPalette();
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
                 // draw nodes
@@ -514,7 +492,7 @@ jsPlumb.ready(function() {
                     nodeCount++;
                     n.positionX = 30 * (nodeCount === 1 ? 1 : 15);
                     n.positionY = 30 ;
-                    console.log('node',n)
+                    console.log('node',n);
                     drawNode(n,eachSeriesCb)
                 },function(){
                     console.log('done loading from nodes')

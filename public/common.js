@@ -1,3 +1,21 @@
+String.prototype.format = function(placeholders) {
+    if ($.isArray(placeholders)) {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) {
+            return typeof args[number] != 'undefined' ?
+                args[number] :
+                match;
+        });
+    } else { //Object
+        var s = this;
+        for (var propertyName in placeholders) {
+            var re = new RegExp('{' + propertyName + '}', 'gm');
+            s = s.replace(re, placeholders[propertyName]);
+        }
+        return s;
+    }
+};
+
 function ajaxindicatorstart(text){
     if(jQuery('body').find('#resultLoading').attr('id') != 'resultLoading'){
         jQuery('body').append('<div id="resultLoading" style="display:none"><div><img src="images/ajax_loader_5.gif"><div>'+text+'</div></div><div class="bg"></div></div>');
@@ -65,3 +83,9 @@ function guid() {
     }
     return _p8() + _p8(true) + _p8(true) + _p8();
 };
+
+function toCamelCase(str){
+    return str.split(' ').map(function(word){
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join('');
+}
