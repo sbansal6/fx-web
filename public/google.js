@@ -38,7 +38,6 @@ var dataSet = [
     [ "Unity Butler", "Marketing Designer", "San Francisco", "5384", "2009/12/09", "$85,675" ]
 ];
 
-
 /**
  * Edit Node now , add more fields or whatever
  */
@@ -341,9 +340,7 @@ function initOnDrag(){
             })
             thisNode.positionX = positionX;
             thisNode.positionY = positionY;
-            console.log('originalNode',thisNode)
             drawNode(thisNode,function(){
-
             })
         }
     });
