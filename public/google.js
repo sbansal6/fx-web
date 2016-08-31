@@ -67,6 +67,14 @@ function editNode(nodeId) {
     $('#myModal').dialog('option', 'title', 'Edit Node');
 }
 
+/**
+ * Deletes a node on delete button
+ * @param nodeId
+ */
+function deleteNode(nodeId) {
+    jsPlumb.remove(nodeId);
+}
+
 function addFields(nodeId,node){
     if (node.fields && node.fields.length > 0){
         node.fields.forEach(function(field) {
@@ -146,19 +154,23 @@ function setEndPoint(rowId, node) {
     }
 }
 
-function drawNode(node, cb) {
+function drawNode(node,cb) {
     if (node.nodeId){
         jsPlumb.remove(node.nodeId);
     }
     $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
         var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
-        $('.canvas').append(data.format({
+        var nodeHtml = data.format({
             node_id: nodeId,
             node_name: node.name,
             image: node.image
-        }));
+        })
+        $('.canvas').append(nodeHtml);
         $('#' + nodeId).css('left', (node.positionX ? node.positionX : 30) + 'px');
         $('#' + nodeId).css('top', (node.positionY ? node.positionY : 30) + 'px');
+        if (node.isCoreNode){
+            $('#' + nodeId).find('.btn-danger').remove();
+        }
         jsPlumb.draggable(nodeId, {
             containment: "parent"
         });
@@ -319,14 +331,18 @@ function initOnDrag(){
             var mainDiv = ui.draggable;
             var draggable = $(mainDiv[0].lastChild);
             var draggableId = draggable.attr('id');
+            var positionX = ui.offset.left - $(this).offset().left;
+            var positionY = ui.offset.top - $(this).offset().top;
             ui.helper.remove();
             // find node details from tools paletteNodes
             // add node to chart/ draw node
-            var originalNode = _.find(PALETTE_NODES,function (pn) {
-                return (pn.name === draggableId)
-            });
-            console.log('originalNode',originalNode)
-            drawNode(originalNode,function(){
+            var thisNode = _.find(TOOL.nodes, function(n) {
+                return n.name === draggableId
+            })
+            thisNode.positionX = positionX;
+            thisNode.positionY = positionY;
+            console.log('originalNode',thisNode)
+            drawNode(thisNode,function(){
 
             })
         }
@@ -456,7 +472,7 @@ jsPlumb.ready(function() {
                                 onode.nodeId = cn.nodeId;
                                 onode.positionX = cn.positionX;
                                 onode.positionY = cn.positionY;
-                                drawNode(onode, eachSeriesCb);
+                                drawNode(onode,eachSeriesCb);
                             }
                         }, cb)
                     },

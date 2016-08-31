@@ -54,7 +54,7 @@ var NODES_OPTIONS = [
         name: 'Google'
     },
     {
-        name:"Fn",
+        name:"Replace",
         "options": function(nodeId){
            return {
                 "fields": {
@@ -71,5 +71,24 @@ var NODES_OPTIONS = [
             }
             }
         }
-    }
+    },
+    {
+        name:"SubString",
+        "options": function(nodeId){
+            return {
+                "fields": {
+                    "flavour": {
+                        "dependencies": {
+                            "choice": "Flavour"
+                        }
+                    },
+                    "topping": {
+                        "dependencies": {
+                            "choice": "Topping"
+                        }
+                    }
+                }
+            }
+        }
+    },
 ];
