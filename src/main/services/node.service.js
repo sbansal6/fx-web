@@ -6,7 +6,6 @@ var NODES= [
         ,label:'File'
         ,type:'source'
         ,category:'source'
-        ,palette:false
         ,image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png"
         ,modelSchema:{
         field1:{},
@@ -35,7 +34,6 @@ var NODES= [
         , label: 'Google'
         , type: 'target'
         , category: 'target'
-        , palette: false
         , image: "http://www.about-searchengines.com/_/rsrc/1375438908754/home/google-g-logo-s.png"
         , modelSchema: {
         id: {
@@ -117,7 +115,6 @@ var NODES= [
         label:"Replace",
         type:"transformation",
         category:"transformation",
-        palette: true,
         image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
         "schema": {
             "type": "object",
@@ -151,7 +148,6 @@ var NODES= [
         label:"SubString",
         type:"transformation",
         category:"transformation",
-        palette: true,
         image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
         "schema": {
             "type": "object",

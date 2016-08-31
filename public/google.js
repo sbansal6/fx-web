@@ -1,5 +1,4 @@
 var TOOL = [];
-var PALETTE_NODES = [];
 var dataSet = [
     [ "Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800" ],
     [ "Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750" ],
@@ -295,18 +294,20 @@ function renderChart(stats){
 }
 
 function loadPalette(nodes){
-    PALETTE_NODES.forEach(function(n){
-        var d = document.createElement("div");
-        var nodeName = n.name;
-        d.id = nodeName;
-        $("#palette").append(d);
-        $("#" + d.id).append('<div class="palette_node" id="' + nodeName + '">'+nodeName+'</div>');
-        $(d).draggable({
-            helper: 'clone',
-            appendTo: 'body',
-            revert: true,
-            revertDuration: 50
-        });
+    TOOL.nodes.forEach(function(n){
+        if (!(n.isCoreNode)){
+            var d = document.createElement("div");
+            var nodeName = n.name;
+            d.id = nodeName;
+            $("#palette").append(d);
+            $("#" + d.id).append('<div class="palette_node" id="' + nodeName + '">'+nodeName+'</div>');
+            $(d).draggable({
+                helper: 'clone',
+                appendTo: 'body',
+                revert: true,
+                revertDuration: 50
+            });
+        }
     });
 }
 
@@ -439,8 +440,7 @@ jsPlumb.ready(function() {
         },
         success: function(result) {
             console.log('return from ',result)
-            TOOL = result.tool;
-            PALETTE_NODES = result.paletteNodes;
+            TOOL = result;
             loadPalette();
             if (TOOL.canvas) {
                 console.log('loading from existing canvas')
@@ -487,13 +487,18 @@ jsPlumb.ready(function() {
             }
             else {
                 // first time drawing canvas
+                // only draw core nodes
                 var nodeCount = 0;
                 async.eachSeries(TOOL.nodes,function(n,eachSeriesCb){
-                    nodeCount++;
-                    n.positionX = 30 * (nodeCount === 1 ? 1 : 15);
-                    n.positionY = 30 ;
-                    console.log('node',n);
-                    drawNode(n,eachSeriesCb)
+                    if (n.isCoreNode){
+                        nodeCount++;
+                        n.positionX = 30 * (nodeCount === 1 ? 1 : 15);
+                        n.positionY = 30 ;
+                        console.log('node',n);
+                        drawNode(n,eachSeriesCb)
+                    } else {
+                        eachSeriesCb();
+                    }
                 },function(){
                     console.log('done loading from nodes')
                 })

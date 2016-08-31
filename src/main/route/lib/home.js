@@ -101,6 +101,7 @@ module.exports = function (app,isLoggedIn) {
     /**
      * Get workflow by name
      * For example :- Google workflow, facebook workflow
+     * todo:- later on find tool/workflow by id
      */
     app.get('/tool',isLoggedIn,function(req,res){
         var user = req.user;
@@ -114,8 +115,7 @@ module.exports = function (app,isLoggedIn) {
                         return t.name === toolName
                     })
                     if (tool){
-                        var paletteNodes = nodeService.paletteNodes();
-                        res.json({tool:tool,paletteNodes:paletteNodes});
+                        res.json(tool);
                     } else {
                         res.json({status:"tool not found"})
                     }

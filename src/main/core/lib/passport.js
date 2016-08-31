@@ -15,14 +15,18 @@ var nodeService  = require('../../services/node.service');
  */
 function initializeTools(newUser,cb){
     var userTools = new Tools();
-    var googleInitialNodes = []
-    googleInitialNodes.push(nodeService.getNodeUIStructure('File'));
-    googleInitialNodes.push(nodeService.getNodeUIStructure('Google'));
-    userTools.userId= newUser._id
+    var googleInitialNodes = [];
+    var fileNode = nodeService.getNodeUIStructure('File');
+    var googleDestinationNode = nodeService.getNodeUIStructure('Google');
+    fileNode.isCoreNode = true;
+    googleDestinationNode.isCoreNode = true;
+    googleInitialNodes.push(fileNode);
+    googleInitialNodes.push(googleDestinationNode);
+    googleInitialNodes.push(nodeService.getNodeUIStructure('Replace'));
+    googleInitialNodes.push(nodeService.getNodeUIStructure('SubString'));
+    userTools.userId = newUser._id
     userTools.tools = [
-                {name: "decode",settings:{}},
-                {name: "encode",settings:{}},
-                {name: "google",settings:{},"canvas":{},nodes:googleInitialNodes}
+                { name: "google", settings:{}, "canvas":{}, nodes: googleInitialNodes}
     ]
     //todo :- add positionX and positionY as per elements in array
     userTools.save(function(err){
