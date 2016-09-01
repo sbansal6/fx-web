@@ -155,14 +155,16 @@ function validateRow(validationSchema,row){
 }
 
 function analyze(toolData,userData,cb){
-    console.log('===============analyzing')
+    console.log('===============analyzing===================')
     //console.log('toolData',JSON.stringify(toolData,null,4))
-    var outputRows = []
+    var outputRows = [];
     var targetConnectorName =  getTargetConnector(toolData).name;
     var directory = path.join(root.driveRoot,userData.id) ;
     var fileNode = _.find(toolData.nodes,function(n){
         return n.name === 'File'
     })
+    // get transformation nodes that are dragged in canvas
+    // i.e find it from canvas
     var inputFileFullName = path.join(directory, fileNode.fileName) ;
     var inputStream = fs.createReadStream(inputFileFullName);
     var destinationFieldMapping = destinationFieldMappings(toolData);
@@ -174,6 +176,7 @@ function analyze(toolData,userData,cb){
                 function(transformCb){
                    transformCb(null,transformEachRow(destinationFieldMapping,row));
                 }
+
                 ,
                 function(row,santizeCb){
                     santizeCb(null,sanitizeRow(santizeSchema,row));
