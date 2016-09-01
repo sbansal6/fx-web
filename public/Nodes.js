@@ -57,34 +57,36 @@ var NODES_OPTIONS = [
         name:"Replace",
         "options": function(nodeId){
            return {
-                "fields": {
-                "flavour": {
-                    "dependencies": {
-                        "choice": "Flavour"
-                    }
-                },
-                "topping": {
-                    "dependencies": {
-                        "choice": "Topping"
-                    }
-                }
-            }
-            }
+               "form": {
+                   "buttons": {
+                       "submit": {
+                           "title": "Save",
+                           "click": function() {
+                               var value = this.getValue();
+                               var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
+                               thisNode.data = value;
+                               $('#myModal').dialog("close");
+                           }
+                       }
+                   }
+               }
+           }
         }
     },
     {
         name:"SubString",
         "options": function(nodeId){
             return {
-                "fields": {
-                    "flavour": {
-                        "dependencies": {
-                            "choice": "Flavour"
-                        }
-                    },
-                    "topping": {
-                        "dependencies": {
-                            "choice": "Topping"
+                "form": {
+                    "buttons": {
+                        "submit": {
+                            "title": "Save",
+                            "click": function() {
+                                var value = this.getValue();
+                                var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
+                                thisNode.data = value;
+                                $('#myModal').dialog("close");
+                            }
                         }
                     }
                 }

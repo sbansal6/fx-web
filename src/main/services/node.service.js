@@ -119,29 +119,20 @@ var NODES= [
         "schema": {
             "type": "object",
             "properties": {
-                "choice": {
-                    "title": "Do you want to pick a Flavour or a Topping?",
+                "searchValue": {
                     "type": "string",
-                    "enum": ["Flavour", "Topping"],
-                    "required": true
+                    "title": "searchValue"
                 },
-                "flavour": {
-                    "title": "Pick a Flavour",
+                "newValue": {
                     "type": "string",
-                    "enum": ["Vanilla", "Chocolate", "Coffee", "Strawberry", "Mint"]
-                },
-                "topping": {
-                    "title": "Pick a Topping",
-                    "type": "string",
-                    "enum": ["Marshmellow", "Chocolate Chip", "Caramel", "Cookie Dough"]
+                    "title": "newValue"
                 }
-            },
-            "dependencies": {
-                "flavour": ["choice"],
-                "topping": ["choice"]
             }
         },
-        "data":{}
+        "data": {
+            "searchValue": "John",
+            "newValue": "McClane"
+        }
     },
     {
         name:"SubString",
@@ -152,29 +143,20 @@ var NODES= [
         "schema": {
             "type": "object",
             "properties": {
-                "choice": {
-                    "title": "Do you want to pick a Flavour or a Topping?",
-                    "type": "string",
-                    "enum": ["Flavour", "Topping"],
-                    "required": true
+                "startIndex": {
+                    "type": "number",
+                    "title": "start"
                 },
-                "flavour": {
-                    "title": "Pick a Flavour",
-                    "type": "string",
-                    "enum": ["Vanilla", "Chocolate", "Coffee", "Strawberry", "Mint"]
-                },
-                "topping": {
-                    "title": "Pick a Topping",
-                    "type": "string",
-                    "enum": ["Marshmellow", "Chocolate Chip", "Caramel", "Cookie Dough"]
+                "endIndex": {
+                    "type": "number",
+                    "title": "end"
                 }
-            },
-            "dependencies": {
-                "flavour": ["choice"],
-                "topping": ["choice"]
             }
         },
-        "data":{}
+        "data": {
+            "startIndex": "1",
+            "endIndex": "2"
+        }
     }
 ];
 
