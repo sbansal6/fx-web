@@ -636,6 +636,356 @@ describe('processor.service',function(){
         }
     ]
     }
+    var toolData3 =  {
+        "name" : "google",
+        "nodes" : [
+            {
+                "positionY" : "30",
+                "positionX" : "30",
+                "isCoreNode" : "true",
+                "fields" : [
+                    {
+                        "required" : "false",
+                        "name" : "field1"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "field2"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "field3"
+                    }
+                ],
+                "nodeId" : "File_d4192cd3-3cf0-6826-097a-30df7f30b637",
+                "schema" : {
+                    "properties" : {
+                        "type" : {
+                            "required" : "true",
+                            "enum" : [
+                                "csv",
+                                "tab"
+                            ],
+                            "title" : "FileType",
+                            "type" : "string"
+                        },
+                        "selectFile" : {
+                            "format" : "uri",
+                            "type" : "string"
+                        }
+                    },
+                    "type" : "object"
+                },
+                "image" : "http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+                "category" : "source",
+                "type" : "source",
+                "label" : "File",
+                "name" : "File"
+            },
+            {
+                "positionY" : "30",
+                "positionX" : "450",
+                "isCoreNode" : "true",
+                "fields" : [
+                    {
+                        "required" : "true",
+                        "name" : "id"
+                    },
+                    {
+                        "required" : "true",
+                        "name" : "title"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "description"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "google_product_category"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "product_type"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "link"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "image_link"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "price"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "condition"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "availability"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "brand"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "gtin"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "mpn"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "item_group_id"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "additional_image_link"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "sale_price"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "sale_price_effective_date"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "gender"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "age_group"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "color"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "size"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "material"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "pattern"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "shipping_weight"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "adwords_grouping"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "adwords_labels"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "excluded_destination"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "online_only"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "expiration_date"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "adwords_redirect"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "adult"
+                    },
+                    {
+                        "required" : "false",
+                        "name" : "multipack"
+                    }
+                ],
+                "nodeId" : "Google_c93bc820-bc57-7be9-eebe-5375bd7450e3",
+                "image" : "http://www.about-searchengines.com/_/rsrc/1375438908754/home/google-g-logo-s.png",
+                "category" : "target",
+                "type" : "target",
+                "label" : "Google",
+                "name" : "Google"
+            },
+            {
+                "positionY" : "29",
+                "positionX" : "203",
+                "nodeId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61",
+                "data" : {
+                    "newValue" : "test",
+                    "searchValue" : "sss"
+                },
+                "schema" : {
+                    "required" : "false",
+                    "properties" : {
+                        "newValue" : {
+                            "required" : "false",
+                            "title" : "newValue",
+                            "type" : "string"
+                        },
+                        "searchValue" : {
+                            "required" : "false",
+                            "title" : "searchValue",
+                            "type" : "string"
+                        }
+                    },
+                    "type" : "object"
+                },
+                "image" : "http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+                "category" : "transformation",
+                "type" : "transformation",
+                "label" : "Replace",
+                "name" : "Replace"
+            },
+            {
+                "positionY" : "27",
+                "positionX" : "383",
+                "nodeId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910",
+                "data" : {
+                    "endIndex" : "2",
+                    "startIndex" : "1"
+                },
+                "schema" : {
+                    "required" : "false",
+                    "properties" : {
+                        "endIndex" : {
+                            "required" : "false",
+                            "title" : "end",
+                            "type" : "number"
+                        },
+                        "startIndex" : {
+                            "required" : "false",
+                            "title" : "start",
+                            "type" : "number"
+                        }
+                    },
+                    "type" : "object"
+                },
+                "image" : "http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+                "category" : "transformation",
+                "type" : "transformation",
+                "label" : "SubString",
+                "name" : "SubString"
+            }
+        ],
+        "canvas" : {
+            "connections" : [
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61_default",
+                    "pageSourceId" : "File_d4192cd3-3cf0-6826-097a-30df7f30b637_field1",
+                    "connectionId" : "con_115"
+                },
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910_default",
+                    "pageSourceId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61_default",
+                    "connectionId" : "con_132"
+                },
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "Google_c93bc820-bc57-7be9-eebe-5375bd7450e3_id",
+                    "pageSourceId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910_default",
+                    "connectionId" : "con_136"
+                }
+            ],
+            "nodes" : [
+                {
+                    "positionY" : "30",
+                    "positionX" : "30",
+                    "nodeName" : "File",
+                    "nodeId" : "File_d4192cd3-3cf0-6826-097a-30df7f30b637"
+                },
+                {
+                    "positionY" : "30",
+                    "positionX" : "599",
+                    "nodeName" : "Google",
+                    "nodeId" : "Google_c93bc820-bc57-7be9-eebe-5375bd7450e3"
+                },
+                {
+                    "positionY" : "28",
+                    "positionX" : "181",
+                    "nodeName" : "Replace",
+                    "nodeId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61"
+                },
+                {
+                    "positionY" : "29",
+                    "positionX" : "383",
+                    "nodeName" : "SubString",
+                    "nodeId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910"
+                }
+            ]
+        },
+        "settings" : null
+    }
+
 
     describe('parseField',function(){
 
@@ -749,11 +1099,91 @@ describe('processor.service',function(){
             expect(Object.keys(result).length).to.equal(2);
         })
 
+        it('three stage mapping',function(){
+            var connections = [
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61_default",
+                    "pageSourceId" : "File_d4192cd3-3cf0-6826-097a-30df7f30b637_field1",
+                    "connectionId" : "con_115"
+                },
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910_default",
+                    "pageSourceId" : "Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61_default",
+                    "connectionId" : "con_132"
+                },
+                {
+                    "anchors" : [
+                        [
+                            "1",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ],
+                        [
+                            "0",
+                            "0.5",
+                            "0",
+                            "0",
+                            "0",
+                            "0"
+                        ]
+                    ],
+                    "pageTargetId" : "Google_c93bc820-bc57-7be9-eebe-5375bd7450e3_id",
+                    "pageSourceId" : "SubString_a552fc49-9540-18df-cefb-31c8bae9f910_default",
+                    "connectionId" : "con_136"
+                }
+            ];
+            var result = processorService.getMappingsRecursive(connections,{},0,'id',null)
+            //console.log('result',result)
+            expect(result).to.be.an('object');
+            expect(Object.keys(result).length).to.equal(3);
+
+        })
+
+
     })
 
     describe('destinationFieldMappings',function(){
 
-        it('should return two mapped fields',function(){
+        it('should return two mapped fields from toolData',function(){
             var mappedFields = processorService.destinationFieldMappings(toolData)
             expect(mappedFields).to.be.an('object');
             expect(Object.keys(mappedFields).length).to.equal(2);
@@ -762,7 +1192,7 @@ describe('processor.service',function(){
             //console.log(processorService.destinationFieldMappings(toolData))
         })
 
-        it('should return five mapped fields',function(){
+        it('should return five mapped fields from toolData2',function(){
             var mappedFields = processorService.destinationFieldMappings(toolData2)
             expect(mappedFields).to.be.an('object');
             expect(Object.keys(mappedFields).length).to.equal(5);
@@ -773,9 +1203,17 @@ describe('processor.service',function(){
             expect(mappedFields).to.have.property('product_type')
         })
 
+        it('should return 1 mapped fields from toolData3',function(){
+            var mappedFields = processorService.destinationFieldMappings(toolData3)
+            //console.log(mappedFields)
+            expect(mappedFields).to.be.an('object');
+            expect(Object.keys(mappedFields).length).to.equal(1);
+            expect(mappedFields).to.have.property('id')
+        })
+
     })
 
-    describe('generateStatistics',function(){
+    xdescribe('generateStatistics',function(){
         var rows = [
             {
                 "id": "121hhc",
@@ -1110,7 +1548,7 @@ describe('processor.service',function(){
     })
 
     describe('transformEachRow',function(){
-        var mappings1 ={ id:
+        var mappings1 = { id:
         { '0':
         { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
             nodeName: 'File',
@@ -1145,13 +1583,28 @@ describe('processor.service',function(){
             { nodeId: 'File_3a8cb386-897f-4aed-dead-707a2229ec4e',
                 nodeName: 'File',
                 fieldName: 'Color' } } }
+        var mappings3 = {
+            id: { '0':
+                   { nodeId: 'SubString_a552fc49-9540-18df-cefb-31c8bae9f910',
+                    nodeName: 'SubString',
+                    fieldName: 'default' },
+                    '1':
+                    { nodeId: 'Replace_61860c2f-bfb3-9ce8-6bbe-e2077461fd61',
+                        nodeName: 'Replace',
+                        fieldName: 'default' },
+                    '2':
+                    { nodeId: 'File_d4192cd3-3cf0-6826-097a-30df7f30b637',
+                        nodeName: 'File',
+                        fieldName: 'ProductId' } }
+        }
+
         it('should return output field with id property only',function(){
             var row = { ProductId: '12ed',
                 Desc: 'e1e12',
                 Details: 'e12e21',
                 MPN: 'cc',
                 Color: 'blue' }
-            var output = processorService.transformEachRow(mappings1,row);
+            var output = processorService.transformEachRow(toolData,mappings1,row);
             expect(output).to.be.an('object');
             expect(output).to.have.property('id');
             expect(output['id']).to.equal('12ed');
@@ -1159,14 +1612,13 @@ describe('processor.service',function(){
             expect(output['link']).to.equal('12ed');
 
         })
-
         it('should transform into a valid row',function(){
             var row = { ProductId: '12ed',
                 Desc: 'e1e12',
                 Details: 'e12e21',
                 MPN: 'cc',
                 Color: 'blue' }
-            var output = processorService.transformEachRow(mappings2,row);
+            var output = processorService.transformEachRow(toolData2,mappings2,row);
             expect(output).to.be.an('object');
             expect(output).to.have.property('id');
             expect(output['id']).to.equal('12ed');
@@ -1179,6 +1631,18 @@ describe('processor.service',function(){
             expect(output).to.have.property('product_type');
             expect(output['product_type']).to.equal('blue');
 
+        })
+
+        it('should process replace and substring transforms',function(){
+            var row = { ProductId: '12ed',
+                Desc: 'e1e12',
+                Details: 'e12e21',
+                MPN: 'cc',
+                Color: 'blue' }
+            var output = processorService.transformEachRow(toolData3,mappings3,row);
+            expect(output).to.be.an('object');
+            expect(output).to.have.property('id');
+            expect(output['id']).to.equal('2');
         })
     })
 

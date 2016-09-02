@@ -21,6 +21,7 @@ function destinationFieldMappings(toolData){
     return mappedFields;
 }
 
+
 /**
  * Return the target connector in this flow, Google |  Facebook | Bing
  * @param toolData
@@ -31,9 +32,37 @@ function getTargetConnector(toolData){
     })
 }
 
+function getOutputValue(toolData,row,mappings){
+    var keys = Object.keys(mappings);
+    var keysSortedDesc = keys.sort(function(a, b){return b-a});
+    var sourceNode = mappings[keysSortedDesc[0]];
+    var sourceFieldValue = row[sourceNode["fieldName"]];
 
-function getOutputValue(row,mappings){
-    return row[mappings[0]['fieldName']]
+    if (keysSortedDesc.length > 1) {
+       var leftKeysAfterSource = keysSortedDesc.slice(1)
+       leftKeysAfterSource.forEach(function(key){
+           var nodeAtKey = mappings[key];
+           var nodeReturn = outputFromTransformNode(toolData,sourceFieldValue,nodeAtKey);
+           sourceFieldValue = nodeReturn;
+
+       })
+       return sourceFieldValue
+
+    } else {
+        return sourceFieldValue
+    }
+}
+
+function outputFromTransformNode(toolData,input,node){
+    var actualNode = _.find(toolData.nodes,function(n){
+        return n.nodeId === node.nodeId
+    })
+    if (actualNode.name === 'Replace'){
+        return input.replace(actualNode.data["searchValue"],actualNode.data["newValue"])
+    }
+    if (actualNode.name === 'SubString'){
+        return input.substring(actualNode.data["startIndex"],actualNode.data["endIndex"])
+    }
 }
 
 /**
@@ -69,12 +98,14 @@ function getMappingsRecursive(connections,mappings,i,destinationFieldName,nodeId
 /**
  * Process Each row, apply all intermediate tranformation logic and convert to final schema nameß
  */
-function transformEachRow(destinationFieldMapping,row){
+function transformEachRow(toolData,destinationFieldMapping,row){
+    //console.log('incoming mappings',destinationFieldMapping);
+    //console.log('row',row)
     // only pass fields for which there is a  destination mapping
     // out header name should correspond to destination connector name
     var outputRow = {}
      for (var key in destinationFieldMapping){
-        outputRow[key] = getOutputValue(row,destinationFieldMapping[key])
+        outputRow[key] = getOutputValue(toolData,row,destinationFieldMapping[key])
     }
     return outputRow
 }
@@ -141,7 +172,6 @@ function reformatErrorMessage(outputRows){
     return outputRows;
 }
 
-
 /**
  * Validate a row as per schema and append validation result to row
  * @param validationSchema
@@ -163,8 +193,6 @@ function analyze(toolData,userData,cb){
     var fileNode = _.find(toolData.nodes,function(n){
         return n.name === 'File'
     })
-    // get transformation nodes that are dragged in canvas
-    // i.e find it from canvas
     var inputFileFullName = path.join(directory, fileNode.fileName) ;
     var inputStream = fs.createReadStream(inputFileFullName);
     var destinationFieldMapping = destinationFieldMappings(toolData);
@@ -174,9 +202,11 @@ function analyze(toolData,userData,cb){
         .pipe(csv.transform(function (row, next) {
             async.waterfall([
                 function(transformCb){
-                   transformCb(null,transformEachRow(destinationFieldMapping,row));
+                   transformCb(null,transformEachRow(toolData,destinationFieldMapping,row));
+                },
+                function(row,cb){
+                    cb(null,row)
                 }
-
                 ,
                 function(row,santizeCb){
                     santizeCb(null,sanitizeRow(santizeSchema,row));
