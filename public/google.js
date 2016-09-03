@@ -168,7 +168,7 @@ function drawNode(node,cb) {
         $('#' + nodeId).css('left', (node.positionX ? node.positionX : 30) + 'px');
         $('#' + nodeId).css('top', (node.positionY ? node.positionY : 30) + 'px');
         if (node.isCoreNode){
-            $('#' + nodeId).find('.btn-danger').remove();
+            $('#' + nodeId).find('.btndelete').remove();
         }
         jsPlumb.draggable(nodeId, {
             containment: "parent"

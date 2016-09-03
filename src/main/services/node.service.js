@@ -115,7 +115,7 @@ var NODES= [
         label:"Replace",
         type:"transformation",
         category:"transformation",
-        image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+        image:"http://documentation.platfora.com/webdocs/images/icons/icn_fx_expression.png",
         "schema": {
             "type": "object",
             "properties": {
@@ -139,7 +139,7 @@ var NODES= [
         label:"SubString",
         type:"transformation",
         category:"transformation",
-        image:"http://www.knowledgebase-script.com/kb/assets/file-txt.png",
+        image:"http://documentation.platfora.com/webdocs/images/icons/icn_fx_expression.png",
         "schema": {
             "type": "object",
             "properties": {
