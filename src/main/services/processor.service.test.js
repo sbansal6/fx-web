@@ -1612,6 +1612,7 @@ describe('processor.service',function(){
             expect(output['link']).to.equal('12ed');
 
         })
+
         it('should transform into a valid row',function(){
             var row = { ProductId: '12ed',
                 Desc: 'e1e12',
@@ -1640,6 +1641,7 @@ describe('processor.service',function(){
                 MPN: 'cc',
                 Color: 'blue' }
             var output = processorService.transformEachRow(toolData3,mappings3,row);
+            console.log(output)
             expect(output).to.be.an('object');
             expect(output).to.have.property('id');
             expect(output['id']).to.equal('2');
