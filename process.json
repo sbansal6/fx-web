@@ -1,0 +1,14 @@
+{
+  "apps" : [{
+    "name"        : "feedexchange",
+    "script"      : "./server.js",
+    "watch"       : true,
+    "env": {
+      "NODE_ENV": "PROD"
+    },
+    "env_production" : {
+      "NODE_ENV": "PROD"
+    }
+  }
+  ]
+}
