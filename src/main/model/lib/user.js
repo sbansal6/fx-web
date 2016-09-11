@@ -16,6 +16,7 @@ var userSchema = mongoose.Schema({
     rootDir: { type: String, default: "" },
     createDate: { type: Date, default: Date.now },
     lastUpdated: { type: Date, default: Date.now },
+    resetPasswordToken: String
 });
 // methods ======================
 // generating a hash
@@ -38,7 +39,7 @@ var register = function ( newUser, callBackFunction ) { // accept the callback
         if (err) {
             return callBackFunction(false);
         }
-        newUser.rootDir = path.join(config.filesystem.root,doc._id.toString());
+        newUser.rootDir = path.join(root.driveRoot,doc._id.toString());
         newUser.lastUpdated = new Date();
         mkdirp.sync(newUser.rootDir); //todo make this async
         newUser.save(callBackFunction);

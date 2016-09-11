@@ -1,5 +1,5 @@
 module.exports = {
-    application: require("./lib/application"),
+    home: require("./lib/home"),
     flow:require("./lib/flow"),
     api: require("./lib/api"),
     login: require("./lib/login"),

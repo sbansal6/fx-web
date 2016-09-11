@@ -1,0 +1,18 @@
+stats: - 
+1) Error Rows Grid vs Grid
+2) Missing Required Columns count
+2) Status :- 
+   ProductId Field invalid for n rows
+   ..
+   ..
+   ..
+   ..
+   do same for all rows 
+
+
+ datatable styling:
+
+ 1) https://datatables.net/examples/api/show_hide.html
+ 2) show message as expanded or tooltil , filter by isvalid
+
+ tooltip https://datatables.net/beta/1.9/examples/advanced_init/events_post_init.html

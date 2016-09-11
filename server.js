@@ -1,4 +1,5 @@
 var express = require('express');
+var engine = require('ejs-locals');
 var session = require('express-session');
 var app = express();
 var path = require('path');
@@ -9,9 +10,12 @@ var mongoose = require('mongoose');
 var winston = require('winston');
 var expressWinston = require('express-winston');
 var winstonDB = require('winston-mongodb').MongoDB;
-var multer  = require('multer')
 
 
+root = {
+  
+};
+root.driveRoot = path.join(__dirname,'drive');
 
 // Local Requires ==================================================================
 var core = require('./src/main').core;
@@ -27,12 +31,15 @@ mongoose.connect(core.environment.mongo.url);
 // Express Configuration =============================================================
 app.disable('etag');
 app.set('views', path.join(__dirname, '/src/main/views'));
+app.engine('ejs', engine);
 app.set('view engine', 'ejs');
+app.set("layout extractScripts", true)
 app.set('json spaces', 4);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.static('landingpage'));
+app.use(express.static('bower_components'));
 //app.use(express.static('theme'));
 app.use(flash());
 app.all('/*', function (req, res, next) {
@@ -92,32 +99,10 @@ app.use(passport.session());
 
 // Routes =============================================================================
 app.get('/', function(req, res){
-    res.sendfile('index.html', { root: __dirname + "/landingpage" } );
+    res.sendfile('index.html', { root: __dirname + "/landingpage2" } );
 });
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads/')
-  },
-  filename: function (req, file, cb) {
-    var getFileExt = function(fileName){
-      var fileExt = fileName.split(".");
-      if( fileExt.length === 1 || ( fileExt[0] === "" && fileExt.length === 2 ) ) {
-        return "";
-      }
-      return fileExt.pop();
-    }
-    cb(null, file.originalname)
-  }
-})
-var multerUpload = multer({ storage: storage })
 
-app.post('/upload',multerUpload.any(),function (req,res) {
-  console.log(req.files)
-  console.log(req.body);
-  console.log(req.file);
-  res.send({})
-})
 
 require('./src/main/route/index')(app,passport);
 // End Routes =========================================================================

@@ -1,0 +1,60 @@
+<% layout('layout') -%>
+<% stylesheet('google.css') -%>
+<% stylesheet('palette.css') -%>
+<% script('js/jsPlumb-2.1.2-min.js') -%>
+<% script('js/keyboard.min.js') -%>
+<% script('js/html2canvas.js') -%>
+<% script('js/jquery.base64.js') -%>
+<% script('js/tableExport.js') -%>
+<% script('Nodes.js') -%>
+<% script('google.js') -%>
+<div class="row">
+  <div class="col-md-12">
+      <div class="btn-group pull-right" role="group" aria-label="Basic example">
+          <button id="btnAnalyze" type="button" class="btn btn-secondary btn-sm">Analyze</button>
+          <button id="btnExport" type="button" class="btn btn-secondary btn-sm">Export</button>
+          <button id="btnSave" type="button" class="btn btn-secondary btn-sm">Save</button>
+      </div>
+  </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs">
+            <li class="active">
+            <a  href="#1" data-toggle="tab">Design</a>
+            </li>
+            <li><a href="#2" data-toggle="tab">Grid</a>
+            </li>
+            <li><a href="#3" data-toggle="tab">Publish</a>
+            </li>
+            <li><a href="#4" data-toggle="tab">Schedule</a>
+            </li>
+        </ul>
+        <div class="tab-content ">
+            <div class="tab-pane active" id="1">
+                <div id = "palette" class="col-md-12 palette">
+
+                </div>
+                <div class="col-md-8">
+                        <div id="canvas" class="col-md-8 canvas" style="width: 750px;height: 1500px">
+                        </div>
+                    </div>
+                <div class="col-md-4">
+                        <div class="row">
+                            <div id="chart">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="tab-pane" id="2">
+                <div id='GridContainer'>
+                    <table id="gridTable" class="display" width="100%"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModal">
+    <div id="form"></div>
+</div>
+

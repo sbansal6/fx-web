@@ -1,0 +1,24 @@
+<% layout('layout') -%>
+<div class="row">
+    <div id="tabstrip" style="width: 100%">
+        <ul>
+            <li id="tabText"><a href="#text">Text</a></li>
+            <li id="tabFile"><a href="#file">File</a></li>
+        </ul>
+        <div id="text" class="ace_editor">
+        </div>
+    </div>
+    <div>
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-4 center-block">
+            <button id="primaryTextButton" class="k-primary">Decode</button>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+
+    </div>
+</div>
+<% script('decode.js') -%>

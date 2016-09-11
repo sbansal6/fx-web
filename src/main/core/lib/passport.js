@@ -1,8 +1,38 @@
 // SDK REQUIRES
 var LocalStrategy = require('passport-local').Strategy;
+var _ = require('underscore');
+var env = process.env.NODE_ENV || 'develop';
 
 // load up the client model
 var User = require('../../model').user;
+var Tools  = require('../../model').tools;
+var nodeService  = require('../../services/node.service');
+
+/**
+ * Add basic tools to user on signup
+ * @param newUser
+ * @param cb
+ */
+function initializeTools(newUser,cb){
+    var userTools = new Tools();
+    var googleInitialNodes = [];
+    var fileNode = nodeService.getNodeUIStructure('File');
+    var googleDestinationNode = nodeService.getNodeUIStructure('Google');
+    fileNode.isCoreNode = true;
+    googleDestinationNode.isCoreNode = true;
+    googleInitialNodes.push(fileNode);
+    googleInitialNodes.push(googleDestinationNode);
+    googleInitialNodes.push(nodeService.getNodeUIStructure('Replace'));
+    googleInitialNodes.push(nodeService.getNodeUIStructure('SubString'));
+    userTools.userId = newUser._id
+    userTools.tools = [
+                { name: "google", settings:{}, "canvas":{}, nodes: googleInitialNodes}
+    ]
+    //todo :- add positionX and positionY as per elements in array
+    userTools.save(function(err){
+        err ? cb(err) : cb(null,newUser);
+     })
+}
 
 // expose this function to our app using module.exports
 module.exports = function (passport) {
@@ -48,7 +78,7 @@ module.exports = function (passport) {
 
                     // check to see if theres already a user with that email
                     if (user) {
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                        return done(null, false, {message:'That email is already taken.'});
                     } else {
                         // if there is no user with that email
                         // create the user
@@ -63,7 +93,7 @@ module.exports = function (passport) {
                             if (err) {
                                 return done(err);
                             } else {
-                                return done(null, newUser);
+                                initializeTools(newUser,done)
                              }
                         });
                     }
@@ -74,12 +104,11 @@ module.exports = function (passport) {
 
         }));
 
-   // =========================================================================
+    // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
     passport.use('local-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -89,6 +118,11 @@ module.exports = function (passport) {
     function(req, email, password, done) { // callback with email and password from our form
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
+        if (env === 'develop'){
+            email = 'test@gmail.com';
+            password = 'test';
+            console.log('signing in as develop env')
+        }
         User.findOne({ 'email' :  email }, function(err, user) {
             // if there are any errors, return the error before anything else
             if (err) {

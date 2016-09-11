@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <title>sbmarket</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="jquery/css/smoothness/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="style.css">
+    <style>
+    </style>
+    <head>
+<body spellcheck="false">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="brand" href="#"><img src="a.png"> <span class="red">sbmarket</span> </a>
+            <div class="btn-group pull-right">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-align-justify"></i> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a id="btn-sidebar" tabindex="-1" href="#"><i class="icon-ok pull-right"></i><i class="icon-list-alt"></i> Sidebar</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-submenu pull-left">
+                        <a tabindex="-1" href="#"><i class="icon-edit"></i> Import from...</a>
+                        <ul class="dropdown-menu">
+                            <li><a id="btn-import" tabindex="-1" href="#"><i class="icon-edit"></i> Clipboard...</a></li>
+                            <li id="flow-menu-parent" class="dropdown-submenu pull-left">
+                                <a tabindex="-1" href="#"><i class="icon-book"></i> Library</a>
+                                <ul class="dropdown-menu"></ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="li-menu-export" class="dropdown-submenu disabled pull-left">
+                        <a tabindex="-1" href="#"><i class="icon-share"></i> Export to...</a>
+                        <ul class="dropdown-menu">
+                            <li id="li-menu-export-clipboard" class="disabled"><a id="btn-export-clipboard" tabindex="-1" href="#"><i class="icon-share"></i> Clipboard...</a></li>
+                            <li id="li-menu-export-library" class="disabled"><a id="btn-export-library" tabindex="-1" href="#"><i class="icon-book"></i> Library...</a></li>
+                        </ul>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a id="btn-keyboard-shortcuts" tabindex="-1" href="#"><i class="icon-question-sign"></i> Keyboard Shortcuts</a></li>
+                    <li><a id="btn-help" tabindex="-1" href="http://node-red.github.io/docs" target="_blank"><i class="icon-question-sign"></i> Help...</a></li>
+                </ul>
+            </div>
+            <div class="btn-group pull-right">
+                <a id="btn-deploy" class="btn action-deploy disabled" href="#"><i class="icon-upload"></i> Deploy</a>
+                <button onclick="save()">Click me</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="main-container" class="sidebar-closed">
+    <div id="palette">
+        <div class="palette-category">
+            <div class="palette-header"><i class="expanded icon-chevron-down"></i><span>inputs</span></div>
+            <div class="palette-content" id="palette-input"></div>
+        </div>
+        <div class="palette-category">
+            <div class="palette-header"><i class="expanded icon-chevron-down"></i><span>outputs</span></div>
+            <div class="palette-content" id="palette-output"></div>
+        </div>
+        <div class="palette-category">
+            <div class="palette-header"><i class="expanded icon-chevron-down"></i><span>advanced</span></div>
+            <div class="palette-content">
+                <div id="palette-advanced-input"></div>
+                <div id="palette-advanced-output"></div>
+                <div id="palette-advanced-function"></div>
+            </div>
+        </div>
+    </div><!-- /palette -->
+    <div id="chart">
+        <div id="rubberband" style="border:1px solid green;display:none;"></div>
+    </div>
+</div>
+<div id="dialog" class="hide">
+    <form id="dialog-form" class="form-horizontal"></form>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Start Point</h4>
+            </div>
+            <div class="modal-body">
+                <input type="number" id="txtNumber" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="jquery/js/jquery-1.9.1.js"></script>
+<!--<script src="jquery/js/jquery-1.9.1.js"></script>-->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="jsPlumb-2.0.5.js "></script>
+<script>
+
+    var startPoint = 0;
+
+    var save = function () {
+        var nodes = []
+        $("#chart .palette_node").each(function (idx, elem) {
+            var $elem = $(elem);
+            var endpoints = jsPlumb.getEndpoints($elem.attr('id'));
+            console.log('endpoints of ' + $elem.attr('id'));
+            console.log(endpoints);
+            nodes.push({
+                blockId: $elem.attr('id'),
+                nodetype: $elem.attr('data-nodetype'),
+                positionX: parseInt($elem[0].offsetLeft, 10),
+                positionY: parseInt($elem[0].offsetTop, 10)
+            });
+        });
+        var connections = [];
+        $.each(jsPlumb.getConnections(), function (idx, connection) {
+            connections.push({
+                connectionId: connection.id,
+                pageSourceId: connection.sourceId,
+                pageTargetId: connection.targetId
+            });
+        });
+
+        var flowChart = {};
+        flowChart.nodes = nodes;
+        flowChart.connections = connections;
+        var flowChartJson = JSON.stringify(flowChart);
+        //console.log(flowChartJson);
+
+
+        var fileName = "JsonData";
+        //this will remove the blank-spaces from the title and replace it with an underscore
+        // fileName += ReportTitle.replace(/ /g, "_");
+
+        //Initialize file format you want csv or xls
+        var uri = 'data:text/json;charset=utf-8,' + flowChartJson;
+
+        // Now the little tricky part.
+        // you can use either>> window.open(uri);
+        // but this will not work in some browsers
+        // or you will not get the correct file extension
+
+        //this trick will generate a temp <a /> tag
+        var link = document.createElement("a");
+        link.href = uri;
+
+        //set the visibility hidden so it will not effect on your web-layout
+        link.style = "visibility:hidden";
+        link.download = fileName + ".json";
+
+        //this part will append the anchor tag and remove it after automatic click
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log(flowChartJson);
+
+        //var result = jsPlumb.save({selector : "#chart" });
+        //alert(JSON.stringify(result,null,4))
+    }
+
+    var addConnection = function () {
+        jsPlumb.connect({
+            connector: ["Straight"],
+            source: "file_xx",
+            target: "google_xx",
+            anchor: ["Left", "Right"],
+            endpoint: "Dot"
+        });
+
+    }
+
+    //Fixes endpoints for specified target
+    function fixEndpoints(parentnode, isDynamic) {
+
+        //get list of current endpoints
+        var endpoints = jsPlumb.getEndpoints(parentnode);
+
+        console.log("endPoints", endpoints);
+
+
+        //there are 2 types - input and output
+
+        var inputAr = $.grep(endpoints, function (elementOfArray, indexInArray) {
+            return elementOfArray.isSource; //input
+        });
+
+
+        var outputAr = $.grep(endpoints, function (elementOfArray, indexInArray) {
+            return elementOfArray.isTarget; //output
+        });
+
+
+        calculateEndpoint(inputAr, true);
+        calculateEndpoint(outputAr, false);
+        if (isDynamic)
+            return inputAr;
+
+        jsPlumb.repaintEverything();
+
+    }
+
+    //recalculate endpoint anchor position manually
+    function calculateEndpoint(endpointArray, isInput) {
+
+        console.log("endpointArray", endpointArray)
+
+        //multiplyer
+        var mult = 1 / (endpointArray.length + 1);
+        console.log("mult", mult)
+        var _yVal = 0.7;
+        for (var i = 0; i < endpointArray.length; i++) {
+
+            if (isInput) {
+
+                if (i === 0) {
+                    endpointArray[i].anchor.x = 1;
+                    endpointArray[i].anchor.y = _yVal
+                } else {
+                    endpointArray[i].anchor.x = 1;
+                    _yVal = _yVal + 0.4;
+                    endpointArray[i].anchor.y = _yVal;
+                }
+                //                console.log("input  pos",mult * (i + 1))
+                //                //position
+                //                endpointArray[i].anchor.x = 1;
+                //                endpointArray[i].anchor.y = mult * (i + 1);
+            }
+            else {
+                console.log("output pos", mult * (i + 1))
+
+                //position
+                endpointArray[i].anchor.x = 0;
+                endpointArray[i].anchor.y = mult * (i + 1);
+            }
+        }
+    }
+
+    jsPlumb.importDefaults({
+        // default drag options
+        DragOptions: {
+            cursor: 'pointer',
+            zIndex: 2000
+        },
+        // default to blue at one end and green at the other
+        EndpointStyles: [{
+            fillStyle: '#225588'
+        }, {
+            fillStyle: '#558822'
+        }],
+        // blue endpoints 7 px; green endpoints 11.
+        Endpoints: [
+            ["Dot", {
+                radius: 7
+            }],
+            ["Dot", {
+                radius: 11
+            }]
+        ],
+        // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
+        // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
+        ConnectionOverlays: [
+            ["Arrow", {
+                location: 0.8
+            }],
+            ["Label", {
+                location: 0.2,
+                id: "label",
+                cssClass: "aLabel"
+            }]
+        ],
+        ConnectorZIndex: 5
+    });
+    jsPlumb.ready(function () {
+
+        jsPlumb.importDefaults({
+            // default drag options
+            DragOptions: {
+                cursor: 'pointer',
+                zIndex: 2000
+            },
+            // default to blue at one end and green at the other
+            EndpointStyles: [{
+                fillStyle: '#225588'
+            }, {
+                fillStyle: '#558822'
+            }],
+            // blue endpoints 7 px; green endpoints 11.
+            Endpoints: [
+                ["Dot", {
+                    radius: 7
+                }],
+                ["Dot", {
+                    radius: 11
+                }]
+            ],
+            // the overlays to decorate each connection with.  note that the label overlay uses a function to generate the label text; in this
+            // case it returns the 'labelText' member that we set on each connection in the 'init' method below.
+            ConnectionOverlays: [
+                ["Arrow", {
+                    location: 0.8
+                }],
+                ["Label", {
+                    location: 0.2,
+                    id: "label",
+                    cssClass: "aLabel"
+                }]
+            ],
+            ConnectorZIndex: 5
+        });
+
+        var nodes = [
+            {
+                name: 'file',
+                category: 'input',
+                color: "#E6E0F8",
+                outputs: [
+                    { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
+                    { name: "ProductName", color: "#F25022", figure: "Rectangle" },
+                    { name: "Color", color: "#00BCF2", figure: "Triangle" },
+                    { name: "Brand", color: "#F25022", figure: "Rectangle" },
+                    { name: "Description", color: "#00BCF2", figure: "Rectangle" }
+                ],
+                outputs: [],
+                icon: "arrow-in.png"
+            },
+            {
+                name: 'google',
+                category: 'output',
+                color: "#E6E0F8",
+                inputs: [
+                    { name: "ProductID", color: "#F7B84B", figure: "Ellipse" },
+                    { name: "ProductName", color: "#F25022", figure: "Rectangle" },
+                    { name: "Color", color: "#00BCF2", figure: "Triangle" },
+                    { name: "Brand", color: "#F25022", figure: "Rectangle" },
+                    { name: "Description", color: "#00BCF2", figure: "Rectangle" }
+                ],
+                outputs: [],
+                icon: "arrow-in.png"
+            }
+        ]
+        jsPlumb.setContainer($("#chart"))
+
+        var addNodeToPalette = function (node) {
+            if (node.name === 'file') {
+                var d = document.createElement("div");
+                d.id = node.name + "_outer";
+                d.style.backgroundColor = node.color;
+                d.className = "palette_node"
+                d.innerHTML = '<div class="palette_arrow">' + node.name + "</div>";
+                $("#palette-" + node.category).append(d);
+                $("#" + d.id).append('<div id="' + node.name + '"></div>')
+            }
+            else {
+                var d = document.createElement("div");
+                d.id = node.name;
+                d.type = node.name;
+                d.innerHTML = '<div class="palette_label">' + node.name + "</div>";
+                d.className = "palette_node";
+                if (node.icon) {
+                    d.style.backgroundImage = "url(icons/" + node.icon + ")";
+                    if (node.align == "right") {
+                        d.style.backgroundPosition = "95% 50%";
+                    } else if (node.inputs > 0) {
+                        d.style.backgroundPosition = "10% 50%";
+                    }
+                }
+                d.style.backgroundColor = node.color;
+                $("#palette-" + node.category).append(d);
+                //   $("#" + d.id).append('<div style="backgroundImage: "url(icons/"' + node.icon + '"></div>')
+                $("#" + d.id).append('<div id="testnode"></div>')
+                //$("#" + d.id).append('<div class="dottedBorder"></div>')
+                d.onmousedown = function (e) { e.preventDefault(); }
+            }
+
+
+
+            $(d).draggable({
+                helper: 'clone',
+                appendTo: 'body',
+                revert: true,
+                revertDuration: 50
+            });
+        }
+        nodes.forEach(function (node) {
+            addNodeToPalette(node)
+        })
+
+        $(".palette-header").click(function (e) {
+            $(this).next().slideToggle();
+            $(this).children("i").toggleClass("expanded");
+        });
+        var btnSave = document.getElementById("btnSave"), event = null;
+        $("#chart").droppable({
+            accept: ".palette_node",
+            containment: "chart",
+            drop: function (e, ui) {
+                var droppedElement = ui.helper.clone();
+                var _mainDiv = ui.draggable;
+                var draggable = _mainDiv.attr("id") == 'google' ? _mainDiv : $(_mainDiv[0].lastChild);
+
+                var id = draggable.attr('id') + "_xx" + Math.random().toString(4);
+
+                ui.helper.remove();
+
+                droppedElement.attr("data-nodetype", draggable.attr('id'));
+                droppedElement.attr("id", id);
+                droppedElement.appendTo("#chart");
+                jsPlumb.draggable(id);
+
+                // handle double click here
+                droppedElement.dblclick(function (e) {
+                    console.log($(e.currentTarget).attr('data-nodetype'));
+                    if ($(e.currentTarget).attr('data-nodetype') == 'file') {
+                        $("#myModal").modal('show');
+                        event = e;
+                    }
+
+                });
+
+                btnSave.addEventListener("click", function () {
+                    $("#myModal").modal('hide');
+                    // event.preventDefault();
+                    var _total = parseInt(document.getElementById("txtNumber").value);
+                    if (_total > 0) {
+                        console.log(parseInt($(event.currentTarget)[0].style.left))
+                        var _id = $(event.currentTarget).attr('id');
+                        //  alert($(e.currentTarget)[0].offsetTop);
+                        $(event.currentTarget).css('height', ($(event.currentTarget).height() + (_total * 43)) + "px");
+                        var j = 0;
+                        for (j = 0; j < _total; j++) {
+                            jsPlumb.addEndpoint($(event.currentTarget).attr('id'), anEndpointSource);
+                        }
+
+
+                        var inputAr = fixEndpoints(_id, true);
+                        jsPlumb.repaint(event.currentTarget);
+
+                    }
+                    return false;
+                });
+
+
+                // todo :- get node definition from node list
+                // *** get config from server
+                var getNodeConfig = function (name) {
+                    var _node;
+                    nodes.forEach(function (node) {
+                        if (node.name === name) {
+                            _node = node
+                        }
+                    })
+                    return _node
+                }
+                var nodeConfig = getNodeConfig(draggable.attr('id'));
+
+                // source endpoint config
+                var anEndpointSource = {
+                    endpoint: "Dot",
+                    isSource: true,
+                    isTarget: false,
+                    maxConnections: 2,
+                    anchor: [1, 0, 1, 0],
+                    paintStyle: { fillStyle: "white", outlineColor: "blue", outlineWidth: 1, paddingBottom: 2 }
+
+                };
+
+
+
+
+
+                var anEndpointDestination = {
+                    endpoint: "Dot",
+                    isSource: false,
+                    isTarget: true,
+                    maxConnections: 1,
+                    anchor: [0, 1, -1, 0],
+                    /* Endpoint-Style */
+                    endpoint: "Dot",
+                    paintStyle: { fillStyle: "white", outlineColor: "blue", outlineWidth: 1 },
+                    hoverPaintStyle: { fillStyle: "lightblue" },
+
+                    /* Connector(Line)-Style */
+                    connectorStyle: { strokeStyle: "blue", lineWidth: 1 },
+                    connectorHoverStyle: { lineWidth: 2 }
+                };
+
+                if (nodeConfig.name === 'file') {
+                    //jsPlumb.addEndpoint(id, anEndpointSource)
+                    //  jsPlumb.addEndpoint(id, anEndpointSource)
+                    //   fixEndpoints(id, false);
+                }
+
+
+                // if not , if destination connectors then target
+                else {
+                    jsPlumb.addEndpoint(id, {
+                        anchors: ["Left"],
+                        /* Endpoint-Style */
+                        endpoint: "Dot",
+                        paintStyle: { fillStyle: "white", outlineColor: "blue", outlineWidth: 1 },
+                        hoverPaintStyle: { fillStyle: "lightblue" },
+
+                        /* Connector(Line)-Style */
+                        connectorStyle: { strokeStyle: "blue", lineWidth: 1 },
+                        connectorHoverStyle: { lineWidth: 2 }
+                    }, { isTarget: true, connector: ["Straight"] })
+                }
+            }
+        })
+    });
+
+
+</script>
+</body>
+</html>
