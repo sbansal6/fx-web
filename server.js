@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 var winston = require('winston');
 var expressWinston = require('express-winston');
 var winstonDB = require('winston-mongodb').MongoDB;
-
+var config   = require('fx-config');
 
 root = {
   
@@ -23,7 +23,7 @@ var core = require('./src/main').core;
 
 
 // Constants ========================================================================
-var PORT = process.env.PORT;
+var PORT = config.port || 3001;
 
 // Mongodb Configuration =============================================================
 mongoose.connect(core.environment.mongo.url);
@@ -157,6 +157,6 @@ app.use(function (err, req, res, next) {
 });
 // endregion
 
-app.listen(3001, function () {
-  console.log('Express server listening on port ' + 3001);
+app.listen(PORT, function () {
+  console.log('Express server listening on port ' + PORT);
 })  // endregion
