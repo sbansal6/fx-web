@@ -11,6 +11,12 @@ var winston = require('winston');
 var expressWinston = require('express-winston');
 var winstonDB = require('winston-mongodb').MongoDB;
 var config   = require('fx-config');
+var https = require('https');
+
+var options = {
+  key: fs.readFileSync('./privatekey.pem'),
+  cert: fs.readFileSync('./server.crt')
+};
 
 root = {
   
@@ -157,6 +163,6 @@ app.use(function (err, req, res, next) {
 });
 // endregion
 
-app.listen(PORT, function () {
+app.listen(443, function () {
   console.log('Express server listening on port ' + PORT);
 })  // endregion
