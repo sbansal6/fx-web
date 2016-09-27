@@ -164,6 +164,6 @@ app.use(function (err, req, res, next) {
 });
 // endregion
 
-app.listen(443, function () {
+app.listen(PORT, function () {
   console.log('Express server listening on port ' + PORT);
 })  // endregion
