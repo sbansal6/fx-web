@@ -292,7 +292,9 @@ function renderChart(stats){
         var data = google.visualization.arrayToDataTable(stats);
         var options = {
             title: 'Feed Statistics',
-            chartArea: {width: '50%'},
+            chartArea: {width: '60%'},
+            'width':450,
+            'height':400,
             isStacked: true,
             hAxis: {
                 title: 'Total Records',
