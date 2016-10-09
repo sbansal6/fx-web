@@ -398,7 +398,7 @@ jsPlumb.ready(function() {
         { title: "Salary" }
     ]});
     $("#btnExport").click(function(){
-        $('.e-table').tableExport({type:'csv',escape:'false'});
+        $('#gridTable').tableExport({type:'txt',escape:'false',ignoreColumn: []});
     });
     google.charts.load('current', {packages: ['corechart', 'bar']});
     initOnDrag();
