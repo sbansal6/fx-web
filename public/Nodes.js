@@ -23,7 +23,7 @@ var NODES_OPTIONS = [
                               //event.preventDefault()
                               // this has all the values, use this to update data object or any other object on save.
                               var val = this.getValue();
-                              alert(JSON.stringify(val))
+                              //alert(JSON.stringify(val))
                               var form = $('#alpaca2')
                               form.ajaxSubmit({
                                   error: function(xhr) {
