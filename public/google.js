@@ -74,12 +74,15 @@ function deleteNode(nodeId) {
     jsPlumb.remove(nodeId);
 }
 
+function encode(e){return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0)+";"})}
+
 function addFields(nodeId,node){
     if (node.fields && node.fields.length > 0){
         node.fields.forEach(function(field) {
-            var rowId = nodeId + '_' + field.name
+            var rowId = nodeId + '_' + field.name;
+            var desc = field.description ? encode(field.description) : "";
             var tableRow = '<tr id=' + rowId + '>' +
-                '<td align="center">' + field.name + '</td>' +
+                '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
                 '</tr>'
             $('#' + nodeId + " .table").append(tableRow);
             setEndPoint(rowId, node)
@@ -225,6 +228,7 @@ function save(cb) {
             nodes: TOOL.nodes
         },
         success: function(result) {
+            console.log('i am done saving')
             cb();
         }
     });
@@ -354,7 +358,7 @@ $('#btnSave').click(function() {
 
 $('#btnAnalyze').click(function() {
     save(function(){
-
+        console.log('analyze',TOOL)
         $.ajax({
             type: "POST",
             url: "/analyze",
@@ -493,6 +497,11 @@ jsPlumb.ready(function() {
                             });
                         }
                         cb()
+                    },
+                    function(cb){
+                        if(TOOL.chart){
+                            renderChart(TOOL.chart)
+                        }
                     }
                 ],function(){
                     console.log('done loading from canvas')
@@ -513,6 +522,9 @@ jsPlumb.ready(function() {
                         eachSeriesCb();
                     }
                 },function(){
+                    if(TOOL.chart){
+                            renderChart(TOOL.chart)
+                    }
                     console.log('done loading from nodes')
                 })
             }

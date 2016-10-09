@@ -10,7 +10,8 @@ var toolsSchema = mongoose.Schema({
             name:String,
             settings:mongoose.Schema.Types.Mixed,
             canvas:mongoose.Schema.Types.Mixed,
-            nodes:[mongoose.Schema.Types.Mixed]
+            nodes:[mongoose.Schema.Types.Mixed],
+            chart:[mongoose.Schema.Types.Mixed]
         }
     ]
 });

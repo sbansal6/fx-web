@@ -12,6 +12,7 @@
     "blueimp-file-upload-expressjs": "^0.4.4",
     "body-parser": "^1.13.2",
     "chai": "^3.5.0",
+    "clone": "^2.0.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.7.1",
     "crypto": "0.0.3",

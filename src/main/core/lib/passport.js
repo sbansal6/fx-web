@@ -26,7 +26,10 @@ function initializeTools(newUser,cb){
     googleInitialNodes.push(nodeService.getNodeUIStructure('SubString'));
     userTools.userId = newUser._id
     userTools.tools = [
-                { name: "google", settings:{}, "canvas":{}, nodes: googleInitialNodes}
+                { name: "google", settings:{}, "canvas":{}, nodes: googleInitialNodes,"chart":[
+                    [ 'Record', 'Valid', 'Invalid' ],
+                    [ 'id', 0, 10000 ],
+                    [ 'title', 0, 10000 ] ]}
     ]
     //todo :- add positionX and positionY as per elements in array
     userTools.save(function(err){
