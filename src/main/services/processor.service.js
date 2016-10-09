@@ -178,7 +178,7 @@ function reformatErrorMessage(outputRows){
  * @param row
  */
 function validateRow(validationSchema,row){
-    console.log('validateRow',validationSchema,row)
+    //console.log('validateRow',validationSchema,row)
     var validationResult = inspector.validate(validationSchema,row)
     row.isValid = validationResult['valid'];
     row.message = validationResult['error'];
@@ -197,7 +197,7 @@ function analyze(toolData,userData,cb){
     var inputFileFullName = path.join(directory, fileNode.fileName) ;
     var inputStream = fs.createReadStream(inputFileFullName);
     var destinationFieldMapping = destinationFieldMappings(toolData);
-    console.log('target connection name',targetConnectorName)
+    //console.log('target connection name',targetConnectorName)
     var santizeSchema = nodeService.getNodeSanitizeSchema(targetConnectorName);
     var validateSchema = nodeService.getNodeValidationSchema(targetConnectorName);
     inputStream.pipe(csv.parse({ columns: true }))
@@ -227,7 +227,7 @@ function analyze(toolData,userData,cb){
         .on("end", function(){
             var output = {};
             output.stats = generateStatistics(outputRows);
-            console.log('stats',output.stats);
+            //console.log('stats',output.stats);
             output.outputRows = reformatErrorMessage(outputRows);
             cb(null,output)
         });

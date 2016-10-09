@@ -310,11 +310,11 @@ var getNodeUIStructure = function(nodeName){
  * @param nodeName
  */
 var getNodeByName = function(nodeName){
-    console.log('all nodes',JSON.stringify(STRICT_NODES))
+    //console.log('all nodes',JSON.stringify(STRICT_NODES))
     var node = _.find(STRICT_NODES,function(n){
         return n.name === nodeName
     })
-    console.log('getNodeByName',node)
+    //console.log('getNodeByName',node)
     return node;
 }
 
@@ -350,7 +350,7 @@ var getNodeSanitizeSchema = function(nodeName){
 }
 
 var getNodeValidationSchema = function(nodeName){
-    console.log('getting nodevalidation schema',nodeName)
+    //console.log('getting nodevalidation schema',nodeName)
     var node = getNodeByName(nodeName);
     var validation = {type:"object",properties:{}}
     for (var field in node.modelSchema){
@@ -358,7 +358,7 @@ var getNodeValidationSchema = function(nodeName){
             validation.properties[field] = node.modelSchema[field].validation;
         }
     }
-    console.log('returning schema',validation)
+    //console.log('returning schema',validation)
     return validation
 }
 
