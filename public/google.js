@@ -71,7 +71,7 @@ function editNode(nodeId) {
  * @param nodeId
  */
 function deleteNode(nodeId) {
-    jsPlumb.remove(nodeId);
+    ktyle.remove(nodeId);
 }
 
 function encode(e){return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0)+";"})}
@@ -99,7 +99,7 @@ function addFields(nodeId,node){
 }
 
 function addSourceEndPoint(rowId) {
-    jsPlumb.addEndpoint(rowId, {
+    ktyle.addEndpoint(rowId, {
         anchors: ['Right'],
         isSource: true,
         isTarget: false,
@@ -119,7 +119,7 @@ function addSourceEndPoint(rowId) {
 }
 
 function addTargetEndPoint(rowId) {
-    jsPlumb.addEndpoint(rowId, {
+    ktyle.addEndpoint(rowId, {
         anchors: ['Left'],
         isSource: false,
         isTarget: true,
@@ -156,7 +156,7 @@ function setEndPoint(rowId, node) {
 
 function drawNode(node,cb) {
     if (node.nodeId){
-        jsPlumb.remove(node.nodeId);
+        ktyle.remove(node.nodeId);
     }
     $.get("assests/node.html?time=" + (new Date()).getTime(), function(data) {
         var nodeId = node.nodeId ? node.nodeId : (node.name + '_' + guid());
@@ -171,7 +171,7 @@ function drawNode(node,cb) {
         if (node.isCoreNode){
             $('#' + nodeId).find('.btndelete').remove();
         }
-        jsPlumb.draggable(nodeId, {
+        ktyle.draggable(nodeId, {
             containment: "parent",
             grid:[10,10]
         });
@@ -193,7 +193,7 @@ function save(cb) {
         });
     });
     var connections = [];
-    $.each(jsPlumb.getConnections(), function(idx, connection) {
+    $.each(ktyle.getConnections(), function(idx, connection) {
         connections.push({
             connectionId: connection.id,
             pageSourceId: connection.sourceId,
@@ -385,7 +385,7 @@ $('#btnAnalyze').click(function() {
 
 })
 
-jsPlumb.ready(function() {
+ktyle.ready(function() {
     $('#gridTable').DataTable({
         data: dataSet,
         columns: [
@@ -401,7 +401,7 @@ jsPlumb.ready(function() {
     });
     google.charts.load('current', {packages: ['corechart', 'bar']});
     initOnDrag();
-    jsPlumb.importDefaults({
+    ktyle.importDefaults({
         Connector: ["Bezier"],  // Bezier | Straight | Flowchart | StateMachine 
         PaintStyle: {
             strokeStyle: "rgba(50,50,50,1)",
@@ -428,8 +428,8 @@ jsPlumb.ready(function() {
             //[ "Label", { label:"Relationship", id:"lblPrimary_" + 'casasc' } ]
         ]
     })
-    jsPlumb.setContainer("canvas");
-    jsPlumb.bind("connection", function(info, originalEvent) {
+    ktyle.setContainer("canvas");
+    ktyle.bind("connection", function(info, originalEvent) {
         //alert("connected "+info.sourceId+" and "+info.targetId + " via "+info.connection);
         var connection1 = info.connection;
         connection1.bind("click", function(connection, originalEvent) {
@@ -439,7 +439,7 @@ jsPlumb.ready(function() {
                 lineWidth: 3.5
             });
             keyboardJS.on('del', function(event, keys, keyComboStr) {
-                jsPlumb.detach(connection)
+                ktyle.detach(connection)
             })
             keyboardJS.on('esc', function(event, keys, keyComboStr) {
                 connection.setPaintStyle({
@@ -490,7 +490,7 @@ jsPlumb.ready(function() {
                                         return Number(ai)
                                     })]
                                 })
-                                jsPlumb.connect({
+                                ktyle.connect({
                                     source: c.pageSourceId,
                                     target: c.pageTargetId,
                                     anchors: anchorsInt,
