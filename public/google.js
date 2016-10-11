@@ -174,7 +174,8 @@ function drawNode(node,cb) {
             $('#' + nodeId).find('.btndelete').remove();
         }
         jsPlumb.draggable(nodeId, {
-            containment: "parent"
+            containment: "parent",
+            grid:[10,10]
         });
         addFields(nodeId,node);
         cb()
@@ -516,7 +517,7 @@ jsPlumb.ready(function() {
                 async.eachSeries(TOOL.nodes,function(n,eachSeriesCb){
                     if (n.isCoreNode){
                         nodeCount++;
-                        n.positionX = 30 * (nodeCount === 1 ? 1 : 15);
+                        n.positionX = 30 * (nodeCount === 1 ? 1 : 20);
                         n.positionY = 30 ;
                         console.log('node',n);
                         drawNode(n,eachSeriesCb)

@@ -1,3 +1,18 @@
+
+
+#canvas {
+    width:80%; height: 199px;
+    border: 1px solid gray;
+    background-image: url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
+    background-repeat:repeat;
+
+}
+
+.node {
+    border: 1px solid #424a5d;
+}
+
+
 .File {
     position: absolute;
     top: 30px;
