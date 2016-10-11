@@ -103,9 +103,8 @@ function addSourceEndPoint(rowId) {
         anchors: ['Right'],
         isSource: true,
         isTarget: false,
-        endpoint: ["Rectangle", {
-            width: 15,
-            height: 15
+        endpoint: ["Dot", {
+            radius: 7
         }],
         endpointStyle: {
             fillStyle: "#ff7473",
@@ -124,9 +123,8 @@ function addTargetEndPoint(rowId) {
         anchors: ['Left'],
         isSource: false,
         isTarget: true,
-        endpoint: ["Rectangle", {
-            width: 12,
-            height: 12
+        endpoint: ["Dot", {
+            radius: 7
         }],
         endpointStyle: {
             fillStyle: "#424a5d",
@@ -404,7 +402,7 @@ jsPlumb.ready(function() {
     google.charts.load('current', {packages: ['corechart', 'bar']});
     initOnDrag();
     jsPlumb.importDefaults({
-        Connector: ["Straight"],
+        Connector: ["Bezier"],  // Bezier | Straight | Flowchart | StateMachine 
         PaintStyle: {
             strokeStyle: "rgba(50,50,50,1)",
             lineWidth: 2.5
@@ -495,7 +493,10 @@ jsPlumb.ready(function() {
                                 jsPlumb.connect({
                                     source: c.pageSourceId,
                                     target: c.pageTargetId,
-                                    anchors: anchorsInt
+                                    anchors: anchorsInt,
+                                    endpoint: ["Dot", {
+                                            radius: 7
+                                        }]
                                 });
                             });
                         }
