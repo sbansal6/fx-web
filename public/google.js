@@ -78,13 +78,16 @@ function encode(e){return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0
 
 function addFields(nodeId,node){
     if (node.fields && node.fields.length > 0){
+        console.log('addFields',node.fields,node.fields.length);
         node.fields.forEach(function(field) {
             var rowId = nodeId + '_' + field.name;
+            console.log('addFields',rowId);
             var desc = field.description ? encode(field.description) : "";
             var tableRow = '<tr id=' + rowId + '>' +
                 '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
                 '</tr>'
             $('#' + nodeId + " .table").append(tableRow);
+            console.log('setting endpoint for ',rowId,node);
             setEndPoint(rowId, node)
         });
     } else {
@@ -99,6 +102,7 @@ function addFields(nodeId,node){
 }
 
 function addSourceEndPoint(rowId) {
+    console.log('addSourceEndPoint',rowId)
     ktyle.addEndpoint(rowId, {
         anchors: ['Right'],
         isSource: true,
@@ -467,6 +471,7 @@ ktyle.ready(function() {
                 async.waterfall([
                     function(cb) {
                         async.eachSeries(canvasObject.nodes, function(cn, eachSeriesCb) {
+                            console.log("canvas node",cn);
                             var onode = _.find(TOOL.nodes, function(n) {
                                 return n.name === cn.nodeName
                             })

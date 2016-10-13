@@ -193,14 +193,15 @@ function analyze(toolData,userData,cb){
     var directory = path.join(root.driveRoot,userData.id) ;
     var fileNode = _.find(toolData.nodes,function(n){
         return n.name === 'File'
-    })
+    });
+    var fileType = fileNode.data.type ;
+    var delimiter = fileType == 'csv' ? ',' : '\t';
     var inputFileFullName = path.join(directory, fileNode.fileName) ;
     var inputStream = fs.createReadStream(inputFileFullName);
     var destinationFieldMapping = destinationFieldMappings(toolData);
-    //console.log('target connection name',targetConnectorName)
     var santizeSchema = nodeService.getNodeSanitizeSchema(targetConnectorName);
     var validateSchema = nodeService.getNodeValidationSchema(targetConnectorName);
-    inputStream.pipe(csv.parse({ columns: true }))
+    inputStream.pipe(csv.parse({ columns: true,delimiter:delimiter }))
         .pipe(csv.transform(function (row, next) {
             async.waterfall([
                 function(transformCb){
