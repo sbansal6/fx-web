@@ -246,8 +246,8 @@ var STRICT_NODES= [
             }
         },
         "data": {
-            "searchValue": "John",
-            "newValue": "McClane"
+            "searchValue": "this",
+            "newValue": "that"
         }
     },
     {
@@ -261,7 +261,9 @@ var STRICT_NODES= [
             "properties": {
                 "startIndex": {
                     "type": "number",
-                    "title": "start"
+                    "title": "start",
+                    "minimum": 0,
+                    "required": true
                 },
                 "endIndex": {
                     "type": "number",
