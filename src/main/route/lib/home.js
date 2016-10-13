@@ -29,12 +29,15 @@ var multerUpload = multer({ storage: storage })
 
 var headers = function(req,cb){
     var fullFileName = path.join(req.user.rootDir,req.files[0].originalname);
-    var delimiter = req.body.type === 'csv' ? ',' : '/t';
+    var delimiter = req.body.type === 'csv' ? ',' : '\t';
     fs.createReadStream(fullFileName)
         .pipe(sutil.head(1)) // get head lines
         .pipe(sutil.split())
         .setEncoding('utf8')
         .on('data', function(data){
+            // remove linebreaks
+            data = data.replace(/(\r\n|\n|\r)/gm,"");
+            console.log('headers',data.split(delimiter))
             cb(null,{headers:data.split(delimiter)})
         })
 }
@@ -92,6 +95,7 @@ module.exports = function (app,isLoggedIn) {
                 result.headers.forEach(function(h){
                     response.fields.push({name:h})
                 })
+                console.log('response',response)
                 res.status(200).json(response);
             }
         })
