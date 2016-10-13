@@ -58,7 +58,11 @@ function outputFromTransformNode(toolData,input,node){
         return n.nodeId === node.nodeId
     })
     if (actualNode.name === 'Replace'){
-        return input.replace(actualNode.data["searchValue"] || "",actualNode.data["newValue"] || "")
+        if (actualNode.data){
+            return input.replace(actualNode.data["searchValue"] || "",actualNode.data["newValue"] || "")
+        } else {
+            return input;
+        }
     }
     if (actualNode.name === 'SubString'){
         return input.substring(actualNode.data["startIndex"],actualNode.data["endIndex"])
