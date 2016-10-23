@@ -1,48 +1,15 @@
-var TOOL = [];
+var FEEDLINE = [];
 var dataSet = [
-    [ "Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800" ],
-    [ "Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750" ],
-    [ "Ashton Cox", "Junior Technical Author", "San Francisco", "1562", "2009/01/12", "$86,000" ],
-    [ "Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "6224", "2012/03/29", "$433,060" ],
-    [ "Airi Satou", "Accountant", "Tokyo", "5407", "2008/11/28", "$162,700" ],
-    [ "Brielle Williamson", "Integration Specialist", "New York", "4804", "2012/12/02", "$372,000" ],
-    [ "Herrod Chandler", "Sales Assistant", "San Francisco", "9608", "2012/08/06", "$137,500" ],
-    [ "Rhona Davidson", "Integration Specialist", "Tokyo", "6200", "2010/10/14", "$327,900" ],
-    [ "Colleen Hurst", "Javascript Developer", "San Francisco", "2360", "2009/09/15", "$205,500" ],
-    [ "Sonya Frost", "Software Engineer", "Edinburgh", "1667", "2008/12/13", "$103,600" ],
-    [ "Jena Gaines", "Office Manager", "London", "3814", "2008/12/19", "$90,560" ],
-    [ "Quinn Flynn", "Support Lead", "Edinburgh", "9497", "2013/03/03", "$342,000" ],
-    [ "Charde Marshall", "Regional Director", "San Francisco", "6741", "2008/10/16", "$470,600" ],
-    [ "Haley Kennedy", "Senior Marketing Designer", "London", "3597", "2012/12/18", "$313,500" ],
-    [ "Tatyana Fitzpatrick", "Regional Director", "London", "1965", "2010/03/17", "$385,750" ],
-    [ "Michael Silva", "Marketing Designer", "London", "1581", "2012/11/27", "$198,500" ],
-    [ "Paul Byrd", "Chief Financial Officer (CFO)", "New York", "3059", "2010/06/09", "$725,000" ],
-    [ "Gloria Little", "Systems Administrator", "New York", "1721", "2009/04/10", "$237,500" ],
-    [ "Bradley Greer", "Software Engineer", "London", "2558", "2012/10/13", "$132,000" ],
-    [ "Dai Rios", "Personnel Lead", "Edinburgh", "2290", "2012/09/26", "$217,500" ],
-    [ "Jenette Caldwell", "Development Lead", "New York", "1937", "2011/09/03", "$345,000" ],
-    [ "Yuri Berry", "Chief Marketing Officer (CMO)", "New York", "6154", "2009/06/25", "$675,000" ],
-    [ "Caesar Vance", "Pre-Sales Support", "New York", "8330", "2011/12/12", "$106,450" ],
-    [ "Doris Wilder", "Sales Assistant", "Sidney", "3023", "2010/09/20", "$85,600" ],
-    [ "Angelica Ramos", "Chief Executive Officer (CEO)", "London", "5797", "2009/10/09", "$1,200,000" ],
-    [ "Gavin Joyce", "Developer", "Edinburgh", "8822", "2010/12/22", "$92,575" ],
-    [ "Jennifer Chang", "Regional Director", "Singapore", "9239", "2010/11/14", "$357,650" ],
-    [ "Brenden Wagner", "Software Engineer", "San Francisco", "1314", "2011/06/07", "$206,850" ],
-    [ "Fiona Green", "Chief Operating Officer (COO)", "San Francisco", "2947", "2010/03/11", "$850,000" ],
-    [ "Shou Itou", "Regional Marketing", "Tokyo", "8899", "2011/08/14", "$163,000" ],
-    [ "Michelle House", "Integration Specialist", "Sidney", "2769", "2011/06/02", "$95,400" ],
-    [ "Suki Burks", "Developer", "London", "6832", "2009/10/22", "$114,500" ],
-    [ "Prescott Bartlett", "Technical Author", "London", "3606", "2011/05/07", "$145,000" ],
-    [ "Gavin Cortez", "Team Leader", "San Francisco", "2860", "2008/10/26", "$235,500" ],
-    [ "Martena Mccray", "Post-Sales support", "Edinburgh", "8240", "2011/03/09", "$324,050" ],
-    [ "Unity Butler", "Marketing Designer", "San Francisco", "5384", "2009/12/09", "$85,675" ]
+    [ "Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800" ]
+
 ];
 
 /**
  * Edit Node now , add more fields or whatever
  */
 function editNode(nodeId) {
-    var thisNode = _.find(TOOL.nodes, function(n) {
+    console.log('editNode',nodeId, FEEDLINE.nodes)
+    var thisNode = _.find(FEEDLINE.nodes, function(n) {
         return n.nodeId === nodeId
     })
     var thisNodeOptions = _.find(NODES_OPTIONS,function(n){
@@ -74,20 +41,22 @@ function deleteNode(nodeId) {
     ktyle.remove(nodeId);
 }
 
-function encode(e){return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0)+";"})}
+function encode(e){
+    return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0)+";"})
+}
 
 function addFields(nodeId,node){
     if (node.fields && node.fields.length > 0){
-        console.log('addFields',node.fields,node.fields.length);
+        //////console.log('addFields',node.fields,node.fields.length);
         node.fields.forEach(function(field) {
             var rowId = nodeId + '_' + field.name;
-            console.log('addFields',rowId);
+            //////console.log('addFields',rowId);
             var desc = field.description ? encode(field.description) : "";
             var tableRow = '<tr id=' + rowId + '>' +
                 '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
                 '</tr>'
             $('#' + nodeId + " .table").append(tableRow);
-            console.log('setting endpoint for ',rowId,node);
+            //////console.log('setting endpoint for ',rowId,node);
             setEndPoint(rowId, node)
         });
     } else {
@@ -96,13 +65,13 @@ function addFields(nodeId,node){
             '<td align="center"></td>' +
             '</tr>'
         $('#' + nodeId + " .table").append(tableRow);
-        console.log('printing node',node)
+        //////console.log('printing node',node)
         setEndPoint(rowId, node)
     }
 }
 
 function addSourceEndPoint(rowId) {
-    console.log('addSourceEndPoint',rowId)
+    //////console.log('addSourceEndPoint',rowId)
     ktyle.addEndpoint(rowId, {
         anchors: ['Right'],
         isSource: true,
@@ -140,7 +109,7 @@ function addTargetEndPoint(rowId) {
         },
         maxConnections: 1,
         onMaxConnections: function() {
-            console.log('max connection limit reached')
+            ////console.log('max connection limit reached')
         }
     });
 }
@@ -159,6 +128,7 @@ function setEndPoint(rowId, node) {
 }
 
 function drawNode(node,cb) {
+    //////console.log('adding node',JSON.stringify(node,null,4))
     if (node.nodeId){
         ktyle.remove(node.nodeId);
     }
@@ -220,18 +190,18 @@ function save(cb) {
     flowChart.nodes = nodes;
     flowChart.connections = connections;
     var flowChartJson = flowChart;
-    TOOL.canvas = flowChartJson
+    FEEDLINE.canvas = flowChartJson
     $.ajax({
         type: "POST",
-        url: "/tool",
+        url: "/FEEDLINE",
         data: {
-            toolName: "google",
-            canvas: TOOL.canvas,
-            settings: TOOL.settings,
-            nodes: TOOL.nodes
+            FEEDLINEName: "google",
+            canvas: FEEDLINE.canvas,
+            settings: FEEDLINE.settings,
+            nodes: FEEDLINE.nodes
         },
         success: function(result) {
-            console.log('i am done saving')
+            ////console.log('i am done saving')
             cb();
         }
     });
@@ -278,7 +248,7 @@ function renderGrid(result){
             }
         }
     });
-    // add tooltip
+    // add FEEDLINEtip
     $('#gridTable tbody tr').each( function() {
         var row = $('td', this);
         var title = $(row[maxKeys - 1]).text();
@@ -314,7 +284,7 @@ function renderChart(stats){
 }
 
 function loadPalette(nodes){
-    TOOL.nodes.forEach(function(n){
+    FEEDLINE.nodes.forEach(function(n){
         if (!(n.isCoreNode)){
             var d = document.createElement("div");
             var nodeName = n.name;
@@ -342,11 +312,12 @@ function initOnDrag(){
             var positionX = ui.offset.left - $(this).offset().left;
             var positionY = ui.offset.top - $(this).offset().top;
             ui.helper.remove();
-            // find node details from tools paletteNodes
+            // find node details from FEEDLINEs paletteNodes
             // add node to chart/ draw node
-            var thisNode = _.find(TOOL.nodes, function(n) {
+            var thisNode = clone(_.find(FEEDLINE.nodes, function(n) {
                 return n.name === draggableId
-            })
+            }))
+            thisNode.nodeId = thisNode.name + '_' + guid() ;
             thisNode.positionX = positionX;
             thisNode.positionY = positionY;
             drawNode(thisNode,function(){
@@ -355,58 +326,90 @@ function initOnDrag(){
     });
 }
 
-$('#btnSave').click(function() {
-    save(function(){
-        alert('Settings saved!!');
-    });
-})
-
-$('#btnAnalyze').click(function() {
-    save(function(){
-        console.log('analyze',TOOL)
-        $.ajax({
-            type: "POST",
-            url: "/analyze",
-            beforeSend: function() {
-                // Here we show the loader
-                ajaxindicatorstart('analyzing feed.. please wait..');
-            },
-            complete: function(){
-                ajaxindicatorstop();
-            },
-            data: {
-                toolName: "google",
-                canvas: TOOL.canvas,
-                settings: TOOL.settings,
-                nodes: TOOL.nodes
-            },
-            success: function(result) {
-                renderGrid(result.outputRows);
-                renderChart(result.stats);
-            }
-        });
-    });
-
-})
-
-ktyle.ready(function() {
+/**
+ * Iniializes grid at start
+ * Todo:- Need to fix this.
+ */
+function initGrid(){
     $('#gridTable').DataTable({
         data: dataSet,
         columns: [
-        { title: "Name" },
-        { title: "Position" },
-        { title: "Office" },
-        { title: "Extn." },
-        { title: "Start date" },
-        { title: "Salary" }
-    ]});
+            { title: "Name" },
+            { title: "Position" },
+            { title: "Office" },
+            { title: "Extn." },
+            { title: "Start date" },
+            { title: "Salary" }
+        ]});
+}
+
+/**
+ * Initialzes Save button
+ *
+ */
+function initSaveButton(){
+    $('#btnSave').click(function() {
+        save(function(){
+            alert('Settings saved!!');
+        });
+    })
+}
+
+/**
+ * Initialzes Analyze button
+ */
+function initAnalyzeButton(){
+    $('#btnAnalyze').click(function() {
+        save(function(){
+            //////console.log('analyze',FEEDLINE)
+            $.ajax({
+                type: "POST",
+                url: "/analyze",
+                beforeSend: function() {
+                    // Here we show the loader
+                    ajaxindicatorstart('analyzing feed.. please wait..');
+                },
+                complete: function(){
+                    ajaxindicatorstop();
+                },
+                data: {
+                    FEEDLINEName: "google",
+                    canvas: FEEDLINE.canvas,
+                    settings: FEEDLINE.settings,
+                    nodes: FEEDLINE.nodes
+                },
+                success: function(result) {
+                    renderGrid(result.outputRows);
+                    renderChart(result.stats);
+                }
+            });
+        });
+
+    })
+}
+
+/**
+ * Initializes export button
+ */
+function initExportButton(){
     $("#btnExport").click(function(){
         $('#gridTable').tableExport({type:'txt',escape:'false',ignoreColumn: []});
     });
+}
+
+/**
+ * Initialize google chart
+ */
+function initChart() {
     google.charts.load('current', {packages: ['corechart', 'bar']});
-    initOnDrag();
+}
+
+/**
+ * init ktyle
+ */
+function initktyle(){
     ktyle.importDefaults({
-        Connector: ["Bezier"],  // Bezier | Straight | Flowchart | StateMachine 
+        Connector: ["Bezier"],  // Bezier | Straight | Flowchart | StateMachine
         PaintStyle: {
             strokeStyle: "rgba(50,50,50,1)",
             lineWidth: 2.5
@@ -424,7 +427,7 @@ ktyle.ready(function() {
                 events: {
                     click: function() {
                         //alert('connection overlay clicked')
-                        console.log('connection overlay clicked')
+                        ////console.log('connection overlay clicked')
                     },
                 }
             }],
@@ -454,88 +457,111 @@ ktyle.ready(function() {
 
         });
     });
+}
+
+/**
+ * If canvas exists in db
+ * Means user updated the state
+ * @param canvas
+ */
+function useStoredCanvas(FEEDLINE){
+    ////console.log('loading from existing canvas')
+    // draw nodes
+    var canvasObject = FEEDLINE.canvas;
+    async.waterfall([
+        function(cb) {
+            async.eachSeries(canvasObject.nodes, function(cn, eachSeriesCb) {
+                ////console.log("canvas node",cn);
+                var onode = _.find(FEEDLINE.nodes, function(n) {
+                    return n.name === cn.nodeName
+                })
+                if (onode) {
+                    onode.nodeId = cn.nodeId;
+                    onode.positionX = cn.positionX;
+                    onode.positionY = cn.positionY;
+                    drawNode(onode,eachSeriesCb);
+                }
+            }, cb)
+        },
+        function(cb) {
+            // connect existing connectors
+            if (canvasObject.connections){
+                var connections = canvasObject.connections;
+                connections.forEach(function(c) {
+                    // ** fix, acnhors getting saved as string in mongo
+                    // trick to convert to int
+                    var anchorsInt = $.map(c.anchors,function(a){
+                        return [$.map(a,function(ai){
+                            return Number(ai)
+                        })]
+                    })
+                    ktyle.connect({
+                        source: c.pageSourceId,
+                        target: c.pageTargetId,
+                        anchors: anchorsInt,
+                        endpoint: ["Dot", {
+                            radius: 7
+                        }]
+                    });
+                });
+            }
+            cb()
+        },
+        function(cb){
+            if(FEEDLINE.chart){
+                renderChart(FEEDLINE.chart)
+            }
+        }
+    ],function(){
+        ////console.log('done loading from canvas')
+    })
+}
+
+function renderCanvasForFirstTime(FEEDLINE){
+    // first time drawing canvas
+    // only draw core nodes
+    var nodeCount = 0;
+    async.eachSeries(FEEDLINE.nodes,function(n,eachSeriesCb){
+        if (n.isCoreNode){
+            nodeCount++;
+            n.positionX = 30 * (nodeCount === 1 ? 1 : 20);
+            n.positionY = 30 ;
+            ////console.log('node',n);
+            drawNode(n,eachSeriesCb)
+        } else {
+            eachSeriesCb();
+        }
+    },function(){
+        if(FEEDLINE.chart){
+            renderChart(FEEDLINE.chart)
+        }
+        ////console.log('done loading from nodes')
+    })
+}
+
+ktyle.ready(function() {
+    initGrid();
+    initSaveButton();
+    initAnalyzeButton();
+    initExportButton();
+    initChart();
+    initOnDrag();
+    initktyle();
     $.ajax({
         type: "GET",
-        url: "/tool",
+        url: "/FEEDLINE",
         data: {
-            toolName: "google"
+            FEEDLINEName: "google"
         },
         success: function(result) {
-            console.log('return from ',result)
-            TOOL = result;
+            ////console.log('return from ',result)
+            FEEDLINE = result;
             loadPalette();
-            if (TOOL.canvas) {
-                console.log('loading from existing canvas')
-                // draw nodes
-                var canvasObject = TOOL.canvas;
-                async.waterfall([
-                    function(cb) {
-                        async.eachSeries(canvasObject.nodes, function(cn, eachSeriesCb) {
-                            console.log("canvas node",cn);
-                            var onode = _.find(TOOL.nodes, function(n) {
-                                return n.name === cn.nodeName
-                            })
-                            if (onode) {
-                                onode.nodeId = cn.nodeId;
-                                onode.positionX = cn.positionX;
-                                onode.positionY = cn.positionY;
-                                drawNode(onode,eachSeriesCb);
-                            }
-                        }, cb)
-                    },
-                    function(cb) {
-                        // connect existing connectors
-                        if (canvasObject.connections){
-                            var connections = canvasObject.connections;
-                            connections.forEach(function(c) {
-                                // ** fix, acnhors getting saved as string in mongo
-                                // trick to convert to int
-                                var anchorsInt = $.map(c.anchors,function(a){
-                                    return [$.map(a,function(ai){
-                                        return Number(ai)
-                                    })]
-                                })
-                                ktyle.connect({
-                                    source: c.pageSourceId,
-                                    target: c.pageTargetId,
-                                    anchors: anchorsInt,
-                                    endpoint: ["Dot", {
-                                            radius: 7
-                                        }]
-                                });
-                            });
-                        }
-                        cb()
-                    },
-                    function(cb){
-                        if(TOOL.chart){
-                            renderChart(TOOL.chart)
-                        }
-                    }
-                ],function(){
-                    console.log('done loading from canvas')
-                })
+            if (FEEDLINE.canvas) {
+                useStoredCanvas(FEEDLINE);
             }
             else {
-                // first time drawing canvas
-                // only draw core nodes
-                var nodeCount = 0;
-                async.eachSeries(TOOL.nodes,function(n,eachSeriesCb){
-                    if (n.isCoreNode){
-                        nodeCount++;
-                        n.positionX = 30 * (nodeCount === 1 ? 1 : 20);
-                        n.positionY = 30 ;
-                        console.log('node',n);
-                        drawNode(n,eachSeriesCb)
-                    } else {
-                        eachSeriesCb();
-                    }
-                },function(){
-                    if(TOOL.chart){
-                            renderChart(TOOL.chart)
-                    }
-                    console.log('done loading from nodes')
-                })
+                renderCanvasForFirstTime(FEEDLINE);
             }
         }
     });

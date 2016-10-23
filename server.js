@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.static('landingpage'));
-app.use(express.static('bower_components'));
+//app.use(express.static('bower_components'));
 //app.use(express.static('theme'));
 app.use(flash());
 app.all('/*', function (req, res, next) {
