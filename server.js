@@ -30,7 +30,7 @@ mongoose.connect(core.environment.mongo.url);
 
 // Express Configuration =============================================================
 app.disable('etag');
-app.set('views', path.join(__dirname, '/src/main/views'));
+app.set('views', path.join(__dirname, '/server/main/views'));
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set("layout extractScripts", true)

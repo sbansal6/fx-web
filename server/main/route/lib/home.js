@@ -74,7 +74,13 @@ module.exports = function (app,isLoggedIn) {
     // APPLICATION PAGE (with logout links)
     // =====================================
     app.get('/home', isLoggedIn, controller.home.main);
-    app.get('/decode', isLoggedIn, controller.home.decode);
+
+    app.get('/dashboard',isLoggedIn,function(req,res){
+        res.render('dashboard.ejs', {
+            title: 'FeedExchange - dashboard',
+            message: ""
+        });
+    })
 
     //app.get('/encode',isLoggedIn,controller.application.encode);
     app.get('/google', isLoggedIn, controller.home.google);
