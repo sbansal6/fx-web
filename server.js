@@ -18,7 +18,7 @@ root = {
 root.driveRoot = path.join(__dirname,'drive');
 
 // Local Requires ==================================================================
-var core = require('./src/main').core;
+var core = require('./server/main').core;
 // =================================================================================
 
 
@@ -92,7 +92,7 @@ app.use(expressWinston.logger({
 //endregion
 
 // Passport Configuration =============================================================
-require('./src/main/core').passport(passport);
+require('./server/main/core').passport(passport);
 app.use(session({ secret: 'newworldsolutiontooldworldproblem' })); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
@@ -104,7 +104,7 @@ app.get('/', function(req, res){
 
 
 
-require('./src/main/route/index')(app,passport);
+require('./server/main/route/index')(app,passport);
 // End Routes =========================================================================
 
 // /**
