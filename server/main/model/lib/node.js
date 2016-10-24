@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var nodeSchema = mongoose.Schema({
     userId: String,
     name:String,
+    description:String,
     version:String,
     type:String, // should be enum Transformation | Connector
     image:String,

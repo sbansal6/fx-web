@@ -54,9 +54,39 @@ module.exports = function (app,isLoggedIn) {
        var body = req.body;
        console.log('incoming data',body);
        var connector = new Node();
+       connector.userId = req.user._id;
+       connector.name = body.name;
+       connector.description = body.description;
+       connector.version = body.version || 'v 1.0.0';
+       connector.type = 'Connector';
+       connector.image = '';
+       connector.published = false ;
+       connector.modelSchema = {};
 
-       // convert to connector format and add to database
-       res.send({})
+       // model validation object
+       body.schemaFields.forEach(function(sf){
+           connector.modelSchema[sf.fieldName] = {};
+           connector.modelSchema[sf.fieldName]["description"] = sf.description;
+           var validation = {};
+           for (var property in sf){
+               if (property.startsWith("field")){
+                   validation[property] = sf[property];
+               }
+           }
+           connector.modelSchema[sf.fieldName]["validation"] = validation;
+       })
+       console.log('new connector',connector);
+       connector.save(function(err,result){
+           if(err){
+               console.log('Error While saving connector')
+           }
+           else {
+               console.log('result',result);
+               // convert to connector format and add to database
+               res.send(result)
+           }
+       })
+
    })
 
 };
