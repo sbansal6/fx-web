@@ -5,7 +5,7 @@ var env = process.env.NODE_ENV || 'develop';
 
 // load up the client model
 var User = require('../../model').user;
-var Tools  = require('../../model').tools;
+var FeedLine  = require('../../model').feedline;
 var nodeService  = require('../../services/node.service');
 
 /**
@@ -96,7 +96,7 @@ module.exports = function (passport) {
                             if (err) {
                                 return done(err);
                             } else {
-                                initializeTools(newUser,done)
+                                return done(null,newUser);
                              }
                         });
                     }

@@ -1,5 +1,5 @@
 module.exports = {
     user: require('./lib/user'),
-    tools : require('./lib/tools'),
-    flow: require('./lib/flow')
+    node : require('./lib/node'),
+    feedline: require('./lib/feedline')
 }

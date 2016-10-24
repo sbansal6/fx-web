@@ -82,6 +82,13 @@ module.exports = function (app,isLoggedIn) {
         });
     })
 
+    app.get('/connector',isLoggedIn,function(req,res){
+        res.render('connector.ejs', {
+            title: 'FeedExchange - connector',
+            message: ""
+        });
+    })
+
     //app.get('/encode',isLoggedIn,controller.application.encode);
     app.get('/google', isLoggedIn, controller.home.google);
 

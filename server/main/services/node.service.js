@@ -33,15 +33,14 @@ var STRICT_NODES= [
     {
         name: 'Google'
         , label: 'Google'
-        , type: 'target'
-        , category: 'target'
+        , type: 'connector'
+        , category: 'connector'
         , image: "http://www.about-searchengines.com/_/rsrc/1375438908754/home/google-g-logo-s.png"
         , modelSchema: {
         id: {
             sanitization: {
                 type: 'string',
                 rules: ['trim']
-
             },
             validation: {
                 type: 'string',

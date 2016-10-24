@@ -8,7 +8,7 @@ module.exports = function (app, passport) {
             req.logIn(user, function(err) {
                 if (err) { return next(err); }
                 // Redirect if it succeeds
-                return res.redirect('/home');
+                return res.redirect('/dashboard');
             });
         })(req, res, next);
     })
