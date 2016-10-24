@@ -392,7 +392,8 @@ module.exports = {
     getNodeFields:getNodeFields,
     getNodeSanitizeSchema:getNodeSanitizeSchema,
     getNodeValidationSchema:getNodeValidationSchema,
-    paletteNodes:paletteNodes
+    paletteNodes:paletteNodes,
+    getConnectors:getConnectors
 }
 
 

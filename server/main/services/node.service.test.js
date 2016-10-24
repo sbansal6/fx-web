@@ -176,5 +176,15 @@ describe('node.service',function(){
             expect(googleStructure).to.be.an('object')
         })
     })
+    
+    describe('getConnectors',function(){
+        
+        it('should return 0 connectors',function(done){
+            nodeService.getConnectors('xxx',function(err,docs){
+                console.log('docs',docs)
+                done()
+            })
+        })
+    })
 })
 
