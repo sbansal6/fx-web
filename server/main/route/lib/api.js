@@ -71,6 +71,20 @@ module.exports = function(app, isLoggedIn) {
 
     })
 
+
+   /*
+   * Returns a list of connector created by this user
+   */
+   app.get('/api/connector',isLoggedIn,function(req,res){
+       Node.find({userId:req.user._id},function(err,result){
+           if(err){
+               console.log('error retreiving connectors from db')
+           } else {
+               res.send({connector:result})
+           }
+       })
+   })
+
     /**
     * Add a new connector to the system
      * incoming data example

@@ -1,6 +1,7 @@
 var inspector = require('schema-inspector');
 var _ = require('underscore');
 var clone = require('clone');
+var node = require("../model").node;
 
 var STRICT_NODES= [
     {    name:'File'
@@ -370,6 +371,20 @@ var paletteNodes = function () {
     return _.filter(STRICT_NODES,function(n){
         return (n.palette === true)
     })
+}
+
+/**
+ * Returns all connectors created by this user
+ */
+var getConnectors = function(userId,cb){
+    node.find({userId:userId},function(err,result){
+           if(err){
+               console.log('error retreiving connectors from db')
+               cb(err)
+           } else {
+               cb(null,result)
+           }
+       })
 }
 
 module.exports = {
