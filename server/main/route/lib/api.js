@@ -36,15 +36,7 @@ function castToConnector(user,body){
  */
 function addConnector(user,body,cb) {
     var connector = castToConnector(user,body);
-    connector.save(function(err, result) {
-        if (err) {
-            console.log('Error While saving connector')
-        } else {
-            console.log('result', result);
-            // convert to connector format and add to database
-            res.send(result)
-        }
-    })
+    connector.save(cb);
 }
 
 module.exports = function(app, isLoggedIn) {
@@ -96,7 +88,13 @@ module.exports = function(app, isLoggedIn) {
      }
     */
     app.post('/api/connector', isLoggedIn, function(req, res) {
-        addConnector(req.user,req.body)
+        addConnector(req.user,req.body,function(err){
+         if (err){
+          console.log('error posting connector')
+         } else {
+          res.send({status:"connector added successfully"})
+         }
+        })
     })
 
 };
