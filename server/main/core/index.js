@@ -1,4 +1,4 @@
 module.exports = {
-    environment: require('./lib/environment'),
-    passport: require('./lib/passport')
+    environment: require('./environment'),
+    passport: require('./passport')
 };

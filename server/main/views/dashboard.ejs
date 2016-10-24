@@ -61,15 +61,19 @@
                 </h4>
             </a>
 
-            <a href = "#" class = "list-group-item">
+           <% for(var i=0; i<connectors.length; i++) {%>
+       
+               <a href = "#" class = "list-group-item">
                 <h4 class = "list-group-item-heading">
-                    Name of Connector plus image
+                   <%= connectors[i]["name"] %>
                 </h4>
 
                 <p class = "list-group-item-text">
-                    Description of Connector
+                    <%= connectors[i]["description"] %>
                 </p>
+                
             </a>
+            <% } %>
 
             <a href = "#" class = "list-group-item">
                 <h4 class = "list-group-item-heading">

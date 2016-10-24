@@ -373,18 +373,48 @@ var paletteNodes = function () {
     })
 }
 
+/*
+ * Convert data from req body to connector format
+ */
+function castToConnector(user,body){
+  var connector = new node();
+    connector.userId = user._id;
+    connector.name = body.name;
+    connector.description = body.description;
+    connector.version = body.version || 'v 1.0.0';
+    connector.type = 'Connector';
+    connector.image = '';
+    connector.published = false;
+    connector.scheme = {};
+    // model validation object
+    body.schemaFields.forEach(function(sf) {
+        connector.scheme[sf.fieldName] = {};
+        connector.scheme[sf.fieldName]["description"] = sf.description;
+        var validation = {};
+        for (var property in sf) {
+            if (!property.startsWith("field")) {
+                validation[property] = sf[property];
+            }
+        }
+        connector.scheme[sf.fieldName]["validation"] = validation;
+    })
+    return connector;
+}
+
+/*
+ * Adds a new connector to the system 
+ */
+function addConnector(user,body,cb) {
+    var connector = castToConnector(user,body);
+    connector.save(cb);
+}
+
+
 /**
  * Returns all connectors created by this user
  */
 var getConnectors = function(userId,cb){
-    node.find({userId:userId},function(err,result){
-           if(err){
-               console.log('error retreiving connectors from db')
-               cb(err)
-           } else {
-               cb(null,result)
-           }
-       })
+    node.find({userId:userId},cb)
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 module.exports = {
-    user: require('./lib/user'),
-    node : require('./lib/node'),
-    feedline: require('./lib/feedline')
+    user: require('./user'),
+    node : require('./node'),
+    feedline: require('./feedline')
 }

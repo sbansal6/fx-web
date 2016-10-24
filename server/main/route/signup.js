@@ -1,6 +1,13 @@
-var controller = require('../../controller')
 module.exports = function (app, passport) {
-    app.get('/signup', controller.signup.main);
+    
+    app.get('/signup', function(req,res){
+        // render the page and pass in any flash data if it exists
+        res.render('signup.ejs', {
+            title: 'Signup',
+            message: req.flash('signupMessage')
+        });
+    });
+    
     app.post('/signup',function(req,res,next){
         passport.authenticate('local-signup', function(err, user, info) {
             if (err) { return next(err); }

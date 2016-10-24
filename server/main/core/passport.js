@@ -4,9 +4,9 @@ var _ = require('underscore');
 var env = process.env.NODE_ENV || 'develop';
 
 // load up the client model
-var User = require('../../model').user;
-var FeedLine  = require('../../model').feedline;
-var nodeService  = require('../../services/node.service');
+var User = require('../model').user;
+var FeedLine  = require('../model').feedline;
+var nodeService  = require('../services/node.service');
 
 /**
  * Add basic tools to user on signup

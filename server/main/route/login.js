@@ -1,4 +1,3 @@
-var controller = require('../../controller')
 module.exports = function (app, passport) {
     app.post('/login',function(req,res,next){
         passport.authenticate('local-login', function(err, user, info) {

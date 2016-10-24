@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 var async = require('async');
 var nodemailer = require('nodemailer');
-var User = require('../../model').user;
+var User = require('../model').user;
 
 module.exports = function (app, passport) {
 

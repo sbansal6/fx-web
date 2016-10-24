@@ -1,7 +1,9 @@
-var controller = require('../../controller')
 module.exports = function (app) {
   // =====================================
   // Logout PAGE 
   // =====================================
-  app.get('/logout', controller.logout.main);
+  app.get('/logout', function(req,res){
+    req.logout();
+    res.redirect('/');
+  });
 };

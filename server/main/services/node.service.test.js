@@ -1,6 +1,8 @@
 var rewire = require('rewire');
+var Node = require("../model/").node;
 var nodeService = rewire('./node.service');
 var expect = require('chai').expect;
+var mongoose = require("mongoose");
 
 describe('node.service',function(){
 
@@ -157,8 +159,33 @@ describe('node.service',function(){
         }
     ];
 
-    before(function(){
+    before(function(done){
         nodeService.__set__('NODES',NODES);
+        mongoose.connect('mongodb://dev:feedexchange@ds048719.mlab.com:48719/feedexchange_dev');
+        var newNode = new Node();
+        newNode["scheme"] = {
+        "Id": {
+            "validation": {
+                "pattern": "alphaNumeric",
+                "maxLength": "255",
+                "minLength": "1",
+                "optional": "true",
+                "type": "string"
+            }
+        }
+        },
+        newNode["published"] = false
+        newNode["image"] = ""
+        newNode["type"] = "Connector"
+        newNode["version"] = "v 1.0.0"
+        newNode["description"] = "Test Connector"
+        newNode["name"] = "Test"
+        newNode["userId"] = "testUserId"
+        newNode.save(done)
+    })
+    
+    after(function(done){
+        Node.remove({},done)
     })
 
     describe('getNodeFields',function(){
@@ -185,6 +212,15 @@ describe('node.service',function(){
                 done()
             })
         })
+        
+         it('should return 1 connectors',function(done){
+            nodeService.getConnectors('testUserId',function(err,docs){
+                console.log('docs',docs)
+                done()
+            })
+        })
+        
+        
     })
 })
 
