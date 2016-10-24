@@ -36,11 +36,25 @@ module.exports = function (app,isLoggedIn) {
 
    /**
    * Add a new connector to the system
+    * incoming data example
+    { name: 'TestConnector',
+      description: 'Test Connector',
+      schemaFields:
+                [ { fieldName: 'Id',
+                   fieldDescription: 'test id',
+                   type: 'string',
+                   optional: 'false',
+                   minLength: '1',
+                   maxLength: '255',
+                   pattern: 'alphaNumeric'
+                 } ]
+    }
    */ 
    app.post('/api/connector',isLoggedIn,function(req,res){
        var body = req.body;
        console.log('incoming data',body);
        var connector = new Node();
+
        // convert to connector format and add to database
        res.send({})
    })
