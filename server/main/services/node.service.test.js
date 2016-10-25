@@ -204,18 +204,51 @@ describe('node.service',function(){
         })
     })
     
+    describe('castToConnector',function(){
+        
+        it('should return connector object',function(){
+            var body = { name: 'TestConnector',
+                          description: 'Test Desc',
+                          schemaFields_0_fieldName: 'Id',
+                          schemaFields_0_fieldDescription: '',
+                          schemaFields_0_type: 'string',
+                          schemaFields_0_optional: 'false',
+                          schemaFields_0_minLength: '1',
+                          schemaFields_0_maxLength: '255',
+                          schemaFields_0_pattern: 'alphaNumeric',
+                          schemaFields_0_patternValue: '',
+                          schemaFields_1_fieldName: 'Id',
+                          schemaFields_1_fieldDescription: '',
+                          schemaFields_1_type: 'string',
+                          schemaFields_1_optional: 'false',
+                          schemaFields_1_minLength: '1',
+                          schemaFields_1_maxLength: '255',
+                          schemaFields_1_pattern: 'alphaNumeric',
+                          schemaFields_1_patternValue: '',
+                          public: 'true' 
+                        }
+                var connector = nodeService.castToConnector({_id:'XXX'},body)
+                expect(connector).to.be.instanceof(Node)
+                expect(Object.keys(connector.scheme).length).to.equal(1)
+                        
+                        
+                        
+            
+        })
+    })
+    
     describe('getConnectors',function(){
         
         it('should return 0 connectors',function(done){
             nodeService.getConnectors('xxx',function(err,docs){
-                console.log('docs',docs)
+                //console.log('docs',docs)
                 done()
             })
         })
         
          it('should return 1 connectors',function(done){
             nodeService.getConnectors('testUserId',function(err,docs){
-                console.log('docs',docs)
+                //console.log('docs',docs)
                 done()
             })
         })

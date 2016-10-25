@@ -3,8 +3,8 @@ var nodeService = require("../services/node.service");
 module.exports = function (app,isLoggedIn) {
     
     app.get('/connector',isLoggedIn,function(req,res){
-            res.render('node.ejs', {
-                title: 'FeedExchange - connector',
+            res.render('connector.ejs', {
+                title: 'FeedExchange - Add Connector',
                 message: ""
         });
     })

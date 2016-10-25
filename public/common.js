@@ -1,4 +1,4 @@
-String.prototype.format = function(placeholders) {
+function format(placeholders) {
     if ($.isArray(placeholders)) {
         var args = arguments;
         return this.replace(/{(\d+)}/g, function(match, number) {

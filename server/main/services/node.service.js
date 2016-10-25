@@ -377,27 +377,40 @@ var paletteNodes = function () {
  * Convert data from req body to connector format
  */
 function castToConnector(user,body){
-  var connector = new node();
+    var connector = new node();
     connector.userId = user._id;
     connector.name = body.name;
     connector.description = body.description;
     connector.version = body.version || 'v 1.0.0';
     connector.type = 'Connector';
     connector.image = '';
-    connector.published = false;
+    connector.published = body.public;
     connector.scheme = {};
-    // model validation object
-    body.schemaFields.forEach(function(sf) {
-        connector.scheme[sf.fieldName] = {};
-        connector.scheme[sf.fieldName]["description"] = sf.description;
+    
+    var tempSchema = {};
+    for (var property in body){
+        if (property.startsWith("schemaFields_")) {
+            var parts = property.split('_');
+            if (!tempSchema[parts[1]]){
+                tempSchema[parts[1]] = {};
+            } 
+            tempSchema[parts[1]][parts[2]] = body[property];
+        }
+    }
+    
+    for (var property in tempSchema) {
+        var fieldName = tempSchema[property]["fieldName"]
+        connector.scheme[fieldName] = {};
+        connector.scheme[fieldName]["description"] = tempSchema[property]["fieldDescription"];
         var validation = {};
-        for (var property in sf) {
-            if (!property.startsWith("field")) {
-                validation[property] = sf[property];
+        for (var innerproperty in tempSchema[property]) {
+            if (!innerproperty.startsWith("field")) {
+                validation[innerproperty] = tempSchema[property][innerproperty];
             }
         }
-        connector.scheme[sf.fieldName]["validation"] = validation;
-    })
+        connector.scheme[fieldName]["validation"] = validation
+    }
+    
     return connector;
 }
 
@@ -408,7 +421,6 @@ function addConnector(user,body,cb) {
     var connector = castToConnector(user,body);
     connector.save(cb);
 }
-
 
 /**
  * Returns all connectors created by this user
@@ -423,7 +435,9 @@ module.exports = {
     getNodeSanitizeSchema:getNodeSanitizeSchema,
     getNodeValidationSchema:getNodeValidationSchema,
     paletteNodes:paletteNodes,
-    getConnectors:getConnectors
+    getConnectors:getConnectors,
+    addConnector:addConnector,
+    castToConnector:castToConnector
 }
 
 
