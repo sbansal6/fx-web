@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!--http://www.w3schools.com/icons/fontawesome_icons_filetype.asp-->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>FeedExchange - Build It!</title>
+      <meta name="description" content="Convert files from one format to another">
+      <meta name="author" content="FeedExchange">
+      <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/spacelab/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link href="css/style.css" rel="stylesheet">
+   </head>
+   <body>
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-12">
+               <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                  <div class="navbar-header">
+                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                     <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                     </button> <a class="navbar-brand" href="#">FeedExchange</a>
+                  </div>
+                  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                     <ul class="nav navbar-nav">
+                        <li >
+                           <a href="/dashboard">Home</a>
+                        </li>
+                        <li class="active">
+                           <a href="/feedline">Build</a>
+                        </li>
+                     </ul>
+                     <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account<strong class="caret"></strong></a>
+                           <ul class="dropdown-menu">
+                              <li>
+                                 <a href="/logout">Logout</a>
+                              </li>
+                              <li>
+                                 <a href="#">Profile</a>
+                              </li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </div>
+               </nav>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-12 text-center">
+               <ul class="nav nav-pills center-pills">
+                  <li class="active"><a data-toggle="pill" href="#build">Build</a></li>
+                  <li><a data-toggle="pill" href="#view">View</a></li>
+                  <li><a data-toggle="pill" href="#save">Save</a></li>
+               </ul>
+               <div class="tab-content">
+                  <div id="build" class="tab-pane fade in active">
+                     <div class="row">
+                        <div class="col-md-1">
+                           <div class="palette" style="border: 1px solid black;border-radius:5px;min-height: 650px;">
+                              <div id="source">
+                                 <div class="palette-group">
+                                       <a>Source</a>
+                                  </div>
+                                 <div class="palette-node">
+                                    <div class="palette-node-item"> 
+                                       <i class="fa fa-file-text fa-3x"></i>
+                                    </div>
+                                    <div class="palette-node-item"> 
+                                       <a>Import</a> 
+                                    </div>
+                                 </div>
+                              </div>
+                              <div id="connector">
+                                  <div class="palette-group">
+                                       <a>Connector</a>
+                                  </div>
+                                 <div class="palette-node">
+                                    <div class="palette-node-item"> 
+                                       <i class="fa fa-google fa-3x"></i>
+                                    </div>
+                                    <div class="palette-node-item"> 
+                                       <a>Google</a> 
+                                    </div>
+                                 </div>
+                                 <div class="palette-node">
+                                    <div class="palette-node-item"> 
+                                       <i class="fa fa-facebook fa-3x"></i>
+                                    </div>
+                                    <div class="palette-node-item"> 
+                                       <a>Facebook</a> 
+                                    </div>
+                                 </div>
+                                 <div class="palette-node">
+                                    <div class="palette-node-item"> 
+                                       <i class="fa fa-amazon fa-3x"></i>
+                                    </div>
+                                    <div class="palette-node-item"> 
+                                       <a>Amazon</a> 
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-11">
+                           <div id = "chart" style="border: 1px solid black;border-radius:5px;min-height: 650px ;background-image: url(./client/images/grid2.png);background-repeat:repeat; background-color:grey;">
+                              Chart
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="view" class="tab-pane fade">
+                     <h3>Menu 1</h3>
+                     <p>Some content in menu 1.</p>
+                  </div>
+                  <div id="save" class="tab-pane fade">
+                     <h3>Menu 2</h3>
+                     <p>Some content in menu 2.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script></script>
+   </body>
+</html>

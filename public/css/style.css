@@ -1,1 +1,58 @@
-# Empty CSS file for your own CSS
+.center-pills {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-pills {
+    margin-bottom: 10px;
+}
+
+.palette {
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: column ;
+   flex-direction: column;
+   border: 1px solid black;
+   border-radius:5px;
+   -webkit-flex-wrap: nowrap;
+}
+
+.palette-group {
+    background:grey;
+}
+.palette-node {
+    margin:5px;
+    border: 1px solid grey;
+    border-radius:5px;
+    display: -webkit-flex;
+    -webkit-flex-wrap: nowrap;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   min-width: 100px;
+   align-items: center; /* align vertical */
+   font-size: .5vw; 
+}
+
+.palette-node-item {
+    margin: 5px;
+    
+}
+
+.chart-node {
+    position: absolute;
+    margin:5px;
+    border: 2px solid black;
+    border-radius:5px;
+    display: -webkit-flex;
+    -webkit-flex-wrap: nowrap;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   min-width: 100px;
+   min-height: 40;
+}
+
+.chart-node-item {
+     margin: 5px;
+}
