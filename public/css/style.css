@@ -5,8 +5,26 @@
 
 .nav-pills {
     margin-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
+.nav-pills>li>a {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.fa-m:before {
+    font-family: Arial; /* your font family here! */
+    font-weight: bold;
+    content: 'M';
+}
+
+.fa-fn:before {
+    font-family: Arial; /* your font family here! */
+    /*font-weight: bold;*/
+    content: 'f(x)';
+}
 .palette {
    display: -webkit-flex;
    display: flex;
@@ -15,10 +33,11 @@
    border: 1px solid black;
    border-radius:5px;
    -webkit-flex-wrap: nowrap;
+   flex-basis: auto;
 }
 
 .palette-group {
-    background:grey;
+    /*background:#e6e6e6;*/
 }
 .palette-node {
     margin:5px;
@@ -29,14 +48,19 @@
    display: flex;
    -webkit-flex-direction: row;
    flex-direction: row;
-   min-width: 100px;
    align-items: center; /* align vertical */
    font-size: .5vw; 
+   flex-basis: auto;
 }
 
 .palette-node-item {
     margin: 5px;
-    
+}
+
+.palette-node-item-text {
+    margin: 5px;
+    float: right;
+    margin-left: auto;
 }
 
 .chart-node {
