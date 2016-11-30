@@ -8,7 +8,7 @@ module.exports = function(app, isLoggedIn) {
             if (err) {
                 res.status(500);
             } else {
-                res.render('dashboard.ejs', {
+                res.render('dashboard2.ejs', {
                     title: 'FeedExchange - dashboard',
                     connectors: connectors
                 });
