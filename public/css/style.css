@@ -66,17 +66,76 @@
 .chart-node {
     position: absolute;
     margin:5px;
-    border: 2px solid black;
+    border: 2px solid grey;
     border-radius:5px;
     display: -webkit-flex;
     -webkit-flex-wrap: nowrap;
    display: flex;
    -webkit-flex-direction: row;
    flex-direction: row;
+   align-items: center; /* align vertical */
+   font-size: .5vw; 
+   flex-basis: auto;
    min-width: 100px;
    min-height: 40;
 }
 
 .chart-node-item {
      margin: 5px;
+}
+
+.chart-node-item-group {
+    position: absolute;
+    margin:5px;
+    border: 2px solid grey;
+    border-radius:5px;
+    display: -webkit-flex;
+    -webkit-flex-wrap: nowrap;
+   display: flex;
+   -webkit-flex-direction: column;
+   flex-direction: column;
+   font-size: .5vw; 
+   flex-basis: auto;
+   margin-left: auto;
+}
+
+.chart-node-button-group {
+    position: absolute;
+    margin:5px;
+    border: 2px solid grey;
+    border-radius:5px;
+    display: -webkit-flex;
+    -webkit-flex-wrap: nowrap;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   align-items: center; /* align vertical */
+   font-size: .5vw; 
+   flex-basis: auto;
+}
+
+.chart-node-item-text {
+    margin: 5px;
+    float: right;
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.chart-node-group {
+     position: absolute;
+    margin:5px;
+    border: 2px solid grey;
+    border-radius:5px;
+    display: -webkit-flex;
+    -webkit-flex-wrap: nowrap;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   font-size: .5vw; 
+   flex-basis: auto;
+}
+
+.chart-node-button {
+     margin: 5px;
+     /*margin-top: auto;*/
 }

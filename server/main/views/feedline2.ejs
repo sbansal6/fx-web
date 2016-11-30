@@ -60,92 +60,20 @@
                      <div class="row">
                         <div class="col-md-1">
                            <div class="palette" style="border: 1px solid #909090  ;border-radius:5px;min-height: 650px;">
-                              <div id="source">
+                              <div id="pSource">
                                  <div class="list-group-item active">
                                        <a>Source</a>
                                   </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-file-text fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Text Import</a> 
-                                    </div>
-                                 </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-file-excel-o fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Excel Import</a> 
-                                    </div>
-                                 </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-cloud-download fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Http Import</a> 
-                                    </div>
-                                 </div>
                               </div>
-                              <div id="connector">
-                                  <div class="list-group-item active">
+                              <div id="pConnector">
+                               <div class="list-group-item active">
                                        <a>Connector</a>
                                   </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-google fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Google</a> 
-                                    </div>
-                                 </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-facebook fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Facebook</a> 
-                                    </div>
-                                 </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-amazon fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text" style="clear: both;"> 
-                                       <a>Amazon</a> 
-                                    </div>
-                                 </div>
-                                  <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa-m fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text" style="clear: both;"> 
-                                       <a>Mindresearch</a> 
-                                    </div>
-                                 </div>
                               </div>
-                              <div id="function">
+                              <div id="pFunction">
                                   <div class="list-group-item active">
                                        <a>Function</a>
                                   </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-fn fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Replace</a> 
-                                    </div>
-                                 </div>
-                                 <div class="palette-node">
-                                    <div class="palette-node-item"> 
-                                       <i class="fa fa-fn fa-3x"></i>
-                                    </div>
-                                    <div class="palette-node-item-text"> 
-                                       <a>Substring</a> 
-                                    </div>
-                                 </div>
                               </div>
                            </div>
                         </div>
@@ -171,6 +99,13 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
       <script src="js/bootstrap.min.js"></script>
-      <script></script>
+      <script src="js/ktyle.js"></script>
+      <script src="/common.js"></script>
+      <script>
+         var me = pages.feedline;
+         me.init();
+         pages.feedline.loadPalette(function(){
+         });
+      </script>
    </body>
 </html>
