@@ -1,36 +1,10 @@
+var traverse = require('traverse');
+var clone = require('clone');
+var is = require('is');
+
 module.exports = function (app,isLoggedIn) {
-    var ad = function(){
-                                          //event.preventDefault()
-                                          // this has all the values, use this to update data object or any other object on save.
-                                          var val = this.getValue();
-                                          //alert(JSON.stringify(val))
-                                          var form = $('#alpaca2')
-                                          form.ajaxSubmit({
-                                              error: function(xhr) {
-                                                  console.log('error happend in form submit',xhr.status)
-                                                  alert('Error: ' + xhr.status);
-                                              },
-                                              success: function(response) {
-                                                  var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
-                                                  thisNode.fields = response.fields;
-                                                  thisNode.data = val;
-                                                  thisNode.fileName = response.fileName;
-                                                  $('#myModal').dialog("close");
-                                                  drawNode(thisNode,function(){
-                                                      console.log('Node edited and redrawn');
-                                                  })
-                                              }
-                                          });
-                                          return false;
-                                      }
     
-    /**
-     * Returns all nodes in the system (connectors specific to that users tho)
-     * 
-     */ 
-    app.get('/api/nodes',isLoggedIn,function(req,res){
-            res.json({
-                nodes:[
+     var Nodes = [
                     {
                         name:"Text File",
                         type:"Source",
@@ -68,7 +42,30 @@ module.exports = function (app,isLoggedIn) {
                               "buttons": {
                                   "submit": {
                                       "value": "Save",
-                                      "click": ad.toString()
+                                      "click": function(){
+                                          //event.preventDefault()
+                                          // this has all the values, use this to update data object or any other object on save.
+                                          var val = this.getValue();
+                                          //alert(JSON.stringify(val))
+                                          var form = $('#alpaca2')
+                                          form.ajaxSubmit({
+                                              error: function(xhr) {
+                                                  console.log('error happend in form submit',xhr.status)
+                                                  alert('Error: ' + xhr.status);
+                                              },
+                                              success: function(response) {
+                                                  var thisNode = pages.feedline.getNodeById(nodeId);
+                                                  thisNode.fields = response.fields;
+                                                  thisNode.data = val;
+                                                  thisNode.fileName = response.fileName;
+                                                  $('#myModal').dialog("close");
+                                                  drawNode(thisNode,function(){
+                                                      console.log('Node edited and redrawn');
+                                                  })
+                                              }
+                                          });
+                                          return false;
+                                      }
                                   }
                               }
               }
@@ -86,6 +83,24 @@ module.exports = function (app,isLoggedIn) {
                         
                     }
                     ]
+
+    
+    /**
+     * Returns all nodes in the system (connectors specific to that users tho)
+     * 
+     */ 
+    app.get('/api/nodes',isLoggedIn,function(req,res){
+            var copyOfNodes = clone(Nodes);
+            copyOfNodes.forEach(function(n){
+                traverse(n).forEach(function(x){
+                    if (is.function(x)){
+                       x = x.toString();
+                       this.update(x);
+                    }
+                })
+            })
+            res.json({
+               nodes:copyOfNodes
             });
     });
 }

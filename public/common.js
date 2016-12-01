@@ -1,4 +1,4 @@
-
+var currentPage = document.location.href.match(/[^\/]+$/)[0];
 var commonFunctions = {
     format: function(htmlString,placeholders) {
         if ($.isArray(placeholders)) {
@@ -97,13 +97,14 @@ var deleteNode = function(nodeId){
 var saveNode = function(){
     
 };
+
 var pages = {
     feedline:{
         palette:{},
         chart:{
             nodes:[]
         },
-        chartNodeHtml:'<div id = "{guid}" class="chart-node" data-name="{name}"> ' + 
+        chartNodeHtml:'<div id = "{guid}" class="chart-node item" data-name="{name}"> ' + 
                          '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                          '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
                          '<div class="chart-node-group">' + 
@@ -195,7 +196,8 @@ var pages = {
     	    		     helper: 'clone',
                     	 appendTo: '#chart',
                     	 containment:'#chart',
-                    	 cursor: 'move'	
+                    	 cursor: 'move'	,
+                    	 revert: "invalid"
     	    		 });
                      cb();
                  })
@@ -204,3 +206,11 @@ var pages = {
        }
    }
 };
+
+
+if (currentPage === "feedline"){
+    var self = pages.feedline;
+    self.init();
+    self.loadPalette(function(){
+    });
+}
