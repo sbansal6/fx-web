@@ -63,6 +63,7 @@
     margin-left: auto;
 }
 
+/* initial node should be column format */
 .chart-node {
     position: absolute;
     margin:5px;
@@ -71,20 +72,22 @@
     display: -webkit-flex;
     -webkit-flex-wrap: nowrap;
    display: flex;
-   -webkit-flex-direction: row;
-   flex-direction: row;
+   -webkit-flex-direction: column;
+   flex-direction: column;
    align-items: center;
 }
 
-.chart-node-item {
-     margin: 5px;
+.chart-node-row-group {
+   margin:5px;
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row ;
+   flex-direction: row;
+   -webkit-flex-wrap: nowrap;
 }
 
-.chart-node-item-button {
-     margin: 1px;
-}
 
-.chart-node-group {
+.chart-node-column-group {
    margin:5px;
    display: -webkit-flex;
    display: flex;
@@ -93,18 +96,19 @@
    -webkit-flex-wrap: nowrap;
 }
 
-.chart-node-button-group {
+.chart-node-column-group-fields {
+   border: 1px solid grey;
    margin:5px;
    display: -webkit-flex;
    display: flex;
-   -webkit-flex-direction: row ;
-   flex-direction: row;
+   -webkit-flex-direction: column ;
+   flex-direction: column;
+   -webkit-flex-wrap: nowrap;
 }
 
-.chart-node-button {
-    float: right;
-    font-weight: bold;
-    margin: auto;
+
+.chart-node-item {
+     margin: 5px;
 }
 
 .chart-node-item-text {
@@ -113,4 +117,27 @@
     font-weight: bold;
     margin: auto;
 }
+
+.chart-node-item-button {
+     margin: 1px;
+}
+
+.chart-node-button {
+    float: right;
+    font-weight: bold;
+    margin: auto;
+}
+
+
+.chart-node-item-field {
+    margin: 5px;
+    float: right;
+    font-weight: bold;
+    margin: auto;
+    border: 1px solid grey;
+    width:100%;
+}
+
+
+
 

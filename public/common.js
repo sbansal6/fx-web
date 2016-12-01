@@ -110,12 +110,16 @@ var pages = {
             nodes:[]
         },
         chartNodeHtml:'<div id = "{guid}" class="chart-node item" data-name="{name}"> ' + 
-                         '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
-                         '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
-                         '<div class="chart-node-group">' + 
-                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnEdit" title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
-                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
+                         '<div class="chart-node-row-group"> '+ 
+                                 '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
+                                 '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
+                                 '<div class="chart-node-column-group">' + 
+                                    '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnEdit" title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
+                                    '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
+                                 '</div>' +
                          '</div>' +
+                        //  '<div class="chart-node-column-group-fields">'+
+                        //  '</div>' +
                      '</div>',             
         paletteNodeHtml:'<div class="palette-node" data-name="{name}"> <div class="palette-node-item"> <i class="fa {icon} fa-3x"></i> </div> <div class="palette-node-item-text"> <a>{name}</a> </div> </div>',
         /**
@@ -225,14 +229,11 @@ var pages = {
                 console.log('addFields',node.data.fields,node.data.fields.length);
                 node.data.fields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
-                    console.log('addFields',rowId);
+                    console.log('addFields',rowId,node.data.fields);
                     var desc = field.description ? commonFunctions.encode(field.description) : "";
-                    var tableRow = '<tr id=' + rowId + '>' +
-                        '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
-                        '</tr>'
-                    $('#' + node.guid + " .table").append(tableRow);
-                    console.log('setting endpoint for ',rowId,node);
-                    pages.feedline.setEndPoint(rowId, node)
+                    var fieldItemHtml = '<div id="'+rowId+'" class="chart-node-item-field"> '+field.name +  (field.required ? ' *' : '' )+' </div> '
+                    console.log('fieldItemHtml',fieldItemHtml);
+                    $('#' + node.guid).append(fieldItemHtml);
                 });
             } else {
                 var rowId = node.guid + '_' + 'default';
