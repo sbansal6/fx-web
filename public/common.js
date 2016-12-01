@@ -82,35 +82,27 @@ var commonFunctions = {
     }
 };
 var editNode = function(nodeId){
+    var node = pages.feedline.getNodeById(nodeId);
     $('#form').empty();
     $("#form").alpaca({
-        "schema":  {
-        "title": "What do you think of Alpaca?",
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string",
-                "title": "Name"
-            },
-            "ranking": {
-                "type": "string",
-                "title": "Ranking",
-                "enum": ['excellent', 'not too shabby', 'alpaca built my hotrod']
-            }
-        }
-    },
-        "options": {},
-        "data":{}
+        "schema": node.schema,
+        "options": node.options,
+        "data":node.data
     });
     $('#myModal').modal('show'); 
 };
 var deleteNode = function(nodeId){
     ktyle.remove(nodeId);
 };
-
+var saveNode = function(){
+    
+};
 var pages = {
     feedline:{
-        db:{},
+        palette:{},
+        chart:{
+            nodes:[]
+        },
         chartNodeHtml:'<div id = "{guid}" class="chart-node" data-name="{name}"> ' + 
                          '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                          '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
@@ -125,7 +117,7 @@ var pages = {
          */ 
         init:function(){
             var me = pages.feedline;
-            me.db = {};
+            me.palette = {};
             /**
              * This needs to have all the logic to check what kind of node is dragged
              * and check rules after stop even
@@ -146,7 +138,7 @@ var pages = {
              });
         },
         /**
-         * Returns node from local db storage
+         * Returns node from local palette storage
          */ 
         getIcon: function(n){
             if (n.type === 'Function'){
@@ -158,8 +150,19 @@ var pages = {
         getNodebyName:function(nodeName){
             var me = pages.feedline;
             var returnNode ;
-            me.db.nodes.forEach(function(n){
+            me.palette.nodes.forEach(function(n){
                 if (n.name === nodeName){
+                    var object = $.extend(true,{},n);
+                    returnNode = object;
+                }
+            })
+            return returnNode;
+        },
+        getNodeById:function(guid){
+            var me = pages.feedline;
+            var returnNode ;
+            me.chart.nodes.forEach(function(n){
+                if (n.guid === guid){
                     returnNode = n;
                 }
             })
@@ -169,6 +172,8 @@ var pages = {
             var me = pages.feedline
             var node = me.getNodebyName(nodeName);
             var newId = commonFunctions.guid();
+            node.guid = newId;
+            me.chart.nodes.push(node);
             var html = commonFunctions.format(me.chartNodeHtml,{name:node.name,icon:me.getIcon(node),guid:newId});
             $(html).css('left', positionX + 'px').css('top', positionY + 'px').appendTo('#chart');
             ktyle.draggable(newId, {
@@ -182,7 +187,7 @@ var pages = {
                 url: "/api/nodes",
                 success: function(result) {
                  var me = pages.feedline;
-                 me.db.nodes = result.nodes;
+                 me.palette.nodes = result.nodes;
                  result.nodes.forEach(function(n){
                      var html = commonFunctions.format(me.paletteNodeHtml,{name:n.name,icon:me.getIcon(n)});
                      // add to palette and make draggable
@@ -196,15 +201,6 @@ var pages = {
                  })
              }
              });
-       },
-        /**
-         * Update local storage variable db on any changes
-         */ 
-        updateDb:function(){
-            
-        },
-        editNode:function(nodeId){
-            alert('I am edited');
        }
    }
 };

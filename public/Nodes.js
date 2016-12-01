@@ -31,7 +31,7 @@ var NODES_OPTIONS = [
                                       alert('Error: ' + xhr.status);
                                   },
                                   success: function(response) {
-                                      var thisNode = _.find(TOOL.nodes,function(n){return n.nodeId === nodeId});
+                                      var thisNode = pages.feedline.getNodeById(nodeId);
                                       thisNode.fields = response.fields;
                                       thisNode.data = val;
                                       thisNode.fileName = response.fileName;
