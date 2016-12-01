@@ -85,18 +85,14 @@ var commonFunctions = {
 var pages = {
     feedline:{
         db:{},
-        chartNodeHtml1:'<div id = "{guid}" class="chart-node" data-name="{name}"> ' + 
-                         '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
-                         '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
-                         '<div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> ' +
-                         '<div class="chart-node-button"> <button id = "btnEdit" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> ' +
-                      '</div>',
         chartNodeHtml:'<div id = "{guid}" class="chart-node" data-name="{name}"> ' + 
                          '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                          '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
-                         '<div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> ' +
-                         '<div class="chart-node-button"> <button id = "btnEdit" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> ' +
-                      '</div>',
+                         '<div class="chart-node-group">' + 
+                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
+                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
+                         '</div>' +
+                     '</div>',             
         paletteNodeHtml:'<div class="palette-node" data-name="{name}"> <div class="palette-node-item"> <i class="fa {icon} fa-3x"></i> </div> <div class="palette-node-item-text"> <a>{name}</a> </div> </div>',
         /**
          * Define all behavior here

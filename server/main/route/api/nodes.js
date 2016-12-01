@@ -8,7 +8,7 @@ module.exports = function (app,isLoggedIn) {
             res.json({
                 nodes:[
                     {
-                        name:"Text Import",
+                        name:"Text File",
                         type:"Source",
                         icon:"fa-file-text"
                     },
