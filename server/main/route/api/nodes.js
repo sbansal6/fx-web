@@ -11,6 +11,7 @@ module.exports = function (app,isLoggedIn) {
                         name:"Text File",
                         type:"Source",
                         icon:"fa-file-text"
+                        
                     },
                     {
                         name:"Google",

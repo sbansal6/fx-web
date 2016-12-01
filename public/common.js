@@ -80,7 +80,33 @@ var commonFunctions = {
             return word.charAt(0).toUpperCase() + word.slice(1);
         }).join('');
     }
-}
+};
+var editNode = function(nodeId){
+    $('#form').empty();
+    $("#form").alpaca({
+        "schema":  {
+        "title": "What do you think of Alpaca?",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "title": "Name"
+            },
+            "ranking": {
+                "type": "string",
+                "title": "Ranking",
+                "enum": ['excellent', 'not too shabby', 'alpaca built my hotrod']
+            }
+        }
+    },
+        "options": {},
+        "data":{}
+    });
+    $('#myModal').modal('show'); 
+};
+var deleteNode = function(nodeId){
+    ktyle.remove(nodeId);
+};
 
 var pages = {
     feedline:{
@@ -89,8 +115,8 @@ var pages = {
                          '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                          '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
                          '<div class="chart-node-group">' + 
-                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
-                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick="" style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
+                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnEdit" title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
+                            '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
                          '</div>' +
                      '</div>',             
         paletteNodeHtml:'<div class="palette-node" data-name="{name}"> <div class="palette-node-item"> <i class="fa {icon} fa-3x"></i> </div> <div class="palette-node-item-text"> <a>{name}</a> </div> </div>',
@@ -176,6 +202,9 @@ var pages = {
          */ 
         updateDb:function(){
             
-        }
+        },
+        editNode:function(nodeId){
+            alert('I am edited');
+       }
    }
 };
