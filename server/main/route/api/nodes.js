@@ -45,7 +45,7 @@ module.exports = function (app,isLoggedIn) {
                                           //event.preventDefault()
                                           // this has all the values, use this to update data object or any other object on save.
                                           var val = this.getValue();
-                                          alert(JSON.stringify(val))
+                                          //alert(JSON.stringify(val))
                                           var form = $('#alpaca2')
                                           form.ajaxSubmit({
                                               error: function(xhr) {
@@ -53,14 +53,13 @@ module.exports = function (app,isLoggedIn) {
                                                   alert('Error: ' + xhr.status);
                                               },
                                               success: function(response) {
+                                                  var nodeId = $('#inputNodeId').val()
                                                   var thisNode = pages.feedline.getNodeById(nodeId);
-                                                  thisNode.fields = response.fields;
-                                                  thisNode.data = val;
-                                                  thisNode.fileName = response.fileName;
-                                                  $('#myModal').dialog("close");
-                                                //   drawNode(thisNode,function(){
-                                                //       console.log('Node edited and redrawn');
-                                                //   })
+                                                  thisNode.data.fields = response.fields
+                                                  thisNode.data.type = val.type;
+                                                  thisNode.data.fileName = response.fileName;
+                                                  $('#myModal').modal('hide'); 
+                                                  pages.feedline.updateNodeAfterEdit(nodeId);
                                               }
                                           });
                                           return false;
@@ -69,7 +68,11 @@ module.exports = function (app,isLoggedIn) {
                               }
               }
                         },
-                        data:{}
+                        data:{
+                            type:"csv",
+                            fileName:"",
+                            fields:[]
+                        }
                     },
                     {
                         name:"Google",

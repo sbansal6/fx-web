@@ -82,10 +82,12 @@ var commonFunctions = {
         return str.split(' ').map(function(word){
             return word.charAt(0).toUpperCase() + word.slice(1);
         }).join('');
-    }
+    },
+    encode: function(e){return e.replace(/[^]/g,function(e){return"&#"+e.charCodeAt(0)+";"})}
 };
 var editNode = function(nodeId){
-    var node = $.extend(true,{},pages.feedline.getNodeById(nodeId));
+    var node = pages.feedline.getNodeById(nodeId);
+    $("#inputNodeId").val(node.guid);
     $('#form').empty();
     $("#form").alpaca({
         "schema": node.schema,
@@ -206,7 +208,96 @@ var pages = {
                  cb();
              }
              });
-       }
+       },
+       /**
+        * Update node on chart (mostly data has changed) 
+        */
+        updateNodeAfterEdit: function(nodeId,cb) {
+            console.log('redraw node is called',nodeId)
+            var node = pages.feedline.getNodeById(nodeId);
+            pages.feedline.addFields(node);
+        },
+        drawNode: function(node,cb){
+            
+        },
+        addFields: function (node){
+            if (node.data.fields && node.data.fields.length > 0){
+                console.log('addFields',node.data.fields,node.data.fields.length);
+                node.data.fields.forEach(function(field) {
+                    var rowId = node.guid + '_' + field.name;
+                    console.log('addFields',rowId);
+                    var desc = field.description ? commonFunctions.encode(field.description) : "";
+                    var tableRow = '<tr id=' + rowId + '>' +
+                        '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
+                        '</tr>'
+                    $('#' + node.guid + " .table").append(tableRow);
+                    console.log('setting endpoint for ',rowId,node);
+                    pages.feedline.setEndPoint(rowId, node)
+                });
+            } else {
+                var rowId = node.guid + '_' + 'default';
+                var tableRow = '<tr id=' + rowId + '>' +
+                    '<td align="center"></td>' +
+                    '</tr>'
+                $('#' + node.guid + " .table").append(tableRow);
+                console.log('printing node',node)
+                pages.feedline.setEndPoint(rowId, node)
+            }
+        },
+        setEndPoint : function (rowId, node) {
+            if (node.type === 'Function') {
+                pages.feedline.addSourceEndPoint(rowId);
+                pages.feedline.addTargetEndPoint(rowId);
+            }
+            if (node.type === 'Source') {
+                pages.feedline.addSourceEndPoint(rowId);
+            }
+            if (node.type === 'Connector') {
+                pages.feedline.addTargetEndPoint(rowId);
+            }
+        },
+        addSourceEndPoint : function (rowId) {
+            console.log('addSourceEndPoint',rowId)
+            ktyle.addEndpoint(rowId, {
+                anchors: ['Right'],
+                isSource: true,
+                isTarget: false,
+                endpoint: ["Dot", {
+                    radius: 7
+                }],
+                endpointStyle: {
+                    fillStyle: "#ff7473",
+                    outlineColor: "#ff7473",
+                    outlineWidth: 1
+                },
+                hoverPaintStyle: {
+                    fillStyle: "yellow"
+                },
+                maxConnections: 10
+            });
+       },
+        addTargetEndPoint: function (rowId) {
+            ktyle.addEndpoint(rowId, {
+                anchors: ['Left'],
+                isSource: false,
+                isTarget: true,
+                endpoint: ["Dot", {
+                    radius: 7
+                }],
+                endpointStyle: {
+                    fillStyle: "#424a5d",
+                    outlineColor: "#424a5d",
+                    outlineWidth: 1
+                },
+                hoverPaintStyle: {
+                    fillStyle: "lightblue"
+                },
+                maxConnections: 1,
+                onMaxConnections: function() {
+                    console.log('max connection limit reached')
+                }
+             });
+        }
    }
 };
 
