@@ -1,5 +1,0 @@
-id,make,model,year,test
-1,chevy,camaro,1999,1
-2,acura,tl,2005,1
-3,audi,a3,2008,1
-4,tesla,s,2015,1

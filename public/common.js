@@ -1,3 +1,6 @@
+//http://www.eslinstructor.net/jsonfn/
+// encrypt data coming from server using key
+// store key in here and decrypt using key
 var currentPage = document.location.href.match(/[^\/]+$/)[0];
 var commonFunctions = {
     format: function(htmlString,placeholders) {
@@ -82,7 +85,7 @@ var commonFunctions = {
     }
 };
 var editNode = function(nodeId){
-    var node = pages.feedline.getNodeById(nodeId);
+    var node = $.extend(true,{},pages.feedline.getNodeById(nodeId));
     $('#form').empty();
     $("#form").alpaca({
         "schema": node.schema,
@@ -188,8 +191,8 @@ var pages = {
                 url: "/api/nodes",
                 success: function(result) {
                  var me = pages.feedline;
-                 me.palette.nodes = result.nodes;
-                 result.nodes.forEach(function(n){
+                 me.palette.nodes = JSONfn.parse(result.nodes);
+                 me.palette.nodes.forEach(function(n){
                      var html = commonFunctions.format(me.paletteNodeHtml,{name:n.name,icon:me.getIcon(n)});
                      // add to palette and make draggable
                      $(html).appendTo('#p'+n.type).draggable({
@@ -199,15 +202,15 @@ var pages = {
                     	 cursor: 'move'	,
                     	 revert: "invalid"
     	    		 });
-                     cb();
                  })
+                 cb();
              }
              });
        }
    }
 };
 
-
+// hanlde pa
 if (currentPage === "feedline"){
     var self = pages.feedline;
     self.init();

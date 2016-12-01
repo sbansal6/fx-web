@@ -39,7 +39,7 @@
               })
               //on start store initial offsets and mouse coord
               .on("mousedown touchstart",function(ev){
-                var matrix = $container.find(".panzoom").panzoom("getMatrix");
+                var matrix =$('#container').find(".panzoom").panzoom("getMatrix");
                 var offsetX = matrix[4];
                 var offsetY = matrix[5];
                 var dragstart = {x:ev.pageX,y:ev.pageY,dx:offsetX,dy:offsetY};
@@ -53,10 +53,10 @@
                 {
                  var deltaX = dragstart.x-ev.pageX;
                  var deltaY = dragstart.y-ev.pageY;
-                 var matrix = $container.find(".panzoom").panzoom("getMatrix");
+                 var matrix =  $('#container').find(".panzoom").panzoom("getMatrix");
                  matrix[4] = parseInt(dragstart.dx)-deltaX;
                  matrix[5] = parseInt(dragstart.dy)-deltaY;
-                 $container.find(".panzoom").panzoom("setMatrix",matrix);
+                  $('#container').find(".panzoom").panzoom("setMatrix",matrix);
                 }
               })
               .on("mouseup touchend touchcancel", function(ev){
@@ -67,7 +67,7 @@
        var currentScale = 1;
         $('#container').find("#diagram .item").draggable({
            start: function(e){
-             var pz = $container.find(".panzoom");
+             var pz = $('#container').find(".panzoom");
              //save current scale factor to consider it later
              currentScale = pz.panzoom("getMatrix")[0];
              $(this).css("cursor","move");
@@ -92,6 +92,6 @@
               plumb.repaint(nodeId,ui.position);
              }
              $(this).css("cursor","");
-             $container.find(".panzoom").panzoom("enable");
+              $('#container').find(".panzoom").panzoom("enable");
            }
         });

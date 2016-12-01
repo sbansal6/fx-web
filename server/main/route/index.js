@@ -8,5 +8,7 @@ module.exports = function (app, passport) {
   require('./feedline')(app, middleware.isLoggedIn);
   require('./connector')(app, middleware.isLoggedIn);
   
+  // these routes will also be exposed as apis
   require('./api/nodes')(app, middleware.isLoggedIn);
+  require('./api/upload')(app, middleware.isLoggedIn);
 };

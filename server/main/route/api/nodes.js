@@ -1,6 +1,5 @@
-var traverse = require('traverse');
 var clone = require('clone');
-var is = require('is');
+var JSONfn = require('json-fn');
 
 module.exports = function (app,isLoggedIn) {
     
@@ -37,7 +36,7 @@ module.exports = function (app,isLoggedIn) {
                             "form": {
                               "attributes": {
                                   "method": "POST",
-                                  "action": "/upload"
+                                  "action": "/api/upload"
                               },
                               "buttons": {
                                   "submit": {
@@ -46,7 +45,7 @@ module.exports = function (app,isLoggedIn) {
                                           //event.preventDefault()
                                           // this has all the values, use this to update data object or any other object on save.
                                           var val = this.getValue();
-                                          //alert(JSON.stringify(val))
+                                          alert(JSON.stringify(val))
                                           var form = $('#alpaca2')
                                           form.ajaxSubmit({
                                               error: function(xhr) {
@@ -59,9 +58,9 @@ module.exports = function (app,isLoggedIn) {
                                                   thisNode.data = val;
                                                   thisNode.fileName = response.fileName;
                                                   $('#myModal').dialog("close");
-                                                  drawNode(thisNode,function(){
-                                                      console.log('Node edited and redrawn');
-                                                  })
+                                                //   drawNode(thisNode,function(){
+                                                //       console.log('Node edited and redrawn');
+                                                //   })
                                               }
                                           });
                                           return false;
@@ -91,16 +90,8 @@ module.exports = function (app,isLoggedIn) {
      */ 
     app.get('/api/nodes',isLoggedIn,function(req,res){
             var copyOfNodes = clone(Nodes);
-            copyOfNodes.forEach(function(n){
-                traverse(n).forEach(function(x){
-                    if (is.function(x)){
-                       x = x.toString();
-                       this.update(x);
-                    }
-                })
-            })
             res.json({
-               nodes:copyOfNodes
+               nodes:JSONfn.stringify(copyOfNodes)
             });
     });
 }
