@@ -109,29 +109,16 @@ var pages = {
         chart:{
             nodes:[]
         },
-        chartNodeHtml : '<div id="{guid}"  style="position:absolute" class="panel panel-default tableDesign node" style="position: absolute">'+
-	                    '<div class="panel-heading"  style="cursor:move" >'+
-		                '<i class="fa {icon} fa-3x"></i>'+
-		                '<b>{name}</b>&nbsp;&nbsp;&nbsp;'+
- 		                '<button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button>'+
-                        '<button title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary"><span class="glyphicon glyphicon-edit"></span></button>'+
-                    	'</div>'+
-                    	'<table class="table table-striped">'+
-                    	'</table>'+
-                        '</div>',
-        chartNodeHtml1:'<div id = "{guid}" class="panel panel-default" style="position:absolute;display: table-cell;vertical-align: middle;">' + 
-                          '<div class="chart-node item" data-name="{name}"> ' + 
-                             '<div class="chart-node-row-group"> '+ 
-                                     '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
-                                     '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
-                                     '<div class="chart-node-column-group">' + 
-                                        '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnEdit" title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
-                                        '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
-                                     '</div>' +
-                             '</div>' +
-                         '</div>' +  
-                         '<table class="table table-striped"> </table>' +
-                      '</div>'     ,
+       chartNodeHtml:'<div id = "{guid}" class="chart-node item" data-name="{name}"> ' + 
+                         '<div class="chart-node-row-group"> '+ 
+                                 '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
+                                 '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
+                                 '<div class="chart-node-column-group">' + 
+                                    '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnEdit" title="Edit" onclick=editNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-edit"></span></button> </div> </div>' +
+                                    '<div class="chart-node-item-button"> <div class="chart-node-button"> <button id = "btnDelete" title="Delete" onclick=deleteNode(\'{guid}\') style="float:right;" class="btn btn-xs btn-secondary btndelete"><span class="glyphicon glyphicon-remove"></span></button> </div> </div>' +
+                                 '</div>' +
+                         '</div>' +
+                     '</div>',  
         paletteNodeHtml:'<div class="palette-node" data-name="{name}"> <div class="palette-node-item"> <i class="fa {icon} fa-3x"></i> </div> <div class="palette-node-item-text"> <a>{name}</a> </div> </div>',
         /**
          * Define all behavior here
@@ -198,7 +185,7 @@ var pages = {
             var html = commonFunctions.format(me.chartNodeHtml,{name:node.name,icon:me.getIcon(node),guid:newId});
             $(html).css('left', positionX + 'px').css('top', positionY + 'px').appendTo('#chart');
             ktyle.draggable(newId, {
-            containment: "parent",
+            containment: "parentclea",
             grid:[10,10]
         });
     	},
@@ -238,14 +225,13 @@ var pages = {
         addFields: function (node){
             if (node.data.fields && node.data.fields.length > 0){
                 console.log('addFields',node.data.fields,node.data.fields.length);
+                $('#' + node.guid).find('.chart-node-item-field').remove()
                 node.data.fields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
                     console.log('addFields',rowId,node.data.fields);
                     var desc = field.description ? commonFunctions.encode(field.description) : "";
-                    var tableRow = '<tr id=' + rowId + '>' +
-                                    '<td align="center" title= '+ desc+' >' + field.name +  (field.required ? ' *' : '' )  +  '</td>' +
-                                    '</tr>'
-                    $('#' + node.guid + ' .table').append(tableRow);
+                    var fieldItemHtml = '<div id="'+rowId+'" class="chart-node-item-field"> '+field.name +  (field.required ? ' *' : '' )+' </div> '
+                    $('#' + node.guid).append(fieldItemHtml);
                     pages.feedline.setEndPoint(rowId, node)
                 });
             } else {
