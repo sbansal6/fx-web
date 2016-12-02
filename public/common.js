@@ -218,7 +218,6 @@ var pages = {
         * Update node on chart (mostly data has changed) 
         */
         updateNodeAfterEdit: function(nodeId,cb) {
-            console.log('redraw node is called',nodeId)
             var node = pages.feedline.getNodeById(nodeId);
             pages.feedline.addFields(node);
         },
@@ -258,7 +257,6 @@ var pages = {
             }
         },
         addSourceEndPoint : function (rowId) {
-            console.log('addSourceEndPoint',rowId)
             ktyle.addEndpoint(rowId, {
                 anchors: ['Right'],
                 isSource: true,
