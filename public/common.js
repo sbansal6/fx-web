@@ -300,7 +300,7 @@ var pages = {
    }
 };
 
-// hanlde page
+// fire page specific javascript
 if (currentPage === "feedline"){
     ktyle.ready(function() {
          ktyle.setContainer("chart");

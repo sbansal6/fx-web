@@ -1,9 +1,9 @@
 module.exports = function(app, isLoggedIn) {
     app.get('/feedline', isLoggedIn, function(req, res) {
-    res.render('feedline2.ejs', {
-                    title: 'FeedExchange - feedline',
-                    connectors: ''
-                });
-        
-    })
+        res.render('feedline.ejs', {
+                        title: 'FeedExchange - feedline',
+                        userEmail: req.user.email
+                    });
+            
+        })
 }
