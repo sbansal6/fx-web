@@ -1,4 +1,4 @@
-//http://www.eslinstructor.net/jsonfn/
+// http://www.eslinstructor.net/jsonfn/
 // encrypt data coming from server using key
 // store key in here and decrypt using key
 var currentPage = document.location.href.match(/[^\/]+$/)[0];
@@ -185,9 +185,12 @@ var pages = {
             var html = commonFunctions.format(me.chartNodeHtml,{name:node.name,icon:me.getIcon(node),guid:newId});
             $(html).css('left', positionX + 'px').css('top', positionY + 'px').appendTo('#chart');
             ktyle.draggable(newId, {
-            containment: "parentclea",
-            grid:[10,10]
-        });
+                containment: "parent",
+                grid:[10,10]
+           });
+           if (node.type === "Function"){
+               pages.feedline.setEndPoint(node.guid, node);
+           }
     	},
         loadPalette : function(cb){
             $.ajax({
@@ -224,24 +227,22 @@ var pages = {
         },
         addFields: function (node){
             if (node.data.fields && node.data.fields.length > 0){
-                console.log('addFields',node.data.fields,node.data.fields.length);
                 $('#' + node.guid).find('.chart-node-item-field').remove()
+                if (node.type === 'Source'){
+                    $('#' + node.guid).css('top',0);
+                    $('#' + node.guid).css('left',0);
+                }
+                if (node.type === 'Connector'){
+                    $('#' + node.guid).css('top',0);
+                    $('#' + node.guid).css('right',0);
+                }
                 node.data.fields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
-                    console.log('addFields',rowId,node.data.fields);
                     var desc = field.description ? commonFunctions.encode(field.description) : "";
                     var fieldItemHtml = '<div id="'+rowId+'" class="chart-node-item-field"> '+field.name +  (field.required ? ' *' : '' )+' </div> '
                     $('#' + node.guid).append(fieldItemHtml);
-                    pages.feedline.setEndPoint(rowId, node)
+                    pages.feedline.setEndPoint(rowId, node);
                 });
-            } else {
-                var rowId = node.guid + '_' + 'default';
-                var tableRow = '<tr id=' + rowId + '>' +
-                    '<td align="center"></td>' +
-                    '</tr>'
-                $('#' + node.guid + " .table").append(tableRow);
-                console.log('printing node',node)
-                pages.feedline.setEndPoint(rowId, node)
             }
         },
         setEndPoint : function (rowId, node) {
