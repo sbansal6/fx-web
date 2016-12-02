@@ -1,3 +1,12 @@
+#btnDelete:hover  {
+    color: red ;
+}
+
+#btnEdit:hover  {
+    color: blue ;
+}
+
+
 .center-pills {
     display: flex;
     justify-content: center;
