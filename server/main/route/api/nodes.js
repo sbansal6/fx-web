@@ -1,5 +1,6 @@
 var clone = require('clone');
 var JSONfn = require('json-fn');
+var nodeService = require("../../services/node.service");
 
 module.exports = function (app,isLoggedIn) {
     
@@ -75,11 +76,6 @@ module.exports = function (app,isLoggedIn) {
                         }
                     },
                     {
-                        name:"Google",
-                        type:"Connector",
-                        icon:""
-                    },
-                    {
                         name:"Replace",
                         type:"Function",
                         
@@ -93,8 +89,11 @@ module.exports = function (app,isLoggedIn) {
      */ 
     app.get('/api/nodes',isLoggedIn,function(req,res){
             var copyOfNodes = clone(Nodes);
-            res.json({
-               nodes:JSONfn.stringify(copyOfNodes)
-            });
+            nodeService.getConnectors(req.user._id,function(err,conns){
+               res.json({
+                  nodes:JSONfn.stringify(copyOfNodes.concat(conns))
+               });
+            })
+            
     });
 }

@@ -381,9 +381,36 @@ function castToConnector(user,body){
     connector.userId = user._id;
     connector.name = body.name;
     connector.description = body.description;
+    connector.icon = body.icon || ""
     connector.version = body.version || 'v 1.0.0';
     connector.type = 'Connector';
-    connector.image = '';
+    connector.published = body.public;
+    connector.scheme = {};
+
+    body.schemaFields.forEach(function(sf){
+        var fieldName = sf["fieldName"];
+        connector.scheme[fieldName] = {};
+        connector.scheme[fieldName]["descripton"] = sf["fieldDescription"];
+        connector.scheme[fieldName]["validation"] = {};
+        for (var key in sf) {
+            if (key != "fieldName" && key != "descripton") {
+                connector.scheme[fieldName]["validation"][key] = sf[key]
+            }
+        }
+        
+    })
+    console.log('castedConnector1',connector)
+    return connector;
+}
+
+function castToConnector2(user,body){
+    var connector = new node();
+    connector.userId = user._id;
+    connector.name = body.name;
+    connector.description = body.description;
+    connector.icon = body.icon || ""
+    connector.version = body.version || 'v 1.0.0';
+    connector.type = 'Connector';
     connector.published = body.public;
     connector.scheme = {};
     
@@ -410,7 +437,7 @@ function castToConnector(user,body){
         }
         connector.scheme[fieldName]["validation"] = validation
     }
-    
+    console.log('castedConnector2',connector)
     return connector;
 }
 
@@ -418,15 +445,62 @@ function castToConnector(user,body){
  * Adds a new connector to the system 
  */
 function addConnector(user,body,cb) {
+    console.log('incoming connector body',body)
     var connector = castToConnector(user,body);
     connector.save(cb);
+}
+
+// convert to generic node format
+/**
+     *  generic struture of node
+     *  {
+         name:"XXName",
+         type: "Source |  Connector |  Function",
+         icon: "",
+         schema:{},
+         options:{},
+         data: {
+             fields:[
+                {name:"fieldName","required":true,"description":"description"}
+             ]
+         }
+        }
+     */
+function convertToNodeGenericFormat(connectors){
+    var convertersInGenericNodeFormat = [];
+        connectors.forEach(function(c){
+            var newC = {};
+            newC.name = c.name;
+            newC["description"] = c["description"] ;
+            newC.type = c.type;
+            newC.icon = c.icon;
+            newC.schema = {};
+            newC.options = {};
+            newC.data = {};
+            newC.data.fields = [];
+            for (var key in c.scheme){
+                var field = {};
+                field.name = key;
+                field.required = true;
+                field.description = c.scheme[key]['description'];
+                newC.data.fields.push(field);
+            }
+            convertersInGenericNodeFormat.push(newC);  
+        })
+    return convertersInGenericNodeFormat;
 }
 
 /**
  * Returns all connectors created by this user
  */
 var getConnectors = function(userId,cb){
-    node.find({userId:userId},cb)
+    node.find({userId:userId},function(err,connectors){
+        if (err) {
+            cb(err)
+        } else {
+            cb(null,convertToNodeGenericFormat(connectors));
+        }
+    })
 }
 
 module.exports = {
@@ -437,7 +511,8 @@ module.exports = {
     paletteNodes:paletteNodes,
     getConnectors:getConnectors,
     addConnector:addConnector,
-    castToConnector:castToConnector
+    castToConnector:castToConnector,
+    castToConnector2:castToConnector2
 }
 
 

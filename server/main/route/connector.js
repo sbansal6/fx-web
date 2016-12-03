@@ -5,6 +5,7 @@ module.exports = function (app,isLoggedIn) {
     app.get('/connector',isLoggedIn,function(req,res){
             res.render('connector.ejs', {
                 title: 'FeedExchange - Add Connector',
+                userEmail: req.user.email,
                 message: ""
         });
     })

@@ -188,7 +188,7 @@ describe('node.service',function(){
         Node.remove({},done)
     })
 
-    describe('getNodeFields',function(){
+    xdescribe('getNodeFields',function(){
         it('should return an array of fields with valid schema',function(){
             var fields = nodeService.getNodeFields('Google');
             expect(fields).to.be.an('array');
@@ -197,7 +197,7 @@ describe('node.service',function(){
         })
     })
 
-    describe('getNodeUIStructure',function(){
+    xdescribe('getNodeUIStructure',function(){
         it('Returns valid structure',function(){
             var googleStructure = nodeService.getNodeUIStructure('Google')
             expect(googleStructure).to.be.an('object')
@@ -227,7 +227,8 @@ describe('node.service',function(){
                           schemaFields_1_patternValue: '',
                           public: 'true' 
                         }
-                var connector = nodeService.castToConnector({_id:'XXX'},body)
+                var connector = nodeService.castToConnector2({_id:'XXX'},body)
+                console.log('connector1',JSON.stringify(connector,null,4));
                 expect(connector).to.be.instanceof(Node)
                 expect(Object.keys(connector.scheme).length).to.equal(1)
                         
@@ -235,9 +236,37 @@ describe('node.service',function(){
                         
             
         })
+        
+        it('should return connector object',function(){
+            var body = { name: 'Google2',
+                          description: 'Google2',
+                          icon: 'fa-google',
+                          schemaFields: 
+                           [ { fieldName: 'Id',
+                               type: 'string',
+                               optional: 'false',
+                               minLength: '1',
+                               maxLength: '255',
+                               pattern: 'alphaNumeric' },
+                             { fieldName: 'Id2',
+                               type: 'string',
+                               optional: 'false',
+                               minLength: '1',
+                               maxLength: '255',
+                               pattern: 'alphaNumeric' } ],
+                          public: 'false' }
+                var connector = nodeService.castToConnector({_id:'XXX'},body)
+                console.log('connector2',JSON.stringify(connector,null,4));
+                expect(connector).to.be.instanceof(Node)
+                expect(Object.keys(connector.scheme).length).to.equal(2)
+                        
+                        
+                        
+            
+        })
     })
     
-    describe('getConnectors',function(){
+    xdescribe('getConnectors',function(){
         
         it('should return 0 connectors',function(done){
             nodeService.getConnectors('xxx',function(err,docs){

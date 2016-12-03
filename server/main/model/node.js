@@ -7,7 +7,7 @@ var nodeSchema = mongoose.Schema({
     description:String,
     version:String,
     type:String, // should be enum Transformation | Connector
-    image:String,
+    icon:String,
     published:Boolean,
     scheme:mongoose.Schema.Types.Mixed
 });

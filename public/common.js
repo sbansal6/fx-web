@@ -88,13 +88,15 @@ var commonFunctions = {
 var editNode = function(nodeId){
     var node = pages.feedline.getNodeById(nodeId);
     $("#inputNodeId").val(node.guid);
-    $('#form').empty();
-    $("#form").alpaca({
-        "schema": node.schema,
-        "options": node.options,
-        "data":node.data
-    });
-    $('#myModal').modal('show'); 
+    if (!jQuery.isEmptyObject(node.schema)){
+            $('#form').empty();
+            $("#form").alpaca({
+                "schema": node.schema,
+                "options": node.options,
+                "data":node.data
+            });
+            $('#myModal').modal('show'); 
+    }
 };
 var deleteNode = function(nodeId){
     ktyle.remove(nodeId);
@@ -109,7 +111,7 @@ var pages = {
         chart:{
             nodes:[]
         },
-       chartNodeHtml:'<div id = "{guid}" class="chart-node item" data-name="{name}"> ' + 
+       chartNodeHtml:'<div id = "{guid}" style="position:absolute" class="chart-node item" data-name="{name}"> ' + 
                          '<div class="chart-node-row-group"> '+ 
                                  '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                                  '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
@@ -152,7 +154,7 @@ var pages = {
             if (n.type === 'Function'){
                 return 'fa-fn'
             } else {
-                return (n.icon ? n.icon : 'fa-'+ (n.name).toLowerCase());
+                return (n.icon ? n.icon : 'fa-mk');
             }
         },
         getNodebyName:function(nodeName){
@@ -190,6 +192,8 @@ var pages = {
            });
            if (node.type === "Function"){
                pages.feedline.setEndPoint(node.guid, node);
+           } else {
+               pages.feedline.addFields(node);
            }
     	},
         loadPalette : function(cb){
@@ -225,15 +229,17 @@ var pages = {
             
         },
         addFields: function (node){
-            if (node.data.fields && node.data.fields.length > 0){
+            if (node.data && node.data.fields && node.data.fields.length > 0){
                 $('#' + node.guid).find('.chart-node-item-field').remove()
                 if (node.type === 'Source'){
                     $('#' + node.guid).css('top',0);
                     $('#' + node.guid).css('left',0);
                 }
+                console.log('type',node.type)
                 if (node.type === 'Connector'){
                     $('#' + node.guid).css('top',0);
-                    $('#' + node.guid).css('right',0);
+                    //todo , find a better way to pull element to right
+                    $('#' + node.guid).css('left',$('#' + node.guid).parent().width() - 150 );
                 }
                 node.data.fields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
@@ -329,6 +335,11 @@ if (currentPage === "connector"){
                         "type": "string",
                         "title": "Description",
                         "description":"Short description about the connector, what is does and all"
+                    },
+                    "icon" : {
+                         "type": "string",
+                         "title" : "Icon",
+                         "description":"Connector icon image"
                     },
                     "schemaFields": {
                         "type": "array",
@@ -538,13 +549,15 @@ if (currentPage === "connector"){
                             "click": function() {
                                 var val = this.getValue();
                                 if (this.isValid(true)) {
-                                    alert("Valid value: " + JSON.stringify(val, null, "  "));
+                                    //alert("New connector addded successfully: " + JSON.stringify(val, null, "  "));
+                                    alert("New connector addded successfully");
                                     this.ajaxSubmit().done(function() {
                                         console.log("done submitting",JSON.stringify(val, null, "  "))
                                     });
                                 } else {
                                     alert("Invalid value: " + JSON.stringify(val, null, "  "));
                                 }
+                                return false;
                             }
                         }
                     }
