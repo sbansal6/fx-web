@@ -4,10 +4,8 @@ var mongoose = require('mongoose');
 var feedLineSchema = mongoose.Schema({
     userId: String,
     name:String,
-    settings:mongoose.Schema.Types.Mixed,
-    canvas:mongoose.Schema.Types.Mixed,
-    nodes:[mongoose.Schema.Types.Mixed],
-    chart:[mongoose.Schema.Types.Mixed]
+    id:String,
+    chartData:mongoose.Schema.Types.Mixed
 });
 
 // create the model for users and expose it to our app

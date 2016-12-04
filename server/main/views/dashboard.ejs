@@ -67,15 +67,14 @@
                                     </h4>
                                 </a>
 
-                                <a href = "#" class = "list-group-item">
-                                    <h4 class = "list-group-item-heading">
-                                        Name of feedline plus image
-                                    </h4>
+                                <% for(var i=0; i<feedlines.length; i++) {%>
 
-                                    <p class = "list-group-item-text">
-                                        Description of feedline
-                                    </p>
+                                <a href = '/feedline?id=<%= feedlines[i]['id'] %>'  class = "list-group-item">
+                                    <h4 class = "list-group-item-heading">
+                                        <%= feedlines[i]["name"] %>
+                                    </h4>
                                 </a>
+                                <% } %>
 
                                 <a href = "/feedline" class = "list-group-item">
                                     <h4 class = "list-group-item-heading">

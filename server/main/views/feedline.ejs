@@ -58,7 +58,7 @@
                <ul class="nav nav-pills center-pills">
                   <li class="active"><a data-toggle="pill" href="#build">Build</a></li>
                   <li><a data-toggle="pill" href="#view">View</a></li>
-                  <li><a data-toggle="pill" href="#save">Save</a></li>
+                  <li><a id = "pillSave" data-toggle="pill" href="">Save</a></li>
                </ul>
                <div class="tab-content">
                   <div id="build" class="tab-pane fade in active">
@@ -93,8 +93,7 @@
                      <p>Some content in menu 1.</p>
                   </div>
                   <div id="save" class="tab-pane fade">
-                     <h3>Menu 2</h3>
-                     <p>Some content in menu 2.</p>
+                  </div>
                   </div>
                </div>
             </div>
@@ -102,7 +101,6 @@
          <!-- Modal -->
          <div id="myModal" class="modal fade" role="dialog">
            <div class="modal-dialog">
-         
              <!-- Modal content-->
              <div class="modal-content">
                <div class="modal-header">
@@ -111,14 +109,14 @@
                </div>
                <div class="modal-body">
                  <div id="form">
-                    
                  </div>
                </div>
              </div>
-         
            </div>
          </div>
          <input id="inputNodeId" type="hidden" name="editNodeId" value="">
+         <input id="inputFeedlineId" type="hidden" name="feedLineId" value="">
+         <input id="inputFeedlineName" type="hidden" name="feedLineName" value="">
       </div>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -132,5 +130,11 @@
       <script src="js/jsonfn.min.js"></script>
       <script src="js/ktyle.js"></script>
       <script src="/common.js"></script>
+      <% if (chartData) { %>
+        <script>
+         var a = <%= chartData %>  
+         renderExistingFeedLine(a);
+        </script>
+     <% } %>
    </body>
 </html>

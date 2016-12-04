@@ -104,14 +104,19 @@ var deleteNode = function(nodeId){
 var saveNode = function(){
     
 };
-
+var saveFeedline  = function(data,cb){
+    pages.feedline.save(data,cb);
+}
+var renderExistingFeedLine = function(chartData){
+    pages.feedline.renderExistingFeedLine(chartData);
+}
 var pages = {
     feedline:{
         palette:{},
         chart:{
             nodes:[]
         },
-       chartNodeHtml:'<div id = "{guid}" style="position:absolute" class="chart-node item" data-name="{name}"> ' + 
+       chartNodeHtml:'<div id = "{guid}" style="position:absolute" class="chart-node" data-name="{name}"> ' + 
                          '<div class="chart-node-row-group"> '+ 
                                  '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
                                  '<div class="chart-node-item-text"> <a>{name}</a> </div> ' +
@@ -302,22 +307,122 @@ var pages = {
                     console.log('max connection limit reached')
                 }
              });
+        },
+        // save canvas as well as nodes
+        // data is feedline name and feedline unique id
+        save:function (data,cb) {
+            var nodes = []
+            $(".chart-node").each(function(idx, elem) {
+                var $elem = $(elem);
+                nodes.push({
+                    nodeId: $elem.attr('id'),
+                    nodeName: $elem.data('name'),
+                    positionX: parseInt($elem.css("left"), 10),
+                    positionY: parseInt($elem.css("top"), 10)
+                });
+            });
+            var connections = [];
+            $.each(ktyle.getConnections(), function(idx, connection) {
+                connections.push({
+                    connectionId: connection.id,
+                    pageSourceId: connection.sourceId,
+                    pageTargetId: connection.targetId,
+                    anchors: $.map(connection.endpoints, function(endpoint) {
+                        return [
+                            [endpoint.anchor.x,
+                                endpoint.anchor.y,
+                                endpoint.anchor.orientation[0],
+                                endpoint.anchor.orientation[1],
+                                endpoint.anchor.offsets[0],
+                                endpoint.anchor.offsets[1]
+                            ]
+                        ];
+        
+                    })
+                });
+            });
+            var flowChart = {};
+            flowChart.nodes = nodes;
+            flowChart.connections = connections;
+            $.ajax({
+                type: "POST",
+                url: "/feedline",
+                data: {
+                    name: data.name,
+                    id: data.id,
+                    chartData: flowChart
+                },
+                success: function(result) {
+                    console.log('i am done saving')
+                    cb();
+                }
+            });
+
+        },
+        renderExistingFeedLine:function(){
+            alert('i will work')
         }
    }
 };
 
 // fire page specific javascript
-if (currentPage === "feedline"){
+if (currentPage.startsWith("feedline")){
     ktyle.ready(function() {
          ktyle.setContainer("chart");
          var self = pages.feedline;
          self.init();
          self.loadPalette(function(){});
+         var feedLineName = "";
+         var feedLineId = ""; // get id of existing editing field
+         $('#pillSave').click(function() {
+            $('#form').empty();
+            $("#form").alpaca({
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "Name",
+                            "required":true,
+                            "minLength":5
+                        },
+                        "id":{
+                            "type": "string",
+                            "title": "Id",
+                            "readonly": true
+                        }
+                    }
+                },
+                "options": {
+                    "form":{
+                        "buttons":{
+                            "submit":{
+                                "click" : function(){
+                                    // get name from value
+                                    // generate unique id if data doesnt have unique id already
+                                    // call save feedline method 
+                                    var val = this.getValue();
+                                    saveFeedline(val,function(err){
+                                        $('#myModal').modal('hide'); 
+                                    })
+                                }
+                            }
+                        }
+                    }
+                },
+                "data":{
+                    name: (feedLineName || ""),
+                    id: (feedLineId || commonFunctions.guid())
+                } 
+            });
+            $('#myModal').find('.modal-title').text('Save')
+            $('#myModal').modal('show'); 
+        });
     })
     
 }
 
-if (currentPage === "connector"){
+if (currentPage.startsWith("connector")){
     $("#form").alpaca({
     "data": {},
     "schema": {
