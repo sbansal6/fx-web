@@ -56,7 +56,7 @@ module.exports = function (app,isLoggedIn) {
                                               success: function(response) {
                                                   var nodeId = $('#inputNodeId').val()
                                                   var thisNode = pages.feedline.getNodeById(nodeId);
-                                                  thisNode.data.fields = response.fields
+                                                  thisNode.data.outFields = response.fields
                                                   thisNode.data.type = val.type;
                                                   thisNode.data.fileName = response.fileName;
                                                   $('#myModal').modal('hide'); 
@@ -72,16 +72,62 @@ module.exports = function (app,isLoggedIn) {
                         data:{
                             type:"csv",
                             fileName:"",
-                            fields:[]
+                            outFields:[]
                         }
                     },
                     {
                         name:"Replace",
                         type:"Function",
+                        "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "selectField": {
+                                        "type":"string",
+                                        "title":"field",
+                                        "enum":[]
+                                     },
+                                    "searchValue": {
+                                        "type": "string",
+                                        "title": "searchValue"
+                                    },
+                                    "newValue": {
+                                        "type": "string",
+                                        "title": "newValue"
+                                    }
+                                }
+                       },
+                        options:{
+                           "form":{
+                            "buttons":{
+                                "submit":{
+                                    "click":function(){
+                                        var val = this.getValue();
+                                        var nodeId = $('#inputNodeId').val()
+                                        var thisNode = pages.feedline.getNodeById(nodeId);
+                                        for (var key in val){
+                                            thisNode.data[key] = val[key];
+                                        }
+                                        $('#myModal').modal('hide'); 
+                                    }
+                                }
+                            }
+                           },
+                           "fields": {
+                               "selectField": {
+                                "type": "select",
+                                "removeDefaultNone": true
+                            }
+                           }
+                       },
+                        data:{
+                            "selectField":"",
+                            "searchValue": "this",
+                            "newValue": "that",
+                            "outFields":[],
+                        }
                         
                     }
                     ]
-
     
     /**
      * Returns all nodes in the system (connectors specific to that users tho)

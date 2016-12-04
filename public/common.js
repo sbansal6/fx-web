@@ -87,9 +87,44 @@ var commonFunctions = {
 };
 var editNode = function(nodeId){
     var node = pages.feedline.getNodeById(nodeId);
+    //console.log('editingNode',node);
     $("#inputNodeId").val(node.guid);
-    if (!jQuery.isEmptyObject(node.schema)){
+    
+    if (node.type === "Function"){
+        // should be connected to source before edit can happen
+        var connection = pages.feedline.getConnectionsToThisNode(nodeId);
+        if (connection){
+            var inFields = pages.feedline.getIncomingFieldsToThisNode(connection).map(function(f){return f.name});
+            node.schema.properties.selectField.enum = inFields;
+            node.data.outFields = inFields;
             $('#form').empty();
+            $("#form").alpaca({
+                "schema": node.schema,
+                "options": node.options,
+                "data":node.data
+            });
+            $('#myModal').modal('show'); 
+        }
+    }
+    
+    if (node.type === "Connector"){
+            var inFields = [];
+            var connection = pages.feedline.getConnectionsToThisNode(nodeId);
+            if (connection){
+                inFields = pages.feedline.getIncomingFieldsToThisNode(connection).map(function(f){return f});
+            }
+            node.schema.items.properties.sourceField.enum = inFields;
+            $('#form').empty();
+            $("#form").alpaca({
+                "schema": node.schema,
+                "options": node.options,
+                "data":node.data
+            });
+            $('#myModal').modal('show'); 
+    }
+        
+    if (node.type === "Source"){
+        $('#form').empty();
             $("#form").alpaca({
                 "schema": node.schema,
                 "options": node.options,
@@ -99,22 +134,25 @@ var editNode = function(nodeId){
     }
 };
 var deleteNode = function(nodeId){
-    ktyle.remove(nodeId);
+    pages.feedline.deleteNode(nodeId);
 };
 var saveNode = function(){
     
 };
 var saveFeedline  = function(data,cb){
-    pages.feedline.save(data,cb);
+    console.log(JSON.stringify(pages.feedline.cache,null,4))
+    //pages.feedline.save(data,cb);
 }
 var renderExistingFeedLine = function(chartData){
     pages.feedline.renderExistingFeedLine(chartData);
 }
+
 var pages = {
     feedline:{
         palette:{},
-        chart:{
-            nodes:[]
+        cache:{
+            nodes:[],
+            connections:[]
         },
        chartNodeHtml:'<div id = "{guid}" style="position:absolute" class="chart-node" data-name="{name}"> ' + 
                          '<div class="chart-node-row-group"> '+ 
@@ -137,6 +175,12 @@ var pages = {
              * This needs to have all the logic to check what kind of node is dragged
              * and check rules after stop even
              */
+            ktyle.bind("connection", function(info) {
+               me.cache.connections.push({'sourceId':info.sourceId,'targetId':info.targetId});
+            }); 
+            ktyle.bind("connectionDetached", function(info) {
+               me.cache.connections = me.cache.connections.filter(function(c){return ((c.sourceId !== info.sourceId) && (c.targetId !== info.targetId))})
+            });
             $("#chart").droppable({
     	        containment: "#chart",
     	        drop: function (e, ui) {
@@ -173,22 +217,39 @@ var pages = {
             })
             return returnNode;
         },
+        // returns actual node from cache
         getNodeById:function(guid){
             var me = pages.feedline;
             var returnNode ;
-            me.chart.nodes.forEach(function(n){
+            me.cache.nodes.forEach(function(n){
                 if (n.guid === guid){
                     returnNode = n;
                 }
             })
             return returnNode;
         },
+        getConnectionsToThisNode:function(nodeId){
+            var connection ;
+            pages.feedline.cache.connections.forEach(function(c){
+                if (c.targetId === nodeId) {
+                    connection = c;
+                }
+            })
+            return connection;
+            
+        },
+        getIncomingFieldsToThisNode: function(connection){
+            // get outfields of source Node
+            var sourceNode = pages.feedline.getNodeById(connection.sourceId);
+            var sourceOutFields = sourceNode.data.outFields;
+            return sourceOutFields;
+        },
         addNode:function(nodeName,positionX,positionY){
             var me = pages.feedline
             var node = me.getNodebyName(nodeName);
             var newId = commonFunctions.guid();
             node.guid = newId;
-            me.chart.nodes.push(node);
+            me.cache.nodes.push(node);
             var html = commonFunctions.format(me.chartNodeHtml,{name:node.name,icon:me.getIcon(node),guid:newId});
             $(html).css('left', positionX + 'px').css('top', positionY + 'px').appendTo('#chart');
             ktyle.draggable(newId, {
@@ -197,6 +258,9 @@ var pages = {
            });
            if (node.type === "Function"){
                pages.feedline.setEndPoint(node.guid, node);
+           } 
+           if (node.type === "Connector"){
+               pages.feedline.setEndPoint(node.guid, node); 
            } else {
                pages.feedline.addFields(node);
            }
@@ -233,26 +297,33 @@ var pages = {
         drawNode: function(node,cb){
             
         },
+        deleteNode:function(nodeId){
+            var me = pages.feedline ;
+            var cache = me.cache;
+            ktyle.remove(nodeId);
+            cache.nodes = cache.nodes.filter(function(n) { return n.guid !== nodeId })
+            cache.connections = cache.connections.filter(function(c) { return (c.targetId !== nodeId)});
+        },
         addFields: function (node){
-            if (node.data && node.data.fields && node.data.fields.length > 0){
+            if (node.data && node.data.outFields && node.data.outFields.length > 0){
                 $('#' + node.guid).find('.chart-node-item-field').remove()
-                if (node.type === 'Source'){
-                    $('#' + node.guid).css('top',0);
-                    $('#' + node.guid).css('left',0);
-                }
-                console.log('type',node.type)
-                if (node.type === 'Connector'){
-                    $('#' + node.guid).css('top',0);
-                    //todo , find a better way to pull element to right
-                    $('#' + node.guid).css('left',$('#' + node.guid).parent().width() - 150 );
-                }
-                node.data.fields.forEach(function(field) {
+                node.data.outFields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
                     var desc = field.description ? commonFunctions.encode(field.description) : "";
                     var fieldItemHtml = '<div id="'+rowId+'" class="chart-node-item-field"> '+field.name +  (field.required ? ' *' : '' )+' </div> '
                     $('#' + node.guid).append(fieldItemHtml);
-                    pages.feedline.setEndPoint(rowId, node);
+                    pages.feedline.setEndPoint(node.guid, node);
                 });
+                // if (node.type === 'Source'){
+                //     $('#' + node.guid).css('top',0);
+                //     $('#' + node.guid).css('left',0);
+                // }
+                // console.log('type',node.type)
+                // if (node.type === 'Connector'){
+                //     $('#' + node.guid).css('top',0);
+                //     //todo , find a better way to pull element to right
+                //     $('#' + node.guid).css('left',$('#' + node.guid).parent().width() - 150 );
+                // }
             }
         },
         setEndPoint : function (rowId, node) {
@@ -269,7 +340,7 @@ var pages = {
         },
         addSourceEndPoint : function (rowId) {
             ktyle.addEndpoint(rowId, {
-                anchors: ['Right'],
+                anchors: ['RightMiddle'],
                 isSource: true,
                 isTarget: false,
                 endpoint: ["Dot", {
@@ -283,7 +354,7 @@ var pages = {
                 hoverPaintStyle: {
                     fillStyle: "yellow"
                 },
-                maxConnections: 10
+                maxConnections: 1
             });
        },
         addTargetEndPoint: function (rowId) {

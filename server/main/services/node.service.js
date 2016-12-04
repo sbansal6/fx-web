@@ -450,7 +450,7 @@ function addConnector(user,body,cb) {
     connector.save(cb);
 }
 
-// convert to generic node format
+// convert to generic node format for connectors
 /**
      *  generic struture of node
      *  {
@@ -474,16 +474,51 @@ function convertToNodeGenericFormat(connectors){
             newC["description"] = c["description"] ;
             newC.type = c.type;
             newC.icon = c.icon;
-            newC.schema = {};
-            newC.options = {};
-            newC.data = {};
-            newC.data.fields = [];
+            newC.schema = {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "sourceField": {
+                            "type": "string",
+                            "enum": [],
+                            "title": "source"
+                        },
+                        "destinationField": {
+                            "type": "string",
+                            "title": "destination"
+                        }
+                        
+                    }
+                }
+            };
+            newC.options = {
+                "type": "table",
+                "items": {
+                    "fields": {
+                        "sourceField": {
+                            "type": "select"
+                        }
+                    }
+                },
+                "form": {
+                "buttons": {
+                    "submit": {
+                        "click": function() {
+                            var value = this.getValue();
+                            alert(JSON.stringify(value, null, "  "));
+                        }
+                    }
+                }
+        },
+                "toolbarSticky":false,
+                "showActionsColumn":false
+            };
+            newC.data = [
+                
+            ];
             for (var key in c.scheme){
-                var field = {};
-                field.name = key;
-                field.required = true;
-                field.description = c.scheme[key]['description'];
-                newC.data.fields.push(field);
+                newC.data.push({destinationField:key})
             }
             convertersInGenericNodeFormat.push(newC);  
         })
@@ -494,7 +529,7 @@ function convertToNodeGenericFormat(connectors){
  * Returns all connectors created by this user
  */
 var getConnectors = function(userId,cb){
-    node.find({userId:userId},function(err,connectors){
+    node.find({type:"Connector"},function(err,connectors){
         if (err) {
             cb(err)
         } else {
