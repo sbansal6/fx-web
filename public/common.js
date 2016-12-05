@@ -142,9 +142,6 @@ var editNode = function(nodeId) {
 var deleteNode = function(nodeId) {
     pages.feedline.deleteNode(nodeId);
 };
-var saveFeedline = function(data, cb) {
-    pages.feedline.save(data, cb);
-}
 var renderExistingFeedLine = function(chartData) {
     pages.feedline.renderExistingFeedLine(chartData);
 }
@@ -171,11 +168,17 @@ var pages = {
          * Define all behavior here
          */
         init: function() {
+            ktyle.setContainer("chart");
+            ktyle.importDefaults({
+                Connector: ["Flowchart"],  // Bezier | Straight | Flowchart | StateMachine 
+            })
             var me = pages.feedline;
             me.palette = {};
             me.onConnection();
             me.onConnectionDetached();
             me.onNodeDrop();
+            me.loadPalette(function() {});
+            me.onSaveClick();
         },
         onConnection:function(){
             var me = pages.feedline;
@@ -255,17 +258,14 @@ var pages = {
 
         },
         getIncomingFieldsToThisNode: function(connection) {
-            console.log('cache',JSON.stringify(pages.feedline.cache,null,4));
             // get outfields of source Node
             var sourceNode = pages.feedline.getNodeById(connection.sourceId);
             var sourceOutFields = [] ;
-            console.log('sourceNode',sourceNode);
             if (sourceNode.type === "Source"){
                 sourceOutFields = sourceNode.data.outFields.map(function(f){return f.name});
             } else {
                 sourceOutFields = sourceNode.data.outFields;
             }
-            console.log('sourceOutFields',sourceOutFields);
             return sourceOutFields;
         },
         addNode: function(nodeName, positionX, positionY) {
@@ -342,7 +342,6 @@ var pages = {
         drawNode: function(node, cb) {
 
         },
-        
         addFields: function(node) {
             if (node.data && node.data.outFields && node.data.outFields.length > 0) {
                 $('#' + node.guid).find('.chart-node-item-field').remove()
@@ -420,6 +419,52 @@ var pages = {
         },
         // save canvas as well as nodes
         // data is feedline name and feedline unique id
+        onSaveClick:function(){
+            $('#pillSave').click(function() {
+            $('#form').empty();
+            $("#form").alpaca({
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "Name",
+                            "required": true,
+                            "minLength": 5
+                        },
+                        "id": {
+                            "type": "string",
+                            "title": "Id",
+                            "readonly": true
+                        }
+                    }
+                },
+                "options": {
+                    "form": {
+                        "buttons": {
+                            "submit": {
+                                "click": function() {
+                                    // get name from value
+                                    // generate unique id if data doesnt have unique id already
+                                    // call save feedline method 
+                                    var val = this.getValue();
+                                    pages.feedline.save(val, function(err) {
+                                        $('#myModal').modal('hide');
+                                    })
+                                }
+                            }
+                        }
+                    }
+                },
+                "data": {
+                    name: ($('#inputFeedlineName').val() || ""), // get from inputbox or empty
+                    id: ($('#inputFeedlineId').val() || commonFunctions.guid())
+                }
+            });
+            $('#myModal').find('.modal-title').text('Save')
+            $('#myModal').modal('show');
+        });
+        },
         save: function(data, cb) {
             var nodes = []
             $(".chart-node").each(function(idx, elem) {
@@ -478,56 +523,8 @@ var pages = {
 // fire page specific javascript
 if (currentPage.startsWith("feedline")) {
     ktyle.ready(function() {
-        ktyle.setContainer("chart");
         var self = pages.feedline;
         self.init();
-        self.loadPalette(function() {});
-        var feedLineName = "";
-        var feedLineId = ""; // get id of existing editing field
-        $('#pillSave').click(function() {
-            $('#form').empty();
-            $("#form").alpaca({
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "required": true,
-                            "minLength": 5
-                        },
-                        "id": {
-                            "type": "string",
-                            "title": "Id",
-                            "readonly": true
-                        }
-                    }
-                },
-                "options": {
-                    "form": {
-                        "buttons": {
-                            "submit": {
-                                "click": function() {
-                                    // get name from value
-                                    // generate unique id if data doesnt have unique id already
-                                    // call save feedline method 
-                                    var val = this.getValue();
-                                    saveFeedline(val, function(err) {
-                                        $('#myModal').modal('hide');
-                                    })
-                                }
-                            }
-                        }
-                    }
-                },
-                "data": {
-                    name: (feedLineName || ""),
-                    id: (feedLineId || commonFunctions.guid())
-                }
-            });
-            $('#myModal').find('.modal-title').text('Save')
-            $('#myModal').modal('show');
-        });
     })
 
 }
