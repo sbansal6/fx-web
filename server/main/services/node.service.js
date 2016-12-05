@@ -506,7 +506,10 @@ function convertToNodeGenericFormat(connectors){
                     "submit": {
                         "click": function() {
                             var value = this.getValue();
-                            alert(JSON.stringify(value, null, "  "));
+                            var nodeId = $('#inputNodeId').val()
+                            var thisNode = pages.feedline.getNodeById(nodeId);
+                            thisNode.data = value;
+                            $('#myModal').modal('hide'); 
                         }
                     }
                 }

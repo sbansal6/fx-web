@@ -56,7 +56,7 @@ module.exports = function (app,isLoggedIn) {
                                               success: function(response) {
                                                   var nodeId = $('#inputNodeId').val()
                                                   var thisNode = pages.feedline.getNodeById(nodeId);
-                                                  thisNode.data.outFields = response.fields
+                                                  thisNode.data.outFields = response.fields;
                                                   thisNode.data.type = val.type;
                                                   thisNode.data.fileName = response.fileName;
                                                   $('#myModal').modal('hide'); 
@@ -72,7 +72,7 @@ module.exports = function (app,isLoggedIn) {
                         data:{
                             type:"csv",
                             fileName:"",
-                            outFields:[]
+                            outFields:[],
                         }
                     },
                     {
