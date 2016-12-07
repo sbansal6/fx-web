@@ -546,15 +546,34 @@ var pages = {
 
         },
         renderExistingFeedLine: function(feedlineState) {
-            //console.log('renderExistingFeedLine',JSON.stringify(feedlineState,null,4));
             // set values of hidden input fields
             $('#inputFeedlineId').val(feedlineState.id);
             $('#inputFeedlineName').val(feedlineState.name);
             if (feedlineState.chartData){
                  feedlineState.chartData["nodes"].forEach(function(n){
-                 pages.feedline.addNode(n,n.positionX,n.positionY);
-             }) 
+                    pages.feedline.addNode(n,n.positionX,n.positionY);
+                 })
+                 if (feedlineState.chartData["connections"]){
+                     feedlineState.chartData["connections"].forEach(function(c){
+                         // ** fix, acnhors getting saved as string in mongo
+                                // trick to convert to int
+                                var anchorsInt = $.map(c.anchors,function(a){
+                                    return [$.map(a,function(ai){
+                                        return Number(ai)
+                                    })]
+                                })
+                                ktyle.connect({
+                                    source: c.pageSourceId,
+                                    target: c.pageTargetId,
+                                    anchors: anchorsInt,
+                                    endpoint: ["Dot", {
+                                            radius: 7
+                                        }]
+                                });
+                     })
+                 }
             }
+            
 
         }
     }

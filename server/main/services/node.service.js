@@ -503,7 +503,7 @@ function convertToNodeGenericFormat(connectors){
                 },
                 "form": {
                 "buttons": {
-                    "submit": {
+                    "save": {
                         "click": function() {
                             var value = this.getValue();
                             var nodeId = $('#inputNodeId').val()
