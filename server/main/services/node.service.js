@@ -503,7 +503,8 @@ function convertToNodeGenericFormat(connectors){
                 },
                 "form": {
                 "buttons": {
-                    "save": {
+                    "submit": {
+                        "value": "Save",
                         "click": function() {
                             var value = this.getValue();
                             var nodeId = $('#inputNodeId').val()
@@ -521,7 +522,7 @@ function convertToNodeGenericFormat(connectors){
                 
             ];
             for (var key in c.scheme){
-                newC.data.push({destinationField:key})
+                newC.data.push({destinationField:key,description:c.scheme[key]["description"]})
             }
             convertersInGenericNodeFormat.push(newC);  
         })

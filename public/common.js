@@ -318,6 +318,7 @@ var pages = {
             }
             if (node.type === "Connector") {
                 pages.feedline.setEndPoint(node.guid, node);
+                pages.feedline.addFields(node);
             } else {
                 pages.feedline.addFields(node);
             }
@@ -369,26 +370,27 @@ var pages = {
             pages.feedline.addFields(node);
         },
         addFields: function(node) {
-            if (node.data && node.data.outFields && node.data.outFields.length > 0) {
+            if (node.type === "Source" && node.data && node.data.outFields && node.data.outFields.length > 0){
                 $('#' + node.guid).find('.chart-node-item-field').remove()
                 node.data.outFields.forEach(function(field) {
                     var rowId = node.guid + '_' + field.name;
                     var desc = field.description ? commonFunctions.encode(field.description) : "";
                     var fieldItemHtml = '<div id="' + rowId + '" class="chart-node-item-field"> ' + field.name + (field.required ? ' *' : '') + ' </div> '
                     $('#' + node.guid).append(fieldItemHtml);
+                    // end point should only be set once we have selected files and hence fields
                     pages.feedline.setEndPoint(node.guid, node);
                 });
-                // if (node.type === 'Source'){
-                //     $('#' + node.guid).css('top',0);
-                //     $('#' + node.guid).css('left',0);
-                // }
-                // console.log('type',node.type)
-                // if (node.type === 'Connector'){
-                //     $('#' + node.guid).css('top',0);
-                //     //todo , find a better way to pull element to right
-                //     $('#' + node.guid).css('left',$('#' + node.guid).parent().width() - 150 );
-                // }
             }
+            if (node.type === "Connector" && node.data && node.data.length > 0){
+                // $('#' + node.guid).find('.chart-node-item-field').remove()
+                // node.data.forEach(function(field) {
+                //     var rowId = node.guid + '_' + field.destinationField;
+                //     var desc = field.description ? commonFunctions.encode(field.description) : "";
+                //     var fieldItemHtml = '<div id="' + rowId + '" class="chart-node-item-field"> ' + field.destinationField + (field.required ? ' *' : '') + ' </div> '
+                //     $('#' + node.guid).append(fieldItemHtml);pages.feedline.setEndPoint(node.guid, node);
+                // });
+            }
+            
         },
         setEndPoint: function(rowId, node) {
             if (node.type === 'Function') {
@@ -469,6 +471,7 @@ var pages = {
                     "form": {
                         "buttons": {
                             "submit": {
+                                "value": "Save",
                                 "click": function() {
                                     // get name from value
                                     // generate unique id if data doesnt have unique id already
