@@ -1,4 +1,5 @@
 var feedlineModel =  require('../model/feedline');
+var JSONfn = require('json-fn');
 
 module.exports = function(app, isLoggedIn) {
     
@@ -15,7 +16,7 @@ module.exports = function(app, isLoggedIn) {
                    res.render('feedline.ejs', {
                         title: 'FeedExchange - feedline',
                         userEmail: req.user.email,
-                        chartData:doc
+                        feedlineState: JSONfn.stringify(doc[0])
                });
             })
         }

@@ -87,7 +87,17 @@ var commonFunctions = {
         return e.replace(/[^]/g, function(e) {
             return "&#" + e.charCodeAt(0) + ";"
         })
+    },
+    urlParam : function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null){
+           return null;
+        }
+        else{
+           return results[1] || 0;
+        }
     }
+
 };
 var editNode = function(nodeId) {
     var node = pages.feedline.getNodeById(nodeId);
@@ -142,8 +152,8 @@ var editNode = function(nodeId) {
 var deleteNode = function(nodeId) {
     pages.feedline.deleteNode(nodeId);
 };
-var renderExistingFeedLine = function(chartData) {
-    pages.feedline.renderExistingFeedLine(chartData);
+var renderExistingFeedLine = function(feedlineState) {
+    pages.feedline.feedLinePersistedState = feedlineState;
 }
 
 var pages = {
@@ -153,6 +163,7 @@ var pages = {
             nodes: [],
             connections: []
         },
+        feedLinePersistedState:undefined,
         chartNodeHtml: '<div id = "{guid}" style="position:absolute" class="chart-node" data-name="{name}"> ' +
             '<div class="chart-node-row-group"> ' +
             '<div class="chart-node-item"> <i class="fa {icon} fa-3x"></i> </div> ' +
@@ -167,7 +178,7 @@ var pages = {
         /**
          * Define all behavior here
          */
-        init: function() {
+        init: function(cb) {
             ktyle.setContainer("chart");
             ktyle.importDefaults({
                 Connector: ["Flowchart"],  // Bezier | Straight | Flowchart | StateMachine 
@@ -177,8 +188,14 @@ var pages = {
             me.onConnection();
             me.onConnectionDetached();
             me.onNodeDrop();
-            me.loadPalette(function() {});
             me.onSaveClick();
+            me.loadPalette(function() {
+                if (me.feedLinePersistedState){
+                    pages.feedline.renderExistingFeedLine(me.feedLinePersistedState);
+                } 
+                cb();
+            });
+            
         },
         onConnection:function(){
             var me = pages.feedline;
@@ -268,19 +285,31 @@ var pages = {
             }
             return sourceOutFields;
         },
-        addNode: function(nodeName, positionX, positionY) {
-            var me = pages.feedline
-            var node = me.getNodebyName(nodeName);
-            var newId = commonFunctions.guid();
-            node.guid = newId;
+        /**
+         * nodeValue arg can be string(name of node) if dropping from palette
+         *                   or object if rendering existing node from saved feedline chartData
+         */
+        addNode: function(nodeValue, positionX, positionY) {
+            var me = pages.feedline;
+            var node ;
+            if (typeof nodeValue === 'string'){
+                node = me.getNodebyName(nodeValue);
+                node.guid = commonFunctions.guid();
+            } 
+            else {
+                // when coming from existing feedline, we need persistent data value
+                node = me.getNodebyName(nodeValue.name);
+                node.guid = nodeValue.guid;
+                node.data = nodeValue.data;
+            }
             me.cache.nodes.push(node);
             var html = commonFunctions.format(me.chartNodeHtml, {
                 name: node.name,
                 icon: me.getIcon(node),
-                guid: newId
+                guid: node.guid
             });
             $(html).css('left', positionX + 'px').css('top', positionY + 'px').appendTo('#chart');
-            ktyle.draggable(newId, {
+            ktyle.draggable(node.guid, {
                 containment: "parent",
                 grid: [10, 10]
             });
@@ -338,9 +367,6 @@ var pages = {
         updateNodeAfterEdit: function(nodeId, cb) {
             var node = pages.feedline.getNodeById(nodeId);
             pages.feedline.addFields(node);
-        },
-        drawNode: function(node, cb) {
-
         },
         addFields: function(node) {
             if (node.data && node.data.outFields && node.data.outFields.length > 0) {
@@ -469,13 +495,18 @@ var pages = {
             var nodes = []
             $(".chart-node").each(function(idx, elem) {
                 var $elem = $(elem);
+                var nodeId = $elem.attr('id');
+                var nodeState = pages.feedline.getNodeById(nodeId);
                 nodes.push({
-                    nodeId: $elem.attr('id'),
-                    nodeName: $elem.data('name'),
+                    guid: nodeId,
+                    name: $elem.data('name'),
                     positionX: parseInt($elem.css("left"), 10),
-                    positionY: parseInt($elem.css("top"), 10)
+                    positionY: parseInt($elem.css("top"), 10),
+                    data: nodeState.data
                 });
             });
+            // get node state from cache
+            
             var connections = [];
             $.each(ktyle.getConnections(), function(idx, connection) {
                 connections.push({
@@ -514,8 +545,17 @@ var pages = {
             });
 
         },
-        renderExistingFeedLine: function() {
-            alert('i will work')
+        renderExistingFeedLine: function(feedlineState) {
+            //console.log('renderExistingFeedLine',JSON.stringify(feedlineState,null,4));
+            // set values of hidden input fields
+            $('#inputFeedlineId').val(feedlineState.id);
+            $('#inputFeedlineName').val(feedlineState.name);
+            if (feedlineState.chartData){
+                 feedlineState.chartData["nodes"].forEach(function(n){
+                 pages.feedline.addNode(n,n.positionX,n.positionY);
+             }) 
+            }
+
         }
     }
 };
@@ -524,9 +564,9 @@ var pages = {
 if (currentPage.startsWith("feedline")) {
     ktyle.ready(function() {
         var self = pages.feedline;
-        self.init();
+        self.init(function(){
+        });
     })
-
 }
 
 if (currentPage.startsWith("connector")) {
