@@ -15,7 +15,7 @@ module.exports = function(app, isLoggedIn) {
             }
             ],
            function(err,results){
-               console.log('dashboard',results[0],results[1]);
+               //console.log('dashboard',results[0],results[1]);
                 res.render('dashboard.ejs', {
                         title: 'FeedExchange - dashboard',
                         userEmail: req.user.email,

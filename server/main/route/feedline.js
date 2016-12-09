@@ -12,7 +12,7 @@ module.exports = function(app, isLoggedIn) {
             });
         } else {
                feedlineModel.find({id:id},function(err,doc){
-                   console.log('returned feedline',JSON.stringify(doc));
+                   //console.log('returned feedline',JSON.stringify(doc));
                    res.render('feedline.ejs', {
                         title: 'FeedExchange - feedline',
                         userEmail: req.user.email,

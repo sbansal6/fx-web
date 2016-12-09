@@ -1,6 +1,15 @@
 var nodeService = require("../services/node.service");
+var processorService = require('../services/processor.service');
+var JSONfn = require('json-fn');
 
 module.exports = function (app,isLoggedIn) {
+    
+    // move to seperate analyze route
+    app.post('/analyze', isLoggedIn, function(req, res) {
+        console.log('analyze',req.user,JSON.parse(req.body.feedlineState));
+        res.send({});
+    })
+    
     
     app.get('/connector',isLoggedIn,function(req,res){
             res.render('connector.ejs', {

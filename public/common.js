@@ -189,6 +189,7 @@ var pages = {
             me.onConnectionDetached();
             me.onNodeDrop();
             me.onSaveClick();
+            me.onAnalyzeClick();
             me.loadPalette(function() {
                 if (me.feedLinePersistedState){
                     pages.feedline.renderExistingFeedLine(me.feedLinePersistedState);
@@ -444,6 +445,37 @@ var pages = {
                     console.log('max connection limit reached')
                 }
             });
+        },
+        onAnalyzeClick: function(){
+          $('#pillAnalyze').click(function(){
+              alert('in here');
+              var feedlineId = $('#inputFeedlineId').val()
+              console.log('pillAnalyze', {
+                        feedlineId: feedlineId,
+                        feedlineState: pages.feedline.cache
+                    }
+                    )
+              $.ajax({
+                    type: "POST",
+                    url: "/analyze",
+                    // beforeSend: function() {
+                    //     // Here we show the loader
+                    //     commonFunctions.ajaxindicatorstart('analyzing feed.. please wait..');
+                    // },
+                    // complete: function(){
+                    //     commonFunctions.ajaxindicatorstop();
+                    // },
+                    data: {
+                        feedlineId: feedlineId,
+                        feedlineState: JSONfn.stringify(pages.feedline.cache)
+                    },
+                    success: function(result) {
+                        //renderGrid(result.outputRows);
+                        //renderChart(result.stats);
+                        alert('done analyzing');
+                    }
+              });
+          })  
         },
         // save canvas as well as nodes
         // data is feedline name and feedline unique id

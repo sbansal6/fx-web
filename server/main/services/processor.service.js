@@ -32,6 +32,23 @@ function getTargetConnector(toolData){
     })
 }
 
+
+/**
+ * Return the connector in this flow, Google |  Facebook | Bing
+ * @param toolData
+ */
+function getConnectorForThisFeedline(feedlineState){
+    return _.find(feedlineState.nodes,function(n){
+        return n.type === 'Connector'
+    })
+}
+
+function getSourceForThisFeedline(){
+    return _.find(feedlineState.nodes,function(n){
+        return n.type === 'Source'
+    })
+}
+
 function getOutputValue(toolData,row,mappings){
     var keys = Object.keys(mappings);
     var keysSortedDesc = keys.sort(function(a, b){return b-a});

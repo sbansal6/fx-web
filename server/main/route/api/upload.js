@@ -41,8 +41,8 @@ var headers = function(req,cb){
 
 module.exports = function (app,isLoggedIn) {
 
+    // upload from web app
     app.post('/api/upload', isLoggedIn, multerUpload.any(), function (req, res) {
-        console.log('i am in upload');
         //console.log('req user', req.user);
         //console.log('req.files',req.files);
         //console.log('req.body',req.body);
@@ -64,6 +64,12 @@ module.exports = function (app,isLoggedIn) {
 
     });
 
-  
+    // handle upload via api
+    // post route to upload files via rest api
+    // api token is the feedline id for which to upload the file
+    // drop a message to the message bus
+    // process file and expose processed files via anoother api route
+    
+    
 
 }
