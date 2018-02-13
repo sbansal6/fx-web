@@ -157,6 +157,8 @@ app.use(function (err, req, res, next) {
 });
 // endregion
 
-app.listen(3001, function () {
-  console.log('Express server listening on port',process.env.PORT,process.env.IP);
+var server_port = process.env.YOUR_PORT || process.env.PORT || 80;
+var server_host = process.env.YOUR_HOST || '0.0.0.0';
+app.listen(server_port, server_host, function () {
+  console.log('Express server listening on port',server_port, server_host);
 })  // endregion
