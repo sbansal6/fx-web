@@ -46,5 +46,8 @@
     "urldecode": "^1.0.1",
     "winston": "^1.0.2",
     "winston-mongodb": "^1.1.2"
+  },
+  "engines": {
+    "node": "4.0.0"
   }
 }
