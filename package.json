@@ -9,7 +9,7 @@
     "async": "^2.0.1",
     "aws-sdk": "^2.4.11",
     "bcrypt-nodejs": "0.0.3",
-    "blueimp-file-upload-expressjs": "^0.4.4",
+    "blueimp-file-upload-expressjs": "arvindr21/blueimp-file-upload-expressjs",
     "body-parser": "^1.13.2",
     "chai": "^3.5.0",
     "clone": "^2.1.0",
